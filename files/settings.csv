@@ -1,0 +1,31 @@
+Name;Type;Value
+App language;Options[English,Spanish,Czech,German,French,Slovak];English
+Learned by;Options[Czech,Spanish,French,Slovak,German,English];Czech
+First learning language;Options[English,Spanish,Czech,German,French];Spanish
+Second learning language;Options[English,Spanish,Czech,German,French];English
+Backup mail;Str;zubson4@gmail.com
+Backup period (days);Int;10
+Next backup;Str;2026-11-25 17:03:29
+11Labs token;Str;sk_b275a45d701ec2f387daec822ac86938739417d7af903d86
+Merriam-Webster's spanish API key;Str;2aa443da-a112-44ad-923b-2b916b0cb9fc
+Merriam-Webster's french API key;Str;a2f809f3-8def-43cb-b48c-3255fc8cbda3
+Merriam-Webster's english API key;Str;a2f809f3-8def-43cb-b48c-3255fc8cbda3
+Random repeat batch - Vocabulary;Int;100
+Random repeat batch - Conjugation;Int;30
+Learn batch;Int;10
+Percentage of type 2 testing - 1.lang (description and use in a sentence);Int;0
+Percentage of type 3 testing - 1.lang (audio and options);Int;20
+Percentage of type 2 testing - 2.lang (description and use in a sentence);Int;15
+Percentage of type 3 testing - 2.lang (audio and options);Int;20
+App sounds enabled;Bool;1
+App sound volume;Int;100
+Autoplay pronunciation;Bool;1
+Remember grammar categories;Bool;1
+Saved grammar category filters;JSON;{}
+Automatically show synonyms in repeat;Bool;0
+Letter hints;Options[Automatic,On request,Disabled];Automatic
+Enable tags;Bool;1
+Show tags during practice;Bool;0
+Tag display language;Options[Student language,Learning language];Learning language
+Maximum tags per word;Int;6
+Enable second learning language;Bool;1

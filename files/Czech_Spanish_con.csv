@@ -1,0 +1,366 @@
+ID;Spanish;Czech;Description;s1;s2;s3;m1;m2;m3;R;LR
+1;caber;vejít se;condicional simple, irregular;cabría;cabrías;cabría;cabríamos;;cabrían;SFFFFFSSSSS;2026-03-25 09:42:33
+2;decir;říci;condicional simple, irregular;diría;dirías;diría;diríamos;;dirían;FFFSSSSS;2026-03-24 22:27:27
+3;haber;být (pomocné sloveso);condicional simple, irregular;habría;habrías;habría;habríamos;;habrían;FSSSSS;2026-03-24 22:25:25
+4;hacer;dělat;condicional simple, irregular;haría;harías;haría;haríamos;;harían;SSSSS;2026-03-24 22:25:45
+5;poder;moci;condicional simple, irregular;podría;podrías;podría;podríamos;;podrían;SSSSSS;2026-04-07 13:36:40
+6;poner;položit;condicional simple, irregular;pondría;pondrías;pondría;pondríamos;;pondrían;SSFSSSSS;2026-03-24 22:34:52
+7;querer;chtít/milovat;condicional simple, irregular;querría;querrías;querría;querríamos;;querrían;FSFSSSSS;2026-03-24 22:27:46
+8;saber;vědět;condicional simple, irregular;sabría;sabrías;sabría;sabríamos;;sabrían;SSSSS;2026-03-24 22:28:18
+9;salir;odejít;condicional simple, irregular;saldría;saldrías;saldría;saldríamos;;saldrían;SSSSS;2026-03-24 22:29:25
+10;tener;mít;condicional simple, irregular;tendría;tendrías;tendría;tendríamos;;tendrían;SSSSS;2026-03-24 22:29:13
+11;valer;mít cenu;condicional simple, irregular;valdría;valdrías;valdría;valdríamos;;valdrían;SSSSS;2026-03-23 22:52:00
+12;venir;přijít;condicional simple, irregular;vendría;vendrías;vendría;vendríamos;;vendrían;SSSSS;2026-03-24 22:35:05
+13;hablar;mluvit;condicional simple, regular AR;hablaría;hablarías;hablaría;hablaríamos;;hablarían;SSSSS;2026-03-24 22:37:47
+14;comer;jíst;condicional simple, regular ER;comería;comerías;comería;comeríamos;;comerían;SSSSS;2026-03-24 22:25:35
+15;vivir;žít;condicional simple, regular IR;viviría;vivirías;viviría;viviríamos;;vivirían;SSFSSSSS;2026-03-24 22:36:16
+16;decir;říkat;estar + gerundio, irregular;estoy diciendo;estás diciendo;está diciendo;estamos diciendo;;están diciendo;SSSSSS;2026-04-03 15:32:18
+17;dormir;spát;estar + gerundio, irregular;estoy durmiendo;estás durmiendo;está durmiendo;estamos durmiendo;;están durmiendo;FSSSSSS;2026-04-04 17:14:14
+18;ir;jít;estar + gerundio, irregular;estoy yendo;estás yendo;está yendo;estamos yendo;;están yendo;FSSSSSFSSS;2026-04-07 19:34:02
+19;leer;číst;estar + gerundio, irregular;estoy leyendo;estás leyendo;está leyendo;estamos leyendo;;están leyendo;FSSSSSS;2026-04-04 17:14:29
+20;morir;zemřít;estar + gerundio, irregular;estoy muriendo;estás muriendo;está muriendo;estamos muriendo;;están muriendo;FSSSSSS;2026-04-04 17:21:35
+21;pedir;žádat;estar + gerundio, irregular;estoy pidiendo;estás pidiendo;está pidiendo;estamos pidiendo;;están pidiendo;FSFSSSSS;2026-03-23 10:27:27
+22;poder;moci;estar + gerundio, irregular;estoy pudiendo;estás pudiendo;está pudiendo;estamos pudiendo;;están pudiendo;FSFSSSSSS;2026-04-06 19:03:45
+23;seguir;pokračovat;estar + gerundio, irregular;estoy siguiendo;estás siguiendo;está siguiendo;estamos siguiendo;;están siguiendo;FSFFFSSSSSFS;2026-04-06 19:02:01
+24;sentir;cítit;estar + gerundio, irregular;estoy sintiendo;estás sintiendo;está sintiendo;estamos sintiendo;;están sintiendo;FSFSSSSS;2026-03-23 10:14:20
+25;venir;přicházet;estar + gerundio, irregular;estoy viniendo;estás viniendo;está viniendo;estamos viniendo;;están viniendo;FSSSSSS;2026-04-02 12:19:07
+26;hablar;mluvit;estar + gerundio, regular AR;estoy hablando;estás hablando;está hablando;estamos hablando;;están hablando;SSSSSS;2026-04-03 15:33:42
+27;comer;jíst;estar + gerundio, regular ER;estoy comiendo;estás comiendo;está comiendo;estamos comiendo;;están comiendo;SSSSSS;2026-04-02 12:13:11
+28;vivir;žít;estar + gerundio, regular IR;estoy viviendo;estás viviendo;está viviendo;estamos viviendo;;están viviendo;SSSSSS;2026-04-04 17:17:26
+29;caber;vejít se;futuro simple, irregular;cabré;cabrás;cabrá;cabremos;;cabrán;SFSSSSSFSSSSS;2026-03-31 13:24:43
+30;decir;říci;futuro simple, irregular;diré;dirás;dirá;diremos;;dirán;SSFSSSSSS;2026-03-27 00:29:47
+31;haber;být (pomocné sloveso);futuro simple, irregular;habré;habrás;habrá;habremos;;habrán;FSSSSSS;2026-04-03 15:38:55
+32;hacer;dělat;futuro simple, irregular;haré;harás;hará;haremos;;harán;FSFFSSSFSSSSS;2026-03-25 09:51:47
+33;poder;moci;futuro simple, irregular;podré;podrás;podrá;podremos;;podrán;SSSSSS;2026-03-27 00:30:29
+34;poner;položit;futuro simple, irregular;pondré;pondrás;pondrá;pondremos;;pondrán;SSSSSS;2026-03-27 00:25:19
+35;querer;chtít/milovat;futuro simple, irregular;querré;querrás;querrá;querremos;;querrán;FFSSSSSS;2026-03-26 12:29:44
+36;saber;vědět;futuro simple, irregular;sabré;sabrás;sabrá;sabremos;;sabrán;SSSSSS;2026-03-28 15:05:52
+37;salir;odejít;futuro simple, irregular;saldré;saldrás;saldrá;saldremos;;saldrán;SSSSSS;2026-03-30 15:12:04
+38;tener;mít;futuro simple, irregular;tendré;tendrás;tendrá;tendremos;;tendrán;SSSSSS;2026-03-28 15:07:51
+39;valer;mít cenu;futuro simple, irregular;valdré;valdrás;valdrá;valdremos;;valdrán;SSSSSFSSSSS;2026-03-31 13:21:36
+40;venir;přijít;futuro simple, irregular;vendré;vendrás;vendrá;vendremos;;vendrán;SSSFSSSSSS;2026-03-31 13:23:41
+41;hablar;mluvit;futuro simple, regular AR;hablaré;hablarás;hablará;hablaremos;;hablarán;FSSSSSS;2026-03-25 21:48:00
+42;comer;jíst;futuro simple, regular ER;comeré;comerás;comerá;comeremos;;comerán;SSSSSS;2026-03-30 15:09:20
+43;vivir;žít;futuro simple, regular IR;viviré;vivirás;vivirá;viviremos;;vivirán;SSSSSS;2026-03-27 00:31:01
+44;decir;říci;imperativo, irregular;;di;diga;digamos;;digan;FFSSFSSSSSS;2026-03-31 13:29:45
+45;hacer;dělat;imperativo, irregular;;haz;haga;hagamos;;hagan;FFFFSSFSSSSSS;2026-03-31 13:27:20
+46;ir;jít;imperativo, irregular;;ve;vaya;vayamos;;vayan;FFFFSSFFFSSSSS;2026-03-24 22:36:52
+47;poner;položit;imperativo, irregular;;pon;ponga;pongamos;;pongan;FSSSSS;2026-03-24 22:26:33
+48;salir;odejít;imperativo, irregular;;sal;salga;salgamos;;salgan;FFFSSSSS;2026-03-25 09:42:23
+49;ser;být;imperativo, irregular;;sé;sea;seamos;;sean;FFFFSSFSSFSFSSSSFSSSSS;2026-03-27 00:31:23
+50;tener;mít;imperativo, irregular;;ten;tenga;tengamos;;tengan;SSSSS;2026-03-24 22:28:49
+51;venir;přijít;imperativo, irregular;;ven;venga;vengamos;;vengan;FSSFSSSSS;2026-03-24 22:34:23
+52;hablar;mluvit;imperativo, regular AR;;habla;hable;hablemos;;hablen;FSSSSS;2026-03-24 22:29:05
+53;comer;jíst;imperativo, regular ER;;come;coma;comamos;;coman;FSFSFSFSSSSS;2026-03-24 22:31:04
+54;vivir;žít;imperativo, regular IR;;vive;viva;vivamos;;vivan;SSSSS;2026-03-23 10:29:36
+55;ir;jít;pasado imperfecto, irregular;iba;ibas;iba;íbamos;;iban;FFFFSSFSSSSS;2026-03-25 09:47:24
+56;ser;být;pasado imperfecto, irregular;era;eras;era;éramos;;eran;FFFFSSSSS;2026-03-24 22:32:27
+57;ver;vidět;pasado imperfecto, irregular;veía;veías;veía;veíamos;;veían;FFFSFSSSSFSSSSS;2026-03-27 00:28:56
+58;hablar;mluvit;pasado imperfecto, regular AR;hablaba;hablabas;hablaba;hablábamos;;hablaban;FSFFSSSSS;2026-03-24 22:40:00
+59;tener;mít;pasado imperfecto, regular ER;tenía;tenías;tenía;teníamos;;tenían;FSSSSS;2026-03-24 22:29:55
+60;vivir;žít;pasado imperfecto, regular IR;vivía;vivías;vivía;vivíamos;;vivían;FSSSSSS;2026-04-07 13:36:58
+61;dar;dát;pasado simple, grupo 1;di;diste;dio;dimos;;dieron;FSSSSSS;2026-03-25 10:09:00
+62;ir;jít;pasado simple, grupo 1;fui;fuiste;fue;fuimos;;fueron;SFSSSSSS;2026-03-27 00:27:53
+63;ser;být;pasado simple, grupo 1;fui;fuiste;fue;fuimos;;fueron;SSSSSFFSSSSS;2026-03-30 15:13:24
+64;ver;vidět;pasado simple, grupo 1;vi;viste;vio;vimos;;vieron;SSSSFFFSSFFSSSSFSSSFSSSSS;2026-03-31 17:26:49
+65;andar;chodit;pasado simple, grupo 2;anduve;anduviste;anduvo;anduvimos;;anduvieron;SSSSSS;2026-03-25 21:42:52
+66;estar;být;pasado simple, grupo 2;estuve;estuviste;estuvo;estuvimos;;estuvieron;SSSSSS;2026-03-25 10:10:44
+67;tener;mít;pasado simple, grupo 2;tuve;tuviste;tuvo;tuvimos;;tuvieron;SSSSSS;2026-03-25 10:08:45
+68;hacer;dělat;pasado simple, grupo 3;hice;hiciste;hizo;hicimos;;hicieron;SSSSFSSSSFSSSSFSSSSS;2026-03-31 17:29:14
+69;querer;chtít/milovat;pasado simple, grupo 3;quise;quisiste;quiso;quisimos;;quisieron;SSSFSSSFSSSFSSSSS;2026-03-25 09:47:15
+70;venir;přijít;pasado simple, grupo 3;vine;viniste;vino;vinimos;;vinieron;FSFSSSFSSSFFFSSSSS;2026-03-23 10:21:14
+71;caber;vejít se;pasado simple, grupo 4;cupe;cupiste;cupo;cupimos;;cupieron;FFSSSFFSSSFSSSFFSSSSS;2026-03-25 09:45:16
+72;haber;být (pomocné sloveso);pasado simple, grupo 4;hube;hubiste;hubo;hubimos;;hubieron;FFSSSSSFSSSSS;2026-03-28 15:05:41
+73;poder;moci;pasado simple, grupo 4;pude;pudiste;pudo;pudimos;;pudieron;SSSSSS;2026-03-25 10:11:45
+74;poner;položit;pasado simple, grupo 4;puse;pusiste;puso;pusimos;;pusieron;SSSSSS;2026-03-25 10:04:22
+75;saber;vědět;pasado simple, grupo 4;supe;supiste;supo;supimos;;supieron;SSSFSSSSSS;2026-03-30 00:29:44
+76;conducir;řídit;pasado simple, grupo 5;conduje;condujiste;condujo;condujimos;;condujeron;FFFSFSSSSSS;2026-03-26 12:28:00
+77;decir;říci;pasado simple, grupo 5;dije;dijiste;dijo;dijimos;;dijeron;FFSSSFSSSFFFSSSSSFF;2026-04-07 13:35:42
+78;producir;vyrábět;pasado simple, grupo 5;produje;produjiste;produjo;produjimos;;produjeron;FSFFSSSSSS;2026-03-26 12:29:23
+79;traducir;překládat;pasado simple, grupo 5;traduje;tradujiste;tradujo;tradujimos;;tradujeron;FSSFSFSSFSSSFSSSFSSFSFSSFSFSSSSS;2026-03-25 09:59:36
+80;traer;přinést;pasado simple, grupo 5;traje;trajiste;trajo;trajimos;;trajeron;FSSSSSS;2026-03-25 21:42:16
+81;concluir;uzavřít;pasado simple, grupo 6;concluí;concluiste;concluyó;concluimos;;concluyeron;SSSSSS;2026-04-03 17:23:12
+82;conseguir;získat;pasado simple, grupo 6;conseguí;conseguiste;consiguió;conseguimos;;consiguieron;FFFFFFSSSSFFSSSFSSSSS;2026-03-30 00:35:02
+83;construir;stavět;pasado simple, grupo 6;construí;construiste;construyó;construimos;;construyeron;FSSSSSS;2026-04-04 17:18:50
+84;corregir;opravit;pasado simple, grupo 6;corregí;corregiste;corrigió;corregimos;;corrigieron;FSSSFSSSSFSSSSS;2026-03-27 00:27:41
+85;creer;věřit;pasado simple, grupo 6;creí;creíste;creyó;creímos;;creyeron;FSFSFFSFSSSSSS;2026-04-05 14:43:42
+86;destruir;zničit;pasado simple, grupo 6;destruí;destruiste;destruyó;destruimos;;destruyeron;FFSSSSSS;2026-04-03 17:25:43
+87;dormir;spát;pasado simple, grupo 6;dormí;dormiste;durmió;dormimos;;durmieron;FSSSSSS;2026-04-04 17:13:06
+88;huir;utéct;pasado simple, grupo 6;huí;huiste;huyó;huimos;;huyeron;FSSFSSSSS;2026-03-23 10:31:37
+89;incluir;zahrnout;pasado simple, grupo 6;incluí;incluiste;incluyó;incluimos;;incluyeron;FSSSSSS;2026-04-03 15:31:18
+90;leer;číst;pasado simple, grupo 6;leí;leíste;leyó;leímos;;leyeron;FFFSSSSSS;2026-04-05 14:41:54
+91;mentir;lhát;pasado simple, grupo 6;mentí;mentiste;mintió;mentimos;;mintieron;FSSSSSS;2026-04-03 15:40:45
+92;morir;zemřít;pasado simple, grupo 6;morí;moriste;murió;morimos;;murieron;SSSSFSSSSS;2026-03-25 09:58:53
+93;oír;slyšet;pasado simple, grupo 6;oí;oíste;oyó;oímos;;oyeron;FFSSSSSS;2026-04-05 14:47:46
+94;pedir;žádat;pasado simple, grupo 6;pedí;pediste;pidió;pedimos;;pidieron;FSSSSSFSSSSS;2026-04-07 19:33:49
+95;poseer;vlastnit;pasado simple, grupo 6;poseí;poseíste;poseyó;poseímos;;poseyeron;FSFFSFFSSFSFSSSSS;2026-03-23 10:28:37
+96;preferir;dávat přednost;pasado simple, grupo 6;preferí;preferiste;prefirió;preferimos;;prefirieron;FFSSSSSS;2026-04-03 17:26:40
+97;reír;smát se;pasado simple, grupo 6;reí;reíste;rió;reímos;;rieron;FFSSFSFSSSSSS;2026-04-06 19:03:14
+98;repetir;opakovat;pasado simple, grupo 6;repetí;repetiste;repitió;repetimos;;repitieron;FFSSSSSS;2026-04-03 17:22:10
+99;sentir;cítit;pasado simple, grupo 6;sentí;sentiste;sintió;sentimos;;sintieron;SSSFSSSSS;2026-03-25 09:50:22
+100;servir;sloužit;pasado simple, grupo 6;serví;serviste;sirvió;servimos;;sirvieron;FSSSSSS;2026-04-04 17:19:52
+101;sonreír;usmívat se;pasado simple, grupo 6;sonreí;sonreíste;sonrió;sonreímos;;sonrieron;FFSFSSSFSSSSFSSSFSSSSS;2026-03-31 13:26:25
+102;abrazar;obejmout;pasado simple, grupo 7;abracé;abrazaste;abrazó;abrazamos;;abrazaron;SSSSSS;2026-04-05 14:45:49
+103;alcanzar;dosáhnout;pasado simple, grupo 7;alcancé;alcanzaste;alcanzó;alcanzamos;;alcanzaron;FFFSSSSS;2026-03-23 10:22:16
+104;almorzar;obědvat;pasado simple, grupo 7;almorcé;almorzaste;almorzó;almorzamos;;almorzaron;SSSSSS;2026-04-04 17:20:40
+105;arrancar;vytrhnout, vyškubnout;pasado simple, grupo 7;arranqué;arrancaste;arrancó;arrancamos;;arrancaron;FSSSSSS;2026-04-03 15:32:45
+106;buscar;hledat;pasado simple, grupo 7;busqué;buscaste;buscó;buscamos;;buscaron;FSSSSSFSSS;2026-04-07 16:06:20
+107;cazar;lovit;pasado simple, grupo 7;cacé;cazaste;cazó;cazamos;;cazaron;FSSSSSS;2026-04-02 12:16:34
+108;danzar;tančit;pasado simple, grupo 7;dancé;danzaste;danzó;danzamos;;danzaron;FSSSSSS;2026-04-02 12:12:24
+109;empezar;začít;pasado simple, grupo 7;empecé;empezaste;empezó;empezamos;;empezaron;FFSSSSFFSSSSS;2026-03-25 10:02:33
+110;jugar;hrát;pasado simple, grupo 7;jugué;jugaste;jugó;jugamos;;jugaron;FSFSSSSSS;2026-04-02 12:14:58
+111;lanzar;házet;pasado simple, grupo 7;lancé;lanzaste;lanzó;lanzamos;;lanzaron;SSSSSS;2026-04-01 11:47:51
+112;llegar;dorazit;pasado simple, grupo 7;llegué;llegaste;llegó;llegamos;;llegaron;SSSSSS;2026-03-31 17:30:14
+113;mascar;žvýkat;pasado simple, grupo 7;masqué;mascaste;mascó;mascamos;;mascaron;SSFSSSSS;2026-03-23 10:18:27
+114;masticar;žvýkat;pasado simple, grupo 7;mastiqué;masticaste;masticó;masticamos;;masticaron;SSSSSS;2026-03-31 17:30:32
+115;pegar;lepit;pasado simple, grupo 7;pegué;pegaste;pegó;pegamos;;pegaron;FFSSSSSS;2026-04-04 17:21:23
+116;practicar;praktikovat;pasado simple, grupo 7;practiqué;practicaste;practicó;practicamos;;practicaron;SSSSSS;2026-04-02 12:17:25
+117;rezar;modlit se;pasado simple, grupo 7;recé;rezaste;rezó;rezamos;;rezaron;FSFSSSSSS;2026-04-04 17:15:07
+118;sacar;vyndat;pasado simple, grupo 7;saqué;sacaste;sacó;sacamos;;sacaron;SSSSSS;2026-04-02 12:16:18
+119;secar;sušit;pasado simple, grupo 7;sequé;secaste;secó;secamos;;secaron;SSSSSFSSSS;2026-04-07 13:36:00
+120;tocar;dotknout se/hrát na nástroj;pasado simple, grupo 7;toqué;tocaste;tocó;tocamos;;tocaron;SSSSSS;2026-04-01 11:43:20
+121;hablar;mluvit;pasado simple, regular AR;hablé;hablaste;habló;hablamos;;hablaron;SSSSSS;2026-04-01 11:39:54
+122;comer;jíst;pasado simple, regular ER;comí;comiste;comió;comimos;;comieron;FFFSSFSSSFSSSSS;2026-03-25 09:52:00
+123;vivir;žít;pasado simple, regular IR;viví;viviste;vivió;vivimos;;vivieron;SSSSSS;2026-04-03 15:32:58
+124;almorzar;obědvat;presente simple, grupo 1;almuerzo;almuerzas;almuerza;almorzamos;;almuerzan;SSSSSS;2026-04-03 15:34:16
+125;colgar;pověsit;presente simple, grupo 1;cuelgo;cuelgas;cuelga;colgamos;;cuelgan;SSSSSS;2026-03-31 13:25:06
+126;contar;počítat/vyprávět;presente simple, grupo 1;cuento;cuentas;cuenta;contamos;;cuentan;SSSSSS;2026-04-03 15:35:04
+127;costar;stát (cena);presente simple, grupo 1;cuesto;cuestas;cuesta;costamos;;cuestan;SSSSSS;2026-04-01 11:42:16
+128;devolver;vrátit;presente simple, grupo 1;devuelvo;devuelves;devuelve;devolvemos;;devuelven;FSSSSSS;2026-04-03 15:37:16
+129;dormir;spát;presente simple, grupo 1;duermo;duermes;duerme;dormimos;;duermen;FFSSSSSS;2026-04-02 12:19:31
+130;encontrar;najít;presente simple, grupo 1;encuentro;encuentras;encuentra;encontramos;;encuentran;SFSSSSSS;2026-04-03 17:22:53
+131;jugar;hrát;presente simple, grupo 1;juego;juegas;juega;jugamos;;juegan;SSSSSS;2026-04-02 12:14:23
+132;llover;pršet;presente simple, grupo 1;;;llueve;;;llueven;FSSSSSS;2026-04-02 12:13:49
+133;morir;zemřít;presente simple, grupo 1;muero;mueres;muere;morimos;;mueren;FFSSSSSS;2026-04-04 17:18:19
+134;mostrar;ukázat;presente simple, grupo 1;muestro;muestras;muestra;mostramos;;muestran;SSSSSS;2026-04-01 11:42:28
+135;oler;cítit (čich);presente simple, grupo 1;huelo;hueles;huele;olemos;;huelen;FFSFSFSSSSSS;2026-04-05 14:50:32
+136;poder;moci;presente simple, grupo 1;puedo;puedes;puede;podemos;;pueden;SSSSSS;2026-03-28 15:06:21
+137;probar;zkusit;presente simple, grupo 1;pruebo;pruebas;prueba;probamos;;prueban;SSSSSS;2026-03-30 00:32:48
+138;recordar;vzpomenout;presente simple, grupo 1;recuerdo;recuerdas;recuerda;recordamos;;recuerdan;SSSSSS;2026-03-30 15:11:15
+139;resolver;vyřešit;presente simple, grupo 1;resuelvo;resuelves;resuelve;resolvemos;;resuelven;SSSSSFSSFSSSSS;2026-04-06 19:06:25
+140;soler;mít ve zvyku;presente simple, grupo 1;suelo;sueles;suele;solemos;;suelen;FFSSSSSS;2026-03-26 12:23:42
+141;soltar;pustit;presente simple, grupo 1;suelto;sueltas;suelta;soltamos;;sueltan;SSSSSS;2026-03-28 15:08:59
+142;soñar;snít;presente simple, grupo 1;sueño;sueñas;sueña;soñamos;;sueñan;SSSSSS;2026-03-26 12:27:17
+143;volar;létat;presente simple, grupo 1;vuelo;vuelas;vuela;volamos;;vuelan;FSSSSSS;2026-03-28 15:07:27
+144;volver;vrátit se;presente simple, grupo 1;vuelvo;vuelves;vuelve;volvemos;;vuelven;FSSSSSS;2026-03-28 15:12:19
+145;arrepentirse;litovat;presente simple, grupo 2 (+reflexivos);me arrepiento;te arrepientes;se arrepiente;nos arrepentimos;;se arrepienten;FFFSSSSSS;2026-03-30 00:37:06
+146;calentar;ohřát;presente simple, grupo 2;caliento;calientas;calienta;calentamos;;calientan;SSSSSS;2026-03-25 21:46:08
+147;cerrar;zavřít;presente simple, grupo 2;cierro;cierras;cierra;cerramos;;cierran;FSSSSSS;2026-03-27 00:32:14
+148;comenzar;začít;presente simple, grupo 2;comienzo;comienzas;comienza;comenzamos;;comienzan;FSSSSSS;2026-03-28 15:12:41
+149;divertirse;bavit se;verbos reflexivos, presente simple (+irregular);me divierto;te diviertes;se divierte;nos divertimos;;se divierten;FFFFSSSSSS;2026-03-30 15:14:22
+150;empezar;začít;presente simple, grupo 2;empiezo;empiezas;empieza;empezamos;;empiezan;SSFSSSSSS;2026-03-30 00:33:37
+151;entender;rozumět;presente simple, grupo 2;entiendo;entiendes;entiende;entendemos;;entienden;SSSSSFSSSSS;2026-03-30 15:11:02
+152;negar;popřít;presente simple, grupo 2;niego;niegas;niega;negamos;;niegan;FSSSSSS;2026-03-28 15:10:42
+153;pensar;myslet;presente simple, grupo 2;pienso;piensas;piensa;pensamos;;piensan;SSSSSS;2026-03-27 00:27:16
+154;perder;ztratit;presente simple, grupo 2;pierdo;pierdes;pierde;perdemos;;pierden;FFFSSSSSS;2026-03-28 15:09:45
+155;preferir;dávat přednost;presente simple, grupo 2;prefiero;prefieres;prefiere;preferimos;;prefieren;SSSSSS;2026-03-25 21:48:46
+156;querer;chtít/milovat;presente simple, grupo 2;quiero;quieres;quiere;queremos;;quieren;FSSSSSS;2026-03-30 15:15:11
+157;sentir;cítit;presente simple, grupo 2;siento;sientes;siente;sentimos;;sienten;FSSSSSFSSSSFSSSSS;2026-04-05 14:44:19
+158;conseguir;získat;presente simple, grupo 3;consigo;consigues;consigue;conseguimos;;consiguen;FFFSSSSSFSSSSS;2026-04-01 11:47:14
+159;corregir;opravit;presente simple, grupo 3;corrijo;corriges;corrige;corregimos;;corrigen;FSSFSSSSFFSSSSS;2026-03-25 10:01:49
+160;elegir;vybrat;presente simple, grupo 3;elijo;eliges;elige;elegimos;;eligen;FFSSSSSS;2026-03-30 00:36:05
+161;medir;měřit;presente simple, grupo 3;mido;mides;mide;medimos;;miden;FSSSSSS;2026-03-25 21:41:23
+162;pedir;žádat, požádat, objednat;presente simple, grupo 3;pido;pides;pide;pedimos;;piden;FSSSSSS;2026-03-30 15:09:03
+163;reír;smát se;presente simple, grupo 3;río;ríes;ríe;reímos;;ríen;FSFSSSSSS;2026-03-28 15:07:16
+164;repetir;opakovat;presente simple, grupo 3;repito;repites;repite;repetimos;;repiten;FSFSSSSSS;2026-03-30 15:07:47
+165;seguir;následovat;presente simple, grupo 3;sigo;sigues;sigue;seguimos;;siguen;FSSSFFSSSSS;2026-03-23 10:24:45
+166;servir;sloužit;presente simple, grupo 3;sirvo;sirves;sirve;servimos;;sirven;FSSSSSS;2026-03-30 00:30:21
+167;sonreír;usmívat se;presente simple, grupo 3;sonrío;sonríes;sonríe;sonreímos;;sonríen;SSSFSSSFSSSSFSFSSFSSSSS;2026-03-31 17:32:02
+168;acoger;přijmout;presente simple, grupo 4;acojo;acoges;acoge;acogemos;;acogen;SFSSSSSS;2026-04-03 15:38:11
+169;coger;vzít;presente simple, grupo 4;cojo;coges;coge;cogemos;;cogen;FSSSSSS;2026-04-02 12:16:01
+170;dirigir;vést;presente simple, grupo 4;dirijo;diriges;dirige;dirigimos;;dirigen;SSSSSS;2026-04-02 12:14:41
+171;escoger;vybrat;presente simple, grupo 4;escojo;escoges;escoge;escogemos;;escogen;FSSSSSS;2026-04-01 11:39:38
+172;exigir;požadovat;presente simple, grupo 4;exijo;exiges;exige;exigimos;;exigen;FSSSSSS;2026-03-31 17:28:50
+173;proteger;chránit;presente simple, grupo 4;protejo;proteges;protege;protegemos;;protegen;SSSSSS;2026-04-03 15:36:05
+174;recoger;sebrat, sbírat, sklízet, (u)rovnat, porovnat;presente simple, grupo 4;recojo;recoges;recoge;recogemos;;recogen;SSSSSS;2026-04-03 15:38:38
+175;bendecir;požehnat;presente simple, grupo 5;bendigo;bendices;bendice;bendecimos;;bendicen;SSSSSS;2026-04-02 12:13:29
+176;contener;obsahovat;presente simple, grupo 5;contengo;contienes;contiene;contenemos;;contienen;SFSSSSSS;2026-04-03 17:27:30
+177;decir;říci;presente simple, grupo 5;digo;dices;dice;decimos;;dicen;FSSSSSS;2026-04-03 15:32:01
+178;maldecir;proklít;presente simple, grupo 5;maldigo;maldices;maldice;maldecimos;;maldicen;SSSSSS;2026-03-31 17:26:18
+179;predecir;předpovědět;presente simple, grupo 5;predigo;predices;predice;predecimos;;predicen;FSSSSSS;2026-03-31 13:24:28
+180;prevenir;předcházet;presente simple, grupo 5;prevengo;previenes;previene;prevenimos;;previenen;FSSSFSSSSFSSSSS;2026-03-25 21:50:54
+181;sostener;podporovat;presente simple, grupo 5;sostengo;sostienes;sostiene;sostenemos;;sostienen;FSSSSS;2026-03-24 22:28:10
+182;tener;mít;presente simple, grupo 5;tengo;tienes;tiene;tenemos;;tienen;SSSSSFSSSSS;2026-04-04 17:15:35
+183;venir;přijít;presente simple, grupo 5;vengo;vienes;viene;venimos;;vienen;FSSSSSS;2026-04-03 15:34:42
+184;concluir;uzavřít;presente simple, grupo 6;concluyo;concluyes;concluye;concluimos;;concluyen;SSSSSS;2026-04-02 12:16:53
+185;construir;stavět;presente simple, grupo 6;construyo;construyes;construye;construimos;;construyen;SSSSSFFSSFSS;2026-04-07 13:35:31
+186;destruir;zničit;presente simple, grupo 6;destruyo;destruyes;destruye;destruimos;;destruyen;SSSSSS;2026-04-02 12:18:39
+187;distribuir;distribuovat;presente simple, grupo 6;distribuyo;distribuyes;distribuye;distribuimos;;distribuyen;FSSSSSS;2026-04-01 11:45:29
+188;excluir;vyloučit;presente simple, grupo 6;excluyo;excluyes;excluye;excluimos;;excluyen;SSSSSS;2026-04-01 11:42:52
+189;huir;utéct;presente simple, grupo 6;huyo;huyes;huye;huimos;;huyen;FFSSSSSS;2026-03-31 17:27:26
+190;incluir;zahrnout;presente simple, grupo 6;incluyo;incluyes;incluye;incluimos;;incluyen;FSSSSSS;2026-03-31 17:29:28
+191;influir;ovlivňovat;presente simple, grupo 6;influyo;influyes;influye;influimos;;influyen;SSSSFSSSSS;2026-03-25 09:57:50
+192;agradecer;děkovat;presente simple, grupo 7;agradezco;agradeces;agradece;agradecemos;;agradecen;SSSSSS;2026-04-01 11:39:23
+193;aparecer;objevit se;presente simple, grupo 7;aparezco;apareces;aparece;aparecemos;;aparecen;SSSSSS;2026-04-01 11:48:40
+194;caber;vejít se;presente simple, grupo 7;quepo;cabes;cabe;cabemos;;caben;FFSSSFFFFSSSSS;2026-03-24 22:38:24
+195;caer;spadnout;presente simple, grupo 7;caigo;caes;cae;caemos;;caen;SSSSSS;2026-04-02 12:17:42
+196;conocer;znát;presente simple, grupo 7;conozco;conoces;conoce;conocemos;;conocen;SSSSSS;2026-03-31 13:22:32
+197;crecer;růst;presente simple, grupo 7;crezco;creces;crece;crecemos;;crecen;FSSSSSS;2026-03-31 13:28:25
+198;desaparecer;zmizet;presente simple, grupo 7;desaparezco;desapareces;desaparece;desaparecemos;;desaparecen;SSSSSS;2026-04-01 11:44:42
+199;hacer;dělat;presente simple, grupo 7;hago;haces;hace;hacemos;;hacen;FSSSSSS;2026-03-31 17:27:12
+200;ofrecer;nabídnout;presente simple, grupo 7;ofrezco;ofreces;ofrece;ofrecemos;;ofrecen;SSSSSS;2026-03-31 17:26:40
+201;parecer;zdát se;presente simple, grupo 7;parezco;pareces;parece;parecemos;;parecen;SSSSSS;2026-04-01 11:48:54
+202;poner;položit;presente simple, grupo 7;pongo;pones;pone;ponemos;;ponen;SSSSSS;2026-03-30 00:31:11
+203;producir;vyrábět;presente simple, grupo 7;produzco;produces;produce;producimos;;producen;SSSSFFSSSSFSSSSS;2026-03-28 15:13:12
+204;saber;vědět;presente simple, grupo 7;sé;sabes;sabe;sabemos;;saben;SSSSSS;2026-03-31 17:32:10
+205;salir;odejít;presente simple, grupo 7;salgo;sales;sale;salimos;;salen;FSSSSSS;2026-03-28 15:09:19
+206;traducir;překládat;presente simple, grupo 7;traduzco;traduces;traduce;traducimos;;traducen;SSSSSS;2026-03-27 00:25:54
+207;traer;přinést;presente simple, grupo 7;traigo;traes;trae;traemos;;traen;FSSSSSS;2026-03-28 15:11:07
+208;valer;mít hodnotu;presente simple, grupo 7;valgo;vales;vale;valemos;;valen;FSSFSSSSSFSSSSS;2026-04-03 15:34:51
+209;dar;dát;presente simple, grupo 8;doy;das;da;damos;;dan;SSSSFSSSSS;2026-03-25 09:52:09
+210;estar;být;presente simple, grupo 8;estoy;estás;está;estamos;;están;FSSSSSS;2026-03-30 15:14:34
+211;haber;být (pomocné sloveso);presente simple, grupo 8;he;has;ha;hemos;;han;FSFSSSSSS;2026-03-28 15:09:08
+212;ir;jít;presente simple, grupo 8;voy;vas;va;vamos;;van;SSSFSSSSSS;2026-04-02 12:12:32
+213;oír;slyšet;presente simple, grupo 8;oigo;oyes;oye;oímos;;oyen;FSFSSFSSSFSSSSSS;2026-04-06 19:04:50
+214;hablar;mluvit;presente simple, regular AR;hablo;hablas;habla;hablamos;;hablan;SSSSSS;2026-03-26 12:23:54
+215;comer;jíst;presente simple, regular ER;como;comes;come;comemos;;comen;SSSSSS;2026-03-26 12:22:48
+216;vivir;žít;presente simple, regular IR;vivo;vives;vive;vivimos;;viven;SSSSSS;2026-03-27 00:28:45
+217;abrir;otevřít;pretérito perfecto, irregular participio;he abierto;has abierto;ha abierto;hemos abierto;;han abierto;SSSSSS;2026-03-28 15:06:56
+218;cubrir;přikrýt;pretérito perfecto, irregular participio;he cubierto;has cubierto;ha cubierto;hemos cubierto;;han cubierto;SSSSSS;2026-03-30 15:10:26
+219;decir;říci;pretérito perfecto, irregular participio;he dicho;has dicho;ha dicho;hemos dicho;;han dicho;SFSSSSSS;2026-03-27 00:26:34
+220;descubrir;objevit;pretérito perfecto, irregular participio;he descubierto;has descubierto;ha descubierto;hemos descubierto;;han descubierto;SSSSSS;2026-04-02 12:11:56
+221;devolver;vrátit;pretérito perfecto, irregular participio;he devuelto;has devuelto;ha devuelto;hemos devuelto;;han devuelto;SSSSSS;2026-04-02 12:15:47
+222;escribir;psát;pretérito perfecto, irregular participio;he escrito;has escrito;ha escrito;hemos escrito;;han escrito;FSSSSSS;2026-03-31 17:27:40
+223;freír;smažit;pretérito perfecto, irregular participio;he frito;has frito;ha frito;hemos frito;;han frito;SSSSSS;2026-04-03 15:39:10
+224;hacer;dělat;pretérito perfecto, irregular participio;he hecho;has hecho;ha hecho;hemos hecho;;han hecho;SSSSSS;2026-04-01 11:44:18
+225;morir;zemřít;pretérito perfecto, irregular participio;he muerto;has muerto;ha muerto;hemos muerto;;han muerto;SSSSSS;2026-04-01 11:47:28
+226;poner;položit;pretérito perfecto, irregular participio;he puesto;has puesto;ha puesto;hemos puesto;;han puesto;FSSSSSS;2026-03-31 17:28:04
+227;resolver;vyřešit;pretérito perfecto, irregular participio;he resuelto;has resuelto;ha resuelto;hemos resuelto;;han resuelto;SFSSSSFSSSSS;2026-03-25 09:56:35
+228;romper;rozbít;pretérito perfecto, irregular participio;he roto;has roto;ha roto;hemos roto;;han roto;SSSSSS;2026-03-30 00:34:05
+229;ver;vidět;pretérito perfecto, irregular participio;he visto;has visto;ha visto;hemos visto;;han visto;SSSSSS;2026-03-31 13:23:12
+230;volver;vrátit se;pretérito perfecto, irregular participio;he vuelto;has vuelto;ha vuelto;hemos vuelto;;han vuelto;SSSSFSSSSS;2026-03-25 10:00:43
+231;hablar;mluvit;pretérito perfecto, regular AR;he hablado;has hablado;ha hablado;hemos hablado;;han hablado;SSSSSS;2026-03-27 00:24:57
+232;comer;jíst;pretérito perfecto, regular ER;he comido;has comido;ha comido;hemos comido;;han comido;SSSSSS;2026-03-26 12:29:04
+233;vivir;žít;pretérito perfecto, regular IR;he vivido;has vivido;ha vivido;hemos vivido;;han vivido;FSSSSSS;2026-03-31 13:29:21
+234;comer;jíst;subjuntivo imperfecto, regular ER;comiera;comieras;comiera;comiéramos;;comieran;FFFSSSSFSFSSSFSFFSSFFFSSSS;2026-04-05 14:49:21
+235;hablar;mluvit;subjuntivo imperfecto, regular AR;hablara;hablaras;hablara;habláramos;;hablaran;FFSSSSS;2026-03-24 22:38:45
+236;vivir;žít;subjuntivo imperfecto, regular IR;viviera;vivieras;viviera;viviéramos;;vivieran;SFSSSSS;2026-03-24 22:39:32
+237;comer;jíst;subjuntivo presente, regular ER;coma;comas;coma;comamos;;coman;FSSSSS;2026-03-24 22:25:11
+238;conocer;znát;subjuntivo presente, irregular;conozca;conozcas;conozca;conozcamos;;conozcan;SFSSSSS;2026-03-24 22:30:07
+239;dar;dát;subjuntivo presente, irregular;dé;des;dé;demos;;den;FFSSFSSSSFSSSSS;2026-03-26 12:24:15
+240;decir;říci;subjuntivo presente, irregular;diga;digas;diga;digamos;;digan;SSSSS;2026-03-24 22:35:19
+241;dormir;spát;subjuntivo presente, irregular;duerma;duermas;duerma;durmamos;;duerman;FFFSSSSFSSSSS;2026-03-26 12:26:20
+242;estar;být;subjuntivo presente, irregular;esté;estés;esté;estemos;;estén;FFFSSSSFFSFSSSSS;2026-03-30 00:32:57
+243;haber;být (pomocné);subjuntivo presente, irregular;haya;hayas;haya;hayamos;;hayan;FSSSSS;2026-03-24 22:33:24
+244;hablar;mluvit;subjuntivo presente, regular AR;hable;hables;hable;hablemos;;hablen;SSSSS;2026-03-24 22:30:22
+245;hacer;dělat;subjuntivo presente, irregular;haga;hagas;haga;hagamos;;hagan;SSSSSS;2026-04-06 19:04:00
+246;ir;jít;subjuntivo presente, irregular;vaya;vayas;vaya;vayamos;;vayan;FSSFFSSSSS;2026-03-24 22:38:00
+247;oír;slyšet;subjuntivo presente, irregular;oiga;oigas;oiga;oigamos;;oigan;SSSSS;2026-03-24 22:27:58
+248;parecer;zdát se;subjuntivo presente, irregular;parezca;parezcas;parezca;parezcamos;;parezcan;SSSSS;2026-03-24 22:29:41
+249;pedir;žádat;subjuntivo presente, irregular;pida;pidas;pida;pidamos;;pidan;FSSSSS;2026-03-24 22:34:04
+250;pensar;myslet;subjuntivo presente, irregular;piense;pienses;piense;pensemos;;piensen;SSFFFSFSSSFSSSSFSSSSS;2026-03-27 00:28:06
+251;poder;moci;subjuntivo presente, irregular;pueda;puedas;pueda;podamos;;puedan;FFSFFSSSSFFSSSSS;2026-03-27 00:27:02
+252;poner;položit;subjuntivo presente, irregular;ponga;pongas;ponga;pongamos;;pongan;SSSSS;2026-03-24 22:33:08
+253;preferir;dávat přednost;subjuntivo presente, irregular;prefiera;prefieras;prefiera;prefiramos;;prefieran;FSSSFSSSSS;2026-03-25 09:44:44
+254;saber;vědět;subjuntivo presente, irregular;sepa;sepas;sepa;sepamos;;sepan;FFSSSSS;2026-03-24 22:30:52
+255;salir;odejít;subjuntivo presente, irregular;salga;salgas;salga;salgamos;;salgan;SSSSFSSSSS;2026-03-25 21:50:21
+256;sentir;cítit;subjuntivo presente, irregular;sienta;sientas;sienta;sintamos;;sientan;FFSSSSFFSSSSS;2026-03-26 17:57:53
+257;ser;být;subjuntivo presente, irregular;sea;seas;sea;seamos;;sean;SFSSSSS;2026-03-24 22:31:59
+258;tener;mít;subjuntivo presente, irregular;tenga;tengas;tenga;tengamos;;tengan;FFSSSSS;2026-03-24 22:28:26
+259;traducir;překládat;subjuntivo presente, irregular;traduzca;traduzcas;traduzca;traduzcamos;;traduzcan;SSSSS;2026-03-25 09:50:34
+260;traer;přinést;subjuntivo presente, irregular;traiga;traigas;traiga;traigamos;;traigan;SSSSS;2026-03-24 22:30:33
+261;valer;mít cenu;subjuntivo presente, irregular;valga;valgas;valga;valgamos;;valgan;FSSSSS;2026-03-24 22:34:14
+262;venir;přijít;subjuntivo presente, irregular;venga;vengas;venga;vengamos;;vengan;SSSSS;2026-03-24 22:38:10
+263;ver;vidět;subjuntivo presente, irregular;vea;veas;vea;veamos;;vean;FFFSFSSSSS;2026-03-24 22:32:40
+264;vivir;žít;subjuntivo presente, regular IR;viva;vivas;viva;vivamos;;vivan;SFSSSSS;2026-03-24 22:24:55
+265;aburrir;nudit;verbos de objeto indirecto, presente simple;me aburre;te aburre;le aburre;nos aburre;;les aburre;FSSSSSS;2026-04-06 19:06:44
+266;agradar;bavit, těšit, líbit se;verbos de objeto indirecto, presente simple;me agrada;te agrada;le agrada;nos agrada;;les agrada;SSSSSS;2026-04-06 19:05:30
+267;disgustar;nelíbit se;verbos de objeto indirecto, presente simple;me disgusta;te disgusta;le disgusta;nos disgusta;;les disgusta;SSSSSS;2026-04-05 14:52:08
+268;divertir;bavit;verbos de objeto indirecto, presente simple (+irregular);me divierte;te divierte;le divierte;nos divierte;;les divierte;SFSFFSSSSSS;2026-04-05 14:50:12
+269;doler;bolet;verbos de objeto indirecto, presente simple (+irregular);me duele;te duele;le duele;nos duele;;les duele;SSSSSS;2026-04-04 17:21:10
+270;encantar;nadchnout, milovat;verbos de objeto indirecto, presente simple;me encanta;te encanta;le encanta;nos encanta;;les encanta;SSSSSS;2026-04-04 17:14:43
+271;fascinar;fascinovat;verbos de objeto indirecto, presente simple;me fascina;te fascina;le fascina;nos fascina;;les fascina;SFSSSSSS;2026-04-05 14:50:56
+272;gustar;líbit se;verbos de objeto indirecto, presente simple;me gusta;te gusta;le gusta;nos gusta;;les gusta;SSSSSS;2026-04-06 19:03:29
+273;importar;být důležitý;verbos de objeto indirecto, presente simple;me importa;te importa;le importa;nos importa;;les importa;SSSSSS;2026-04-03 15:36:34
+274;interesar;zajímat;verbos de objeto indirecto, presente simple;me interesa;te interesa;le interesa;nos interesa;;les interesa;FSSSSSS;2026-04-05 14:41:33
+275;molestar;obtěžovat;verbos de objeto indirecto, presente simple;me molesta;te molesta;le molesta;nos molesta;;les molesta;SSSSFSSSSS;2026-03-25 10:03:20
+276;abrazarse;obejmout se;verbos recíprocos, presente simple;;;;nos abrazamos;;se abrazan;SSSSSS;2026-03-25 21:46:57
+277;besarse;líbat se;verbos recíprocos, presente simple;;;;nos besamos;;se besan;SSSSSS;2026-03-26 12:24:45
+278;casarse;vdát se/oženit se;verbos recíprocos, presente simple;;;;nos casamos;;se casan;SSSSSS;2026-03-31 13:22:57
+279;conocerse;seznámit se;verbos recíprocos, presente simple;;;;nos conocemos;;se conocen;FFSSSSSFFFSSSSS;2026-04-02 12:13:40
+280;divorciarse;rozvést se;verbos recíprocos, presente simple;;;;nos divorciamos;;se divorcian;SSSSSS;2026-03-25 10:02:05
+281;enamorarse;zamilovat se;verbos recíprocos, presente simple;;;;nos enamoramos;;se enamoran;SSSSSS;2026-03-25 10:06:09
+282;encontrarse;setkat se;verbos recíprocos, presente simple;;;;nos encontramos;;se encuentran;SSSSSS;2026-03-25 10:07:46
+283;golpearse;udeřit se;verbos recíprocos, presente simple;;;;nos golpeamos;;se golpean;SSSSSS;2026-03-26 12:24:24
+284;hablarse;mluvit spolu;verbos recíprocos, presente simple;;;;nos hablamos;;se hablan;SSSSSS;2026-03-25 10:04:02
+285;chocarse;narazit;verbos recíprocos, presente simple;;;;nos chocamos;;se chocan;SSSSSS;2026-03-25 10:09:38
+286;mirarse;dívat se na sebe;verbos recíprocos, presente simple;;;;nos miramos;;se miran;SFSSSSSS;2026-03-25 21:42:21
+287;pelearse;hádat se;verbos recíprocos, presente simple;;;;nos peleamos;;se pelean;SSSSSS;2026-03-25 10:09:44
+288;reconciliarse;usmířit se;verbos recíprocos, presente simple;;;;nos reconciliamos;;se reconcilian;FSSSSSS;2026-03-25 21:50:34
+289;reunirse;sejít se;verbos recíprocos, presente simple;;;;nos reunimos;;se reúnen;FFSSSFSSSSS;2026-03-25 09:50:44
+290;separarse;rozejít se;verbos recíprocos, presente simple;;;;nos separamos;;se separan;SSSSSS;2026-04-03 17:24:59
+291;verse;vidět se;verbos recíprocos, presente simple;;;;nos vemos;;se ven;SSSSSFSSS;2026-04-07 19:35:10
+292;aburrirse;nudit se;verbos reflexivos, presente simple;me aburro;te aburres;se aburre;nos aburrimos;;se aburren;SSSSSS;2026-04-03 17:24:11
+293;acostarse;jít spát;verbos reflexivos, presente simple;me acuesto;te acuestas;se acuesta;nos acostamos;;se acuestan;FSSSSSS;2026-04-04 17:17:55
+294;afeitarse;holit se;verbos reflexivos, presente simple;me afeito;te afeitas;se afeita;nos afeitamos;;se afeitan;SSSSSS;2026-04-03 15:34:05
+296;cansarse;unavit se;verbos reflexivos, presente simple;me canso;te cansas;se cansa;nos cansamos;;se cansan;SSSSSS;2026-04-03 17:26:11
+297;cepillarse;čistit si (zuby);verbos reflexivos, presente simple;me cepillo;te cepillas;se cepilla;nos cepillamos;;se cepillan;SSSSSS;2026-04-05 14:46:41
+298;cubrirse;přikrýt se;verbos reflexivos, presente simple;me cubro;te cubres;se cubre;nos cubrimos;;se cubren;SFSFFSSSSS;2026-03-23 10:15:49
+299;darse cuenta;uvědomit si;verbos reflexivos, presente simple;me doy cuenta;te das cuenta;se da cuenta;nos damos cuenta;;se dan cuenta;FSFSSSSSS;2026-04-05 14:46:08
+300;derretirse;roztát;verbos reflexivos, presente simple;me derrito;te derrites;se derrite;nos derretimos;;se derriten;FFFSSSSSS;2026-04-05 14:43:26
+301;despejarse;vyjasnit se;verbos reflexivos, presente simple;me despejo;te despejas;se despeja;nos despejamos;;se despejan;SSSSSS;2026-04-03 15:35:25
+302;despertarse;probudit se;verbos reflexivos, presente simple;me despierto;te despiertas;se despierta;nos despertamos;;se despiertan;SSSSFSSSSS;2026-03-25 09:56:03
+303;divertirse;bavit se;verbos reflexivos, presente simple;me divierto;te diviertes;se divierte;nos divertimos;;se divierten;FSSSFSSSSS;2026-03-25 09:42:54
+304;ducharse;sprchovat se;verbos reflexivos, presente simple;me ducho;te duchas;se ducha;nos duchamos;;se duchan;SSSSSS;2026-04-03 15:40:21
+305;enojarse;rozčílit se;verbos reflexivos, presente simple;me enojo;te enojas;se enoja;nos enojamos;;se enojan;FSSSSSS;2026-04-07 13:36:31
+306;ensuciarse;zašpinit se;verbos reflexivos, presente simple;me ensucio;te ensucias;se ensucia;nos ensuciamos;;se ensucian;SSSSSS;2026-04-05 14:47:26
+307;equivocarse;splést se;verbos reflexivos, presente simple;me equivoco;te equivocas;se equivoca;nos equivocamos;;se equivocan;SSSSSS;2026-04-04 17:17:03
+308;irse;odejít;verbos reflexivos, presente simple (+irregular);me voy;te vas;se va;nos vamos;;se van;SSSSSS;2026-04-05 14:46:54
+309;jactarse;chvástat se;verbos reflexivos, presente simple;me jacto;te jactas;se jacta;nos jactamos;;se jactan;SSSSSS;2026-04-03 17:23:37
+310;lastimarse;zranit se;verbos reflexivos, presente simple;me lastimo;te lastimas;se lastima;nos lastimamos;;se lastiman;SSSSS;2026-03-23 10:16:31
+311;lavarse;mýt se;verbos reflexivos, presente simple;me lavo;te lavas;se lava;nos lavamos;;se lavan;SSSSSS;2026-04-04 17:19:07
+312;levantarse;vstávat;verbos reflexivos, presente simple;me levanto;te levantas;se levanta;nos levantamos;;se levantan;SFSSSSSS;2026-04-05 14:45:19
+313;maquillarse;líčit se;verbos reflexivos, presente simple;me maquillo;te maquillas;se maquilla;nos maquillamos;;se maquillan;SSSSSS;2026-04-05 14:51:13
+314;parecerse;podobat se;verbos reflexivos, presente simple (+irregular);me parezco;te pareces;se parece;nos parecemos;;se parecen;SFSSSSSFS;2026-04-06 19:02:27
+315;peinarse;česat se;verbos reflexivos, presente simple;me peino;te peinas;se peina;nos peinamos;;se peinan;SSSSSS;2026-04-06 19:04:17
+316;ponerse;začít být (emocionálně)/ obléct se;verbos reflexivos, presente simple;me pongo;te pones;se pone;nos ponemos;;se ponen;FSSSSSS;2026-04-04 17:15:52
+317;quedarse;zůstat;verbos reflexivos, presente simple;me quedo;te quedas;se queda;nos quedamos;;se quedan;SSSSSS;2026-04-03 17:21:49
+318;quejarse;stěžovat si;verbos reflexivos, presente simple;me quejo;te quejas;se queja;nos quejamos;;se quejan;SSSSSS;2026-04-04 17:20:59
+319;quitarse;sundat si;verbos reflexivos, presente simple;me quito;te quitas;se quita;nos quitamos;;se quitan;FSSSSSS;2026-04-05 14:43:00
+320;sacarse;sundat si;verbos reflexivos, presente simple;me saco;te sacas;se saca;nos sacamos;;se sacan;SSSSFSSSSS;2026-03-25 09:55:23
+321;secarse;osušit se;verbos reflexivos, presente simple;me seco;te secas;se seca;nos secamos;;se secan;FSFSSSSSS;2026-04-05 14:51:29
+322;sentarse;sednout si;verbos reflexivos, presente simple;me siento;te sientas;se sienta;nos sentamos;;se sientan;FSSFSSSFFSSSSS;2026-03-25 09:43:11
+323;sentirse;cítit se;verbos reflexivos, presente simple;me siento;te sientes;se siente;nos sentimos;;se sienten;SFSSSSS;2026-03-23 10:20:31
+324;vestirse;obléknout se;verbos reflexivos, presente simple (+irregular);me visto;te vistes;se viste;nos vestimos;;se visten;FSSFSSSSS;2026-03-23 10:31:23
+325;volverse;stát se;verbos reflexivos, presente simple;me vuelvo;te vuelves;se vuelve;nos volvemos;;se vuelven;SSSSSS;2026-04-05 14:44:54
+326;ser;být;presente simple, irregular;soy;eres;es;somos;;son;SSSSSS;2026-04-04 17:18:05
+327;proponer;navrhnout;condicional simple, irregular;propondría;propondrías;propondría;propondríamos;;propondrían;SSSSS;2026-04-01 11:43:02
+328;proponer;navrhnout;pasado simple, grupo 4;propuse;propusiste;propuso;propusimos;;propusieron;SSSSS;2026-04-01 11:45:49
+329;proponer;navrhnout;imperativo, irregular;;propón;proponga;propongamos;;propongan;SSSSS;2026-04-02 12:17:55
+330;proponer;navrhnout;futuro simple, irregular;propondré;propondrás;propondrá;propondremos;;propondrán;SFSSSSS;2026-04-03 15:35:43
+331;proponer;navrhnout;presente simple, grupo 7;propongo;propones;propone;proponemos;;proponen;SSSSS;2026-04-01 11:46:29
+332;proponer;navrhnout;pretérito perfecto, irregular participio;he propuesto;has propuesto;ha propuesto;hemos propuesto;;han propuesto;SSSSS;2026-04-01 11:49:09
+333;proponer;navrhnout;subjuntivo presente;proponga;propongas;proponga;propongamos;;propongan;SSSSS;2026-04-01 11:46:14
+334;confesar;přiznat;presente simple, grupo 2;confieso;confiesas;confiesa;confesamos;;confiesan;SSSSS;2026-04-03 15:36:18
+335;apostar;vsadit se;presente simple, grupo 1;apuesto;apuestas;apuesta;apostamos;;apuestan;SSSSS;2026-04-04 17:15:24
+336;mantener;udržovat;presente simple, irregular;mantengo;mantienes;mantiene;mantenemos;;mantienen;S;2026-04-07 19:33:29
+337;mantener;udržovat;pasado simple, irregular;mantuve;mantuviste;mantuvo;mantuvimos;;mantuvieron;;1900-01-01 00:00:00
+338;mantener;udržovat;futuro simple, irregular;mantendré;mantendrás;mantendrá;mantendremos;;mantendrán;SS;2026-04-07 19:35:05
+339;mantener;udržovat;condicional simple, irregular;mantendría;mantendrías;mantendría;mantendríamos;;mantendrían;;1900-01-01 00:00:00
+340;mantener;udržovat;subjuntivo presente, irregular;mantenga;mantengas;mantenga;mantengamos;;mantengan;;1900-01-01 00:00:00
+341;mantener;udržovat;imperativo, irregular;;mantén;mantenga;mantengamos;;mantengan;F;2026-04-16 13:35:32
+342;morder;kousnout;presente simple, irregular;muerdo;muerdes;muerde;mordemos;;muerden;S;2026-04-07 19:34:21
+343;morder;kousnout;pasado simple, irregular;mordí;mordiste;mordió;mordimos;;mordieron;S;2026-04-18 17:04:13
+344;morder;kousnout;subjuntivo presente, irregular;muerda;muerdas;muerda;mordamos;;muerdan;S;2026-04-07 16:06:39
+345;morder;kousnout;imperativo, irregular;;muerde;muerda;mordamos;;muerdan;SF;2026-05-13 22:35:48
+346;aprobar;schválit;presente simple, irregular;apruebo;apruebas;aprueba;aprobamos;;aprueban;;1900-01-01 00:00:00
+347;aprobar;schválit;subjuntivo presente, irregular;apruebe;apruebes;apruebe;aprobemos;;aprueben;;1900-01-01 00:00:00
+348;aprobar;schválit;imperativo, irregular;;aprueba;apruebe;aprobemos;;aprueben;F;2026-04-07 16:04:47
+349;devolver;vrátit;subjuntivo presente, irregular;devuelva;devuelvas;devuelva;devolvamos;;devuelvan;S;2026-04-07 19:33:05
+351;cocer;vařit (ve vodě);presente simple, irregular;cuezo;cueces;cuece;cocemos;;cuecen;FF;2026-04-07 19:34:44
+352;cocer;vařit (ve vodě);subjuntivo presente, irregular;cueza;cuezas;cueza;cocamos;;cuezan;;1900-01-01 00:00:00
+353;cocer;vařit (ve vodě);imperativo, irregular;;cuece;cueza;cocamos;;cuezan;F;2026-04-07 16:04:17
+354;contar;počítat/vyprávět;subjuntivo presente, irregular;cuente;cuentes;cuente;contemos;;cuenten;;1900-01-01 00:00:00
+355;contar;počítat/vyprávět;imperativo, irregular;;cuenta;cuente;contemos;;cuenten;SF;2026-04-07 19:32:42
+356;contar;počítat/vyprávět;pasado simple;conté;contaste;contó;contamos;;contaron;;1900-01-01 00:00:00
+357;defender;bránit;presente simple, irregular;defiendo;defiendes;defiende;defendemos;;defienden;;1900-01-01 00:00:00
+358;defender;bránit;subjuntivo presente, irregular;defienda;defiendas;defienda;defendamos;;defiendan;;1900-01-01 00:00:00
+359;defender;bránit;imperativo, irregular;defiende;defienda;defendamos;;defiendan;;1900-01-01 00:00:00;
+360;requerir;vyžadovat;presente simple, irregular;requiero;requieres;requiere;requerimos;;requieren;;1900-01-01 00:00:00
+361;requerir;vyžadovat;pretérito indefinido, irregular;requerí;requeriste;requirió;requerimos;;requirieron;;1900-01-01 00:00:00
+362;requerir;vyžadovat;subjuntivo presente, irregular;requiera;requieras;requiera;requiramos;;requieran;;1900-01-01 00:00:00
+363;requerir;vyžadovat;imperativo, irregular;requiere;requiera;requiramos;;requieran;;1900-01-01 00:00:00;
+364;advertir;upozornit;presente simple, irregular;advierto;adviertes;advierte;advertimos;;advierten;;1900-01-01 00:00:00
+365;advertir;upozornit;pretérito indefinido, irregular;advertí;advertiste;advirtió;advertimos;;advirtieron;;1900-01-01 00:00:00
+366;advertir;upozornit;subjuntivo presente, irregular;advierta;adviertas;advierta;advirtamos;;adviertan;;1900-01-01 00:00:00
+367;advertir;upozornit;imperativo, irregular;advierte;advierta;advirtamos;;adviertan;;1900-01-01 00:00:00;
