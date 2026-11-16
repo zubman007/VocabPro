@@ -1,22 +1,16 @@
 """
 
 
-
-
-Nejde nějak zrychlit načítání statistik? Možná prvostní načítání neni takový problém. Ale když pak sjíždím dolů, trošku se to seká..
-Nějaká další statistika na conjugation?
-Nešlo by nějak šikovněji udělat to nastavení na jazyk 1 a 2.. Aby to bylo více obecné.. A co třeba přidání třetího jazyka?
-
-Lokalizace.. Je tam všechno? Existuje nějaká kontrola na to, že je tam všechno? Je to dobře přeložené?
-
+Přidej nějakou novou zajímavou statistiku na grammar. Něco s nějakým grafem třeba. Přidej ji dolů, ne nahoru.
 
 Synonyma projít extra hard
 
 Co s tím mailem?
 
-Pořádek ve scriptech a souborech - třeba refactoring nebo requiements.lock.. Je to tam potřeba?
-
 Šlo by ještě nějaký prvek, design, příznak sjednotit napříč celou aplikací aby byla jednotnost jistější?
+
+Pořádek ve scriptech (sandbox zanech) a souborech - třeba refactoring nebo requiements.lock.. Je to tam potřeba? Stejně tak smaž nepoužívané lokalizace, obrázky a dokumenty.. Staré refaktorizační soubory atd.. Nech tedy pouze používané fily, dokumentaci, používané lokalizace. Projdi taky kód a nepoužívané/obsolte procedury smaž. Zevrubně skontroluj funkčnost po revizi.
+
 Exe?
 
 Rozdíl mezi readme a dokumentací

@@ -157,7 +157,9 @@ class StatisticsLifecycleTests(TestCase):
             with patch.object(viewer,'prepare_statistics',side_effect=work),patch.object(viewer,'Generate_chart',side_effect=chart):
                 window.load(controller.build);heartbeat()
                 self.wait_until(lambda:window.ready)
-            self.assertEqual(len(charts),4)
+            self.assertEqual(len(charts),3)
+            self.assertEqual(len(controller.chart_PoS_frm.rows),5)
+            self.assertEqual(controller.chart_PoS_frm.rows['Noun'][0]['Real'].get(),1)
             self.assertTrue(all(thread==main_thread for thread in charts))
             self.assertTrue(all(thread!=main_thread for thread in workers))
             self.assertGreater(len(beats),3)
