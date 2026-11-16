@@ -1,5 +1,9 @@
 # VocabPro
 
+V **Nastavení → Jazyky → Studované jazyky → Přidat jazyk** lze zapnout třetí
+i další podporované jazyky. Každý kurz má vlastní slovník, výsledky a nastavení
+otázek. Podrobnosti a kompatibilita: [Studované kurzy](docs/study-courses.md).
+
 Aktualizovaná sestava knihoven je v projektové `.venv`. Spuštění:
 `.\.venv\Scripts\python.exe start.py`. Úplné verze pro opakovatelnou instalaci
 jsou v `requirements.lock.txt`; VS Code profil VocabPro používá tuto `.venv`.
@@ -121,7 +125,7 @@ logika zůstává v jednotlivých modulech.
 Testy používají syntetická data a dočasné soubory:
 
 ```powershell
-python -B -m app.tests.run_all
+python -B -m app.tests.run_all --timeout 240
 ```
 
 Pro menší změny stačí spustit testy dotčené části; u změn vzhledu vizuální kontrola.

@@ -24,6 +24,7 @@ class AppContext:
     files_dir: Path | None = None
     on_home: Callable[[], None] | None = None
     preferences_frame: 'DataFrame | None' = field(default=None,repr=False)
+    selected_course: LanguagePair | None = None
 
     def __post_init__(self):
         self.root_dir=Path(self.root_dir)

@@ -110,8 +110,10 @@ must not be merged automatically (homonyms and differing senses). If that produc
 behavior is desired, add it after the course model, with previewable migration,
 backups, idempotent conversion, validation of counts/IDs/histories and rollback.
 
-Third-language activation and shared multilingual entries are **not implemented**
-in this change. No irreversible migration has been performed.
+Third-language activation and shared multilingual entries were **not implemented**
+in that initial change. The approved course-list architecture has since been
+activated; see [Study courses](study-courses.md) for its versioned configuration,
+UI, compatibility rules and tests. Shared multilingual entries remain separate.
 
 ## Validation and measurement
 

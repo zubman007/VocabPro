@@ -15,6 +15,7 @@ from app.preferences.data import RuntimePreferences
 from app.repositories.preferences import load_preferences
 from app.shared import settings as s
 from app.shared.translations import translate
+from app.shared.languages import legacy_name
 
 
 def main_proc(app,context=None):
@@ -114,6 +115,8 @@ def _load_vocab_stats(language,context):
 def _build_main_window(app,stats,context):
     config=context.preferences
     languages=config.learning_languages
+    selected = next((legacy_name(pair.target) for pair in config.language_pairs
+                     if pair == context.selected_course), languages[0])
     def practice(language,kind):
         from app.vocabulary.practise import Rep
         return Rep(app,stats[language][kind],language,languages.index(language)+1,context=context)
@@ -133,4 +136,5 @@ def _build_main_window(app,stats,context):
         learn=lambda language:practice(language,'lrn_words'),edit=edit,conjugation=conjugation,
         grammar=grammar,edit_grammar=edit_grammar,refresh=context.go_home,
         available=lambda language,kind:(context.conjugation_path(language) if kind=='conjugation'
-            else context.grammar_path(language)).exists()))
+            else context.grammar_path(language)).exists()), initial_language=selected,
+        on_select=lambda language: setattr(context, 'selected_course', context.language_pair(language)))

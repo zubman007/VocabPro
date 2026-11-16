@@ -85,7 +85,7 @@ class StatisticsController:
         window.summary_cards = cards
         from app.ui.components.module_header import ModuleHeader
         window.header = head_frm = ModuleHeader(content, self.translate('Statistics') + ' - ' + s.app_name, translate=self.translate, actions=[('close', window.destroy)])
-        self.lang_var = tk.StringVar(value=getattr(window, 'initial_language', config.first_language))
+        self.lang_var = tk.StringVar(value=getattr(window, 'initial_language', config.learning_languages[0]))
         window._statistics_language = self.lang_var
         vocabulary_values, rate_lbl = summary_metrics(vocab_card, [
             self.translate('Number of words in vocabulary') + ': ',
@@ -350,7 +350,7 @@ def _practise_tag(window,tag_id):
         frame=tag_lesson(context.vocabulary_path(language),context.tags_path(language),
                          context.preferences.learned_by,language,tag_id)
         if frame.empty:return
-        controller = Rep(window.master,frame,language,1 if language==context.preferences.first_language else 2,
+        controller = Rep(window.master,frame,language,context.preferences.learning_languages.index(language) + 1,
             context=context,on_back=_practice_return(window, 'Vocabulary'))
         if controller is not None:window.destroy()
     except (OSError,ValueError) as error:

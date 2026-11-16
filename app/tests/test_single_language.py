@@ -109,17 +109,16 @@ class SingleLanguageUiTests(TestCase):
         for language in LANGUAGES:
             self.context.preferences=replace(self.context.preferences,app_language=language)
             dialog=PreferencesDialog(self.root,self.context.translate,path);dialog.deiconify();self.root.update()
-            names=['Second learning language']+[name for name in dialog.fields if '2.lang' in name]
-            original={name:dialog.variables[name].get() for name in names}
+            row=dialog.course_editor.rows[1]
+            original={name:row[name].get() for name in ('target','context','audio')}
             for enabled,state in (('0','disabled'),('1','normal')):
-                dialog.variables['Enable second learning language'].set(enabled)
+                row['toggle'].toggle()
                 self.root.update()
-                for name in names:
-                    self.assertEqual(dialog.fields[name].cget('state'),state)
-                    self.assertEqual(dialog.variables[name].get(),original[name])
-                self.assertEqual(dialog.fields['First learning language'].cget('state'),'normal')
-                label=dialog.field_labels['Enable second learning language']
-                self.assertLessEqual(label._label.winfo_reqwidth(),label.winfo_width()+2)
+                self.assertEqual(row['enabled'].get(),enabled)
+                for field in row['fields']:
+                    self.assertEqual(field.cget('state'),state)
+                self.assertEqual({name:row[name].get() for name in original},original)
+                self.assertEqual(dialog.course_editor.rows[0]['fields'][0].cget('state'),'normal')
             dialog.destroy()
         self.assertEqual(path.read_bytes(),before)
 

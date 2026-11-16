@@ -3,6 +3,8 @@ from app.paths import ROOT_DIR
 from datetime import datetime
 from dataclasses import dataclass
 import pandas as pd
+from app.preferences.courses import (COURSE_FIELD, StudyCourse, CourseConfigurationError,
+                                    decode_courses, legacy_courses, is_legacy_course_field)
 
 PREFERENCES_FILE = ROOT_DIR / "files" / "settings.csv"
 LANGUAGE_FIELDS = ("Learned by", "First learning language", "Second learning language")
@@ -68,10 +70,23 @@ class RuntimePreferences:
     tag_display_language: str = 'Learning language'
     maximum_tags: int = 10
     second_language_enabled: bool = True
+    courses: tuple[StudyCourse, ...] | None = None
+
+    @property
+    def study_courses(self):
+        if self.courses is not None:
+            return self.courses
+        values = {'Learned by': self.learned_by, 'First learning language': self.first_language,
+                  'Second learning language': self.second_language,
+                  'Enable second learning language': '1' if self.second_language_enabled else '0'}
+        for index in range(2):
+            values[f'Percentage of type 2 testing - {index + 1}.lang (description and use in a sentence)'] = self.context_probabilities[index]
+            values[f'Percentage of type 3 testing - {index + 1}.lang (audio and options)'] = self.audio_probabilities[index]
+        return legacy_courses(values)
 
     @property
     def learning_languages(self):
-        return (self.first_language,self.second_language) if self.second_language_enabled else (self.first_language,)
+        return tuple(course.language for course in self.study_courses if course.enabled)
 
     @property
     def language_pairs(self):
@@ -79,33 +94,42 @@ class RuntimePreferences:
         return tuple(LanguagePair(self.learned_by, language) for language in self.learning_languages)
 
     def testing_probabilities(self, language):
-        """Resolve legacy ordinal preferences at the boundary, by language identity."""
+        """Resolve course settings by identity, regardless of list order or origin."""
         from app.shared.languages import legacy_name
-        index = self.learning_languages.index(legacy_name(language))
-        return self.context_probabilities[index], self.audio_probabilities[index]
+        name = legacy_name(language)
+        course = next((course for course in self.study_courses if course.enabled and course.language == name), None)
+        if course is None:
+            raise ValueError(language)
+        return course.context_percent, course.audio_percent
 
     @classmethod
     def from_frame(cls, frame):
         validated = validate_preferences(frame, {})
         values = dict(zip(validated['Name'], validated['Value']))
-        for name in (*LANGUAGE_FIELDS, 'App language'):
+        configured = decode_courses(values[COURSE_FIELD], values['Learned by']) if COURSE_FIELD in values else None
+        active = tuple(course for course in configured if course.enabled) if configured is not None else ()
+        for name in (('Learned by', 'App language') if COURSE_FIELD in values else (*LANGUAGE_FIELDS, 'App language')):
             if not values.get(name):
                 raise PreferenceError(name, 'Choose a valid option.')
         def probabilities(kind, suffix):
+            if configured is not None:
+                settings = tuple(course.context_percent if kind == 2 else course.audio_percent for course in active[:2])
+                return (settings + (0, 0))[:2]
             return tuple(int(values.get(f'Percentage of type {kind} testing - {order}.lang ({suffix})', 0))
                          for order in (1, 2))
         return cls(values.get('Backup mail', ''), int(values.get('Backup period (days)', 0)),
             values.get('Next backup', '')[:19], int(values.get('Random repeat batch - Vocabulary', 0)),
             int(values.get('Random repeat batch - Conjugation', 0)), int(values.get('Learn batch', 0)),
-            values.get('Learned by', ''), values.get('First learning language', ''),
-            values.get('Second learning language', ''), values.get('App language', ''),
+            values.get('Learned by', ''), active[0].language if active else values.get('First learning language', ''),
+            active[1].language if len(active) > 1 else values.get('Second learning language', ''), values.get('App language', ''),
             probabilities(2, 'description and use in a sentence'), probabilities(3, 'audio and options'),
             values.get('App sounds enabled', '1') == '1', int(values.get('App sound volume', '100')),
             values.get('Autoplay pronunciation', '1') == '1', values.get('Remember grammar categories', '1') == '1',
             values.get('Automatically show synonyms in repeat','1') == '1',
             values.get('Letter hints','On request'),values.get('Enable tags','1')=='1',
             values.get('Show tags during practice','1')=='1',values.get('Tag display language','Learning language'),
-            int(values.get('Maximum tags per word','10')),values.get('Enable second learning language','1')=='1')
+            int(values.get('Maximum tags per word','10')),
+            len(active) > 1 if configured is not None else values.get('Enable second learning language','1')=='1', configured)
 
 
 class PreferenceError(ValueError):
@@ -123,7 +147,7 @@ def options_for(kind):
 def section_for(name):
     if name in ('App sounds enabled', 'App sound volume'):
         return 'Learning'
-    if name == "App language" or name in LANGUAGE_FIELDS or name=='Enable second learning language':
+    if name == "App language" or name in LANGUAGE_FIELDS or name in ('Enable second learning language', COURSE_FIELD):
         return "Languages"
     if name.startswith("Backup") or name == "Next backup":
         return "Backups"
@@ -135,18 +159,27 @@ def section_for(name):
 def validate_preferences(frame, values):
     """Return a validated copy; never silently reset values or mutate the form."""
     result = frame.copy(deep=True)
-    merged = dict(zip(frame["Name"], frame["Value"]))
+    if COURSE_FIELD in values and COURSE_FIELD not in set(result.Name):
+        row = dict.fromkeys(result.columns, '')
+        row.update(Name=COURSE_FIELD, Type='JSON', Value=values[COURSE_FIELD])
+        result = pd.concat([result, pd.DataFrame([row])], ignore_index=True)
+    merged = dict(zip(result["Name"], result["Value"]))
     merged.update({name: str(value) for name, value in values.items() if name in merged})
+    has_courses = COURSE_FIELD in merged
     if merged.get('Letter hints','On request') not in ('Automatic','On request','Disabled'):
         raise PreferenceError('Letter hints', 'Choose a valid option.')
     for field in ('App sounds enabled', 'Autoplay pronunciation', 'Remember grammar categories','Enable second learning language'):
+        if has_courses and is_legacy_course_field(field):
+            continue
         if merged.get(field, '1') not in ('0', '1'):
             raise PreferenceError(field, 'Choose a valid option.')
     volume = merged.get('App sound volume', '100')
     if not volume.isascii() or not volume.isdigit() or not 0 <= int(volume) <= 100:
         raise PreferenceError('App sound volume', 'Enter a volume between 0 and 100.')
-    for row in frame.itertuples(index=False):
+    for row in result.itertuples(index=False):
         name, kind = row.Name, row.Type
+        if has_courses and is_legacy_course_field(name):
+            continue  # Retained for rollback; the versioned course list is authoritative.
         value = merged[name]
         choices = options_for(kind)
         if kind == "Int":
@@ -161,17 +194,25 @@ def validate_preferences(frame, values):
             raise PreferenceError(name, "Choose a valid option.")
         elif choices is not None and value not in choices:
             raise PreferenceError(name, "Choose a valid option.")
-    if 'First learning language' in merged and not merged['First learning language'].strip():
-        raise PreferenceError('First learning language','Choose a valid option.')
-    second_enabled=merged.get('Enable second learning language','1')=='1'
-    languages = [merged.get(name, "") for name in LANGUAGE_FIELDS[:2 if not second_enabled else 3]]
-    if all(languages) and len(set(languages)) != len(languages):
-        raise PreferenceError("First learning language", "Your own language and all learned language need to be different.")
-    for order in (1, 2):
-        if order==2 and not second_enabled:continue
-        fields = [name for name in merged if name.startswith(("Percentage of type 2 testing", "Percentage of type 3 testing")) and f"{order}.lang" in name]
-        if sum(int(merged[name]) for name in fields) > 100:
-            raise PreferenceError(fields[0], "Test percentages for each language must total at most 100.")
+    if has_courses:
+        try:
+            if result.loc[result.Name.eq(COURSE_FIELD), 'Type'].tolist() != ['JSON']:
+                raise CourseConfigurationError('Invalid study course configuration.')
+            decode_courses(merged[COURSE_FIELD], merged.get('Learned by', ''))
+        except CourseConfigurationError as error:
+            raise PreferenceError(COURSE_FIELD, str(error)) from None
+    else:
+        if 'First learning language' in merged and not merged['First learning language'].strip():
+            raise PreferenceError('First learning language','Choose a valid option.')
+        second_enabled=merged.get('Enable second learning language','1')=='1'
+        languages = [merged.get(name, "") for name in LANGUAGE_FIELDS[:2 if not second_enabled else 3]]
+        if all(languages) and len(set(languages)) != len(languages):
+            raise PreferenceError("First learning language", "Your own language and all learned language need to be different.")
+        for order in (1, 2):
+            if order==2 and not second_enabled:continue
+            fields = [name for name in merged if name.startswith(("Percentage of type 2 testing", "Percentage of type 3 testing")) and f"{order}.lang" in name]
+            if sum(int(merged[name]) for name in fields) > 100:
+                raise PreferenceError(fields[0], "Test percentages for each language must total at most 100.")
     next_backup = merged.get("Next backup", "").strip()
     if 'Next backup' in merged:
         merged['Next backup'] = next_backup

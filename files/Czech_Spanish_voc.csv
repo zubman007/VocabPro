@@ -891,7 +891,7 @@ ID;Spanish;Czech;Audio;Description;Example;Part of Speech;Created;Repetition;Nex
 890;desencadenar;spustit;Automatic - Merriam_Webster;No found;Desencadenó una crisis.;Verb;2024-10-11;SSFSSSFFFFSSFFSSSFSSSFSSSSSSFFSSSSSSSSS;2027-03-13 16:56:47;48
 891;el atrevimiento;odvaha, troufalost;Automatic - Merriam_Webster;No found;Admiré su atrevimiento.;Noun;2024-10-11;SFSSSSSSSSSSSFSSSSSSSS;2027-02-23 14:04:18;19, 18
 892;menguar;klesat, ubývat;Automatic - Merriam_Webster;No found;La fuerza empezó a menguar.;Verb;2024-10-11;SSSSSFSSSSSSFSSSSSSSSS;2027-04-08 17:22:39;42, 48
-893;cauteloso;opatrný;Automatic - Merriam_Webster;No found;Es muy cauteloso.;Adjective;2024-10-11;SFSFSSSFSFSSSSSFSSFFSSSSSFSSSFSSSSSSSSFS;2026-11-16 14:05:17;19
+893;cauteloso;opatrný;Automatic - Merriam_Webster;No found;Es muy cauteloso.;Adjective;2024-10-11;SFSFSSSFSFSSSSSFSSFFSSSSSFSSSFSSSSSSSSFSS;2026-11-18 14:08:43;19
 894;el espejismo;přelud, klam, zdání;Automatic - Merriam_Webster;No found;Vio un espejismo.;Noun;2024-10-14;SSSSSSSSFSSSSSSSSS;2027-02-23 15:42:05;50, 4, 16, 48
 895;el anhelo;touha, vroucí přání, tužba;Automatic - Merriam_Webster;No found;Cumplió su anhelo.;Noun;2024-10-14;SSFSSSFSSSSSSSFSSSSSSSS;2026-12-29 13:36:35;18
 896;inexplorado;neprobádaný, neprozkoumaný, neprostudovaný;Automatic - 11Labs;No found;Es territorio inexplorado.;Adjective;2024-10-14;SSSSSFSSSSSSSSS;2027-02-14 13:28:15;4, 1, 14
@@ -1315,7 +1315,7 @@ ID;Spanish;Czech;Audio;Description;Example;Part of Speech;Created;Repetition;Nex
 1314;el vencimiento;splatnost (dluhu ap.), vypršení (lhůty);Automatic - Merriam_Webster;No found;El vencimiento de la deuda será en junio.;Noun;2026-03-13;SSSSSSSSSSSFSSSFSSSSSSSS;2027-01-22 16:51:51;10, 41
 1315;difundido;(roz)šířený;Automatic - 11Labs;No found;El video fue difundido en redes sociales.;Adjective;2026-03-13;SSSSSSSSSSSSS;2027-02-27 16:32:51;45
 1316;televisivo;televizní;Automatic - 11Labs;No found;Dio una entrevista en un programa televisivo.;Adjective;2026-03-13;SSSSSFSSSSSSSFSSSSSSSS;2027-01-24 13:52:08;33, 13
-1317;ocupar algo;potřebovat něco;Automatic - 11Labs;No found;El proyecto ocupará mucho tiempo.;Other;2026-03-13;SSSSSSSSSSSSSFS;2026-11-16 13:09:36;57, 64
+1317;ocupar algo;potřebovat něco;Automatic - 11Labs;No found;El proyecto ocupará mucho tiempo.;Other;2026-03-13;SSSSSSSSSSSSSFSS;2026-11-18 14:08:29;57, 64
 1318;impactar;mít dopad / zapůsobit / šokovat / zasáhnout;Automatic - 11Labs;No found;La noticia impactó a la sociedad.;Verb;2026-03-13;SSSSSSSSSSSSFSSSSSS;2026-12-06 15:17:21;48, 18
 1319;ralentizar;zpomalit, zpomalovat;Automatic - 11Labs;No found;La crisis puede ralentizar la economía.;Verb;2026-03-13;SFFSFSSSFSFSSFSSSFSSSSSFSSSSSSSSS;2027-04-13 13:38:57;49, 41
 1320;la demanda;poptávka, žádost;Automatic - 11Labs;No found;La demanda de viviendas aumentó.;Noun;2026-03-13;SSSSSSSSSSSSS;2027-02-27 16:33:57;25, 26, 45
@@ -1806,7 +1806,7 @@ ID;Spanish;Czech;Audio;Description;Example;Part of Speech;Created;Repetition;Nex
 1805;sembrar;zasít, zasít / zasévat (obrazně);Automatic - Merriam_Webster;No found;El agricultor empezó a sembrar trigo.;Verb;2026-04-04;SSSSSFSSSSSSSFSSSSSSSS;2027-02-10 13:11:36;4, 7, 11
 1806;la detención;zadržení, zatčení;Automatic - 11Labs;No found;La detención ocurrió anoche.;Noun;2026-04-04;SSSSSSSSSSFSSSSSSFSSSSSSSS;2027-02-13 12:43:48;26, 27
 1807;la euforia;radost, nadšení;Automatic - 11Labs;No found;La victoria generó euforia.;Noun;2026-04-04;SSSSSSSSSSSFSSSSSSSS;2027-02-10 13:15:25;18
-1808;irrisorio;směšný, směšně nízký;Automatic - 11Labs;No found;Le ofrecieron un salario irrisorio.;Adjective;2026-04-04;SSFFSSSFSSSSFSSFSSSSSSSSFFS;2026-11-16 10:11:26;47, 42
+1808;irrisorio;směšný, směšně nízký;Automatic - 11Labs;No found;Le ofrecieron un salario irrisorio.;Adjective;2026-04-04;SSFFSSSFSSSSFSSFSSSSSSSSFFSS;2026-11-18 14:08:46;47, 42
 1809;reservar;rezervovat / (u)schovat;Automatic - Merriam_Webster;No found;Decidió reservar una mesa.;Verb;2026-04-04;SSSSSSSSSSSSS;2027-03-27 15:39:13;1, 3, 40
 1810;la trama;intrika, lest, spiknutí;Automatic - 11Labs;No found;La trama de la película es compleja.;Noun;2026-04-04;SSSSSSSSFSSSSSSSSFSSSS;2026-11-21 23:39:18;20, 24, 27
 1811;revisar;(z)kontrolovat, překontrolovat, (z)revidovat;Automatic - Merriam_Webster;No found;Necesito revisar el informe.;Verb;2026-04-04;SSSSSSSSSSSSS;2027-03-27 15:11:24;11, 50

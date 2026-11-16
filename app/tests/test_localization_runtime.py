@@ -4,6 +4,7 @@ from tempfile import TemporaryDirectory
 from time import perf_counter
 from unittest import TestCase
 from unittest.mock import patch
+import gc
 import customtkinter as cst
 import pandas as pd
 from app.core.context import AppContext
@@ -86,6 +87,11 @@ class LocalizationRuntimeTests(TestCase):
                 preferences.destroy()
 
     def test_actual_training_editor_statistics_and_charts_request_known_ids_in_all_locales(self):
+        # Keep real widget geometry while checking message lookup off screen.
+        # Visible layout is exercised by the module/course UI tests; repainting
+        # six desktop-sized editor trees makes this text test needlessly slow.
+        self.root.update_idletasks()
+        self.root.withdraw()
         from dataclasses import replace
         from app.conjugation.practise import Conjugation
         from app.vocabulary.editor import EditorController
@@ -125,6 +131,7 @@ class LocalizationRuntimeTests(TestCase):
                     self.assertEqual(conjugation.view.header.title_label.cget('text'), translate('Verb Conjugation', language))
                     self.assertIn('hablar', conjugation.view.verb.cget('text'))
                     conjugation.lifecycle.close(); conjugation.view.root.destroy()
+                    del conjugation
                     editor = EditorController(self.root, 'Spanish', context=self.context)
                     self.root.update()
                     self.assertEqual(editor.head_frm.title_label.cget('text'), translate('Edit course', language) + ' · ' + translate('Spanish', language))
@@ -134,6 +141,10 @@ class LocalizationRuntimeTests(TestCase):
                         if button._text_label:
                             self.assertLessEqual(button._text_label.winfo_reqwidth(), button.winfo_width() + 2)
                     editor.lifecycle.close(); editor.edit_frm.destroy()
+                    del button, editor
+                    # Retire Tk image cycles on their owning thread before the
+                    # next statistics worker allocates pandas objects and runs GC.
+                    gc.collect()
                     window = Stats(self.root, context=self.context, section='Conjugation')
                     deadline = perf_counter() + 20
                     try:
@@ -148,6 +159,8 @@ class LocalizationRuntimeTests(TestCase):
                         self.assertEqual(window.statistics_tabs.selected, 'Conjugation')
                         self.assertTrue(window.controller.conjugation_table.grid_info())
                     finally: window.destroy()
+                    del canvas, window
+                    gc.collect()
         for path, content in before.items(): self.assertEqual(path.read_bytes(), content)
         self.assertGreater(len(observed), 100)
         self.assertTrue({'Real', 'Ideal', 'Difficult conjugation rounds'} <= observed)

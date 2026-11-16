@@ -13,6 +13,8 @@ from app.ui.components.module_header import ModuleHeader
 from app.ui.components.app_dialog import AppDialog
 from app.ui.surfaces import surface
 from app.ui.theme import RADIUS
+from app.preferences.courses import (COURSE_FIELD, decode_courses, legacy_courses, is_legacy_course_field)
+from app.preferences.course_editor import CourseEditor
 
 ACCENT = "#ad694e"
 
@@ -28,10 +30,11 @@ class PreferencesDialog(AppDialog):
         self.field_labels, self.group_headers = {}, []
         self._tag_trace = None
         self._sound_trace = None
-        self._language_trace = None
         self.choice_maps = {}
         try:
             self.frame = load_preferences(path)
+            stored = dict(zip(self.frame.Name, self.frame.Value))
+            courses = decode_courses(stored[COURSE_FIELD], stored['Learned by']) if COURSE_FIELD in stored else legacy_courses(stored)
         except Exception:
             self.destroy()
             raise
@@ -67,7 +70,8 @@ class PreferencesDialog(AppDialog):
             if isinstance(button, cst.CTkButton):
                 surface(button, selector_surface)
         rows = dict.fromkeys(sections, 0)
-        items = [item for item in with_defaults(self.frame).itertuples(index=False) if item.Type != 'JSON']
+        items = [item for item in with_defaults(self.frame).itertuples(index=False)
+                 if item.Type != 'JSON' and not is_legacy_course_field(item.Name)]
         # Keep groups contiguous even when new defaults were appended to an older CSV.
         grouped = {}
         for item in items:
@@ -129,6 +133,14 @@ class PreferencesDialog(AppDialog):
                     font=(FONT, 15), wraplength=750, justify='left').grid(
                         row=row+1, column=0, columnspan=2, sticky='w', padx=12, pady=(0, 12))
                 rows[section] += 1
+        self.course_editor = None
+        if 'Learned by' in self.fields:
+            source = lambda: self.choice_maps['Learned by'].get(self.variables['Learned by'].get(), self.variables['Learned by'].get())
+            self.course_editor = CourseEditor(sections['Languages'], translate, source, courses)
+            self.course_editor.grid(row=rows['Languages'], column=0, columnspan=2, sticky='ew', padx=12, pady=12)
+            self.field_sections[COURSE_FIELD] = translate('Languages')
+            self.fields[COURSE_FIELD] = self.course_editor
+            self.fields['Learned by'].configure(command=lambda _: self.course_editor.refresh_add_button())
         self.show_secrets=cst.BooleanVar(value=False)
         from app.ui.module_style import tool_button
         self.sender_button=tool_button(cst.CTkButton(sections['Backups'],
@@ -157,8 +169,6 @@ class PreferencesDialog(AppDialog):
         self._update_tag_controls()
         self._sound_trace = self.variables['App sounds enabled'].trace_add('write', self._update_sound_controls)
         self._update_sound_controls()
-        self._language_trace=self.variables['Enable second learning language'].trace_add('write',self._update_language_controls)
-        self._update_language_controls()
         self.bind("<Control-s>", lambda event: self.save())
         self.bind("<Control-S>", lambda event: self.save())
         self.withdraw()
@@ -173,9 +183,6 @@ class PreferencesDialog(AppDialog):
         self.focus_set()
 
     def destroy(self):
-        if getattr(self, '_language_trace', None) is not None:
-            self.variables['Enable second learning language'].trace_remove('write',self._language_trace)
-            self._language_trace=None
         if getattr(self, '_sound_trace', None) is not None:
             self.variables['App sounds enabled'].trace_remove('write', self._sound_trace)
             self._sound_trace = None
@@ -213,21 +220,17 @@ class PreferencesDialog(AppDialog):
         self.fields['App sound volume'].configure(state='normal' if enabled else 'disabled')
         self.field_labels['App sound volume'].configure(text_color=TEXT if enabled else '#858575')
 
-    def _update_language_controls(self, *_):
-        enabled=self.variables['Enable second learning language'].get()=='1'
-        for name,field in self.fields.items():
-            if name=='Second learning language' or '2.lang' in name:
-                field.configure(state='normal' if enabled else 'disabled')
-                self.field_labels[name].configure(text_color=TEXT if enabled else '#858575')
-
     def _show_error(self, text):
         self.error.configure(text=text)
         self.error_panel.grid()
 
     def save(self):
         try:
-            save_preferences(self.frame, {name: self.choice_maps.get(name,{}).get(var.get(),var.get())
-                for name,var in self.variables.items()}, self.path)
+            values = {name: self.choice_maps.get(name,{}).get(var.get(),var.get())
+                      for name,var in self.variables.items()}
+            if self.course_editor is not None:
+                values[COURSE_FIELD] = self.course_editor.configuration()
+            save_preferences(self.frame, values, self.path)
         except PreferenceError as error:
             self._show_error(self.translate(error.field) + ": " + self.translate(error.message))
             self.tabs.set(self.field_sections[error.field])

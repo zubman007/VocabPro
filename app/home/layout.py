@@ -31,17 +31,41 @@ def _background(body):
     return background(body, 'home_background_v3.png')
 
 
-def build_home(app, stats_by_lang, languages, callbacks):
+def build_home(app, stats_by_lang, languages, callbacks, *, initial_language=None, on_select=None):
     body = cst.CTkFrame(app, fg_color=QUIET, corner_radius=0)
     body.pack(side='bottom', fill='both', expand=True)
     backdrop = _background(body)
+    selected = initial_language if initial_language in languages else languages[0]
+    cards = {}
+    body.course_cards = cards
+    if len(languages) > 2:
+        chooser = cst.CTkFrame(body, fg_color='#dfd3b9', corner_radius=18)
+        chooser.place(relx=.06, rely=.025, relwidth=.56)
+        surface(chooser, backdrop)
+        chooser.grid_columnconfigure(1, weight=1)
+        cst.CTkLabel(chooser, text=s.T('Learning language'), text_color=TEXT,
+            font=(UI_FONT, 19, 'bold')).grid(row=0, column=0, padx=18, pady=14)
+        choices = {s.T(language): language for language in languages}
+        def select_course(label):
+            for card in cards.values():
+                card.place_forget()
+            cards[choices[label]].place(relx=.06, rely=.16, relwidth=.56)
+            if on_select is not None:
+                on_select(choices[label])
+        body.course_selector = cst.CTkOptionMenu(chooser, values=list(choices), command=select_course,
+            fg_color='#49736b', button_color='#355e59', button_hover_color='#426357',
+            dropdown_fg_color='#eee5d2', dropdown_text_color=TEXT, font=(UI_FONT, 19), height=38)
+        body.course_selector.grid(row=0, column=1, sticky='ew', padx=18, pady=14)
+        body.course_selector.set(s.T(selected))
     for column, language in enumerate(languages):
         data = stats_by_lang[language]
         card = cst.CTkFrame(body, fg_color='#dfd3b9' if column == 0 else '#c8d0b6',
             corner_radius=24, border_width=1, border_color='#9b9872')
         surface(card, backdrop)
-        card.place(relx=.06 if len(languages)==1 else .03+column*.30,
-                   rely=.06,relwidth=.44 if len(languages)==1 else .28)
+        cards[language] = card
+        if len(languages) <= 2:
+            card.place(relx=.06 if len(languages)==1 else .03+column*.30,
+                       rely=.06,relwidth=.44 if len(languages)==1 else .28)
         card.grid_columnconfigure(0, weight=1)
         cst.CTkLabel(card, text=s.T(language), font=(TITLE_FONT, 29, 'bold'), text_color=TEXT).grid(
             row=0, column=0, sticky='w', padx=22, pady=(20, 8))
@@ -79,4 +103,6 @@ def build_home(app, stats_by_lang, languages, callbacks):
                 cst.CTkLabel(section, text=counts, font=(UI_FONT, 14), text_color='#615c45',
                     anchor='w', justify='left', wraplength=290).grid(
                         row=3, sticky='ew', padx=14, pady=(0, 12))
+    if len(languages) > 2:
+        select_course(s.T(selected))
     return body

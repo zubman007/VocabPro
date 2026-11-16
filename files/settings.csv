@@ -29,3 +29,4 @@ Show tags during practice;Bool;0
 Tag display language;Options[Student language,Learning language];Learning language
 Maximum tags per word;Int;6
 Enable second learning language;Bool;1
+Study courses;JSON;"{""version"":1,""source"":""cs"",""courses"":[{""target"":""es"",""enabled"":true,""context"":0,""audio"":20},{""target"":""en"",""enabled"":true,""context"":15,""audio"":20},{""target"":""sk"",""enabled"":false,""context"":0,""audio"":0},{""target"":""fr"",""enabled"":false,""context"":0,""audio"":0},{""target"":""de"",""enabled"":false,""context"":0,""audio"":0}]}"

@@ -12,13 +12,18 @@ v okně 1150×800: žádný překryv se zadáním ve třech režimech procvičov
 a dostupné spodní tlačítko. Tento scénář nejprve prokázal skutečný překryv.
 
 ```powershell
-python -B -u -m app.tests.run_all --timeout 180
+python -B -u -m app.tests.run_all --timeout 240
 python -B -m app.tests.run_all --pattern 'test_grammar*.py'
 python -B -m app.tests.run_all --worker app.tests.test_refactoring_integration
 ```
 
 V aktualizovaném projektu tyto příkazy spouštět po aktivaci `.venv`, případně
 pomocí `.\.venv\Scripts\python.exe` místo samotného `python`.
+
+Limit 240 sekund je určený i pro moduly se všemi šesti lokalizacemi a mnoha
+velikostmi oken. Není to časový limit jedné uživatelské operace. Výchozí limit
+runneru zůstává 120 sekund; rozsáhlý `test_tag_scenarios` jej může překročit.
+Podporu N kurzů a kompatibilitu nastavení ověřuje `test_study_courses`.
 
 Spouštěč izoluje moduly do samostatných procesů. safety blokuje skutečné
 HTTP/SMTP/socket spojení, mikrofon, přehrávání a zápisy do files/images/locales.

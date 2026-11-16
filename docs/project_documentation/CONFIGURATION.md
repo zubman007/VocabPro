@@ -1,12 +1,16 @@
 # Konfigurace
 
-V záložce Jazyky lze vypnout `Enable second learning language`. První
-studovaný jazyk zůstává povinný. Chybějící přepínač ve starším nastavení
-znamená zapnuto, takže dosavadní dva jazyky fungují beze změny.
-Vypnutí zachová výběr druhého jazyka i hodnoty obou jeho procent procvičování;
-ovládání těchto polí se zneaktivní. Opětovné zapnutí obnoví jejich dostupnost.
-Aktivní studované jazyky se musí lišit od jazyka studenta a navzájem.
-Změny se potvrzují běžným Save, žádný kurz, audio ani prázdné CSV se nemaže.
+V záložce Jazyky se spravuje seznam **Studované jazyky**. Tlačítko **Přidat jazyk**
+přidá další kurz; každý má vlastní přepínač a procenta kontextových a zvukových
+otázek. Alespoň jeden kurz musí být zapnutý. Vypnutí zachová jeho nastavení,
+slovník, historii i audio. Aktivní jazyky se musí lišit od vlastního jazyka
+a v seznamu se nesmějí opakovat. Jazyk rozhraní je samostatná volba.
+
+Seznam se zapisuje do verzovaného JSON řádku `Study courses` až při uložení
+nastavení. Pokud chybí, aplikace beze změny dat přečte původní First/Second
+learning language a Enable second learning language (chybějící přepínač znamená
+zapnuto). Pokud existují oba formáty, přednost má nový seznam; původní řádky
+zůstávají zachované. Podrobnosti: [Studované kurzy](../study-courses.md).
 
 V Nastavení → Učení jsou také preference štítků:
 
@@ -29,8 +33,8 @@ batch sizes, procenta 0–100, součet kontextu a audia pro každý jazyk nejvý
 
 | Skupina | Příklady nastavení |
 |---|---|
-| Jazyky | App language, Learned by, First learning language, Enable second learning language, Second learning language |
-| Učení | Learn batch, Random repeat batch - Vocabulary/Conjugation, Percentage of type 2/3 testing pro oba jazyky |
+| Jazyky | App language, Learned by, Study courses včetně procent pro každý kurz |
+| Učení | Learn batch, Random repeat batch - Vocabulary/Conjugation |
 | Ovládání | App sounds enabled, App sound volume, Autoplay pronunciation, Remember grammar categories, Automatically show synonyms in repeat |
 | Zálohy | Backup mail, Backup period (days), Next backup |
 | Integrace | Merriam-Webster API klíče a 11Labs token |
