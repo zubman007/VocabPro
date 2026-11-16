@@ -71,7 +71,9 @@ class LocalizedTagScenarioTests(TestCase):
         self.context.bind(self.root)
 
     def tearDown(self):
-        for token in self.root.tk.call('after','info'):self.root.after_cancel(token)
+        # Jobs may belong to child widgets. Cancelling through root.after_cancel
+        # deletes their Tcl command but leaves the child's command registry stale.
+        for token in self.root.tk.call('after','info'):self.root.tk.call('after','cancel',token)
         self.root.destroy();self.folder.cleanup()
         self.assertEqual(self.errors,[])
 

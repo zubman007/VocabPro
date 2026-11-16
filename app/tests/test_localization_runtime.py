@@ -85,6 +85,7 @@ class LocalizationRuntimeTests(TestCase):
         from app.conjugation.practise import Conjugation
         from app.vocabulary.editor import EditorController
         from app.statistics.viewer import Stats
+        from app.statistics.window import StatisticsWindow
         from app.shared import settings as s
         from app.about.shortcuts import shortcut_sections
         keys = get_catalog('English')
@@ -99,7 +100,13 @@ class LocalizationRuntimeTests(TestCase):
             return original(message)
         before = {path: path.read_bytes() for path in self.files.glob('*_voc.csv')}
         before[self.context.conjugation_path('Spanish')] = self.context.conjugation_path('Spanish').read_bytes()
-        with patch.object(self.context, 'translate', side_effect=checked):
+        # This test checks live message lookup and widget labels. Raster pixels
+        # and a mapped statistics window are covered by test_chart_rendering and
+        # test_statistics_improvements. Build statistics withdrawn here so that
+        # the regular suite does not repaint six full desktop-sized windows.
+        with patch.object(self.context, 'translate', side_effect=checked), \
+                patch.object(StatisticsWindow, 'begin', lambda window, builder: window.load(builder)), \
+                patch('app.statistics.charts.FigureCanvasTkAgg.draw_idle'):
             for language in LANGUAGES:
                 with self.subTest(language=language):
                     print(f'PERF localization runtime: {language}', flush=True)
@@ -128,7 +135,10 @@ class LocalizationRuntimeTests(TestCase):
                         self.assertEqual(canvas.figure.axes[0].get_ylabel(), translate('Number of verbs', language))
                         for section in ('Vocabulary', 'Grammar', 'Conjugation'):
                             window.statistics_tabs.select(section); self.root.update()
-                        self.assertTrue(window.controller.conjugation_table.winfo_ismapped())
+                        self.assertEqual(window.statistics_tabs.selected, 'Conjugation')
+                        self.assertTrue(window.controller.conjugation_table.grid_info())
                     finally: window.destroy()
         for path, content in before.items(): self.assertEqual(path.read_bytes(), content)
         self.assertGreater(len(observed), 100)
+        self.assertTrue({'Real', 'Ideal', 'Difficult conjugation rounds'} <= observed)
+        print(f'PERF localization observed message IDs: {len(observed)} across six UI languages', flush=True)

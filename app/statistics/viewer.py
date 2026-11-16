@@ -3,6 +3,7 @@ from app.statistics.table import StatisticsTable
 from app.statistics.difficult_words import DifficultWordsPanel
 from app.statistics.grammar_categories import GrammarCategoriesPanel
 from app.statistics.vocabulary_tags import VocabularyTagsPanel
+from app.statistics.parts_of_speech import PartsOfSpeechPanel
 from app.statistics.components import summary_cards, style_summary_cards, SuccessRing, arrange_success_ring, summary_metrics
 from app.statistics.charts import Generate_chart, _release_chart
 from app.statistics.background import StatisticsBackdrop
@@ -119,7 +120,9 @@ class StatisticsController:
         sheet_lbl = self.tot_sheet.title_label
         self.chart_rep_frm = cst.CTkFrame(vocabulary_body)
         self.chart_cr_frm = cst.CTkFrame(vocabulary_body)
-        self.chart_PoS_frm = cst.CTkFrame(vocabulary_body)
+        self.chart_PoS_frm = PartsOfSpeechPanel(vocabulary_body, self.translate,
+            lambda part_of_speech: _practise_part_of_speech(window, part_of_speech))
+        self.chart_PoS_frm.grid(row=2, column=0, columnspan=2, sticky='ew', padx=20, pady=12)
         self.chart_con_frm = cst.CTkFrame(conjugation_body)
         self.conjugation_progress = cst.CTkLabel(conjugation_body, text='', font=(FONT, 17), text_color=TEXT,
                                                justify='left', anchor='w', wraplength=850)
@@ -136,7 +139,6 @@ class StatisticsController:
         Grid_ratio(vs_frm.interior, [], [1, 1])
         Grid_ratio(self.chart_rep_frm, [1], [1])
         Grid_ratio(self.chart_cr_frm, [1], [1])
-        Grid_ratio(self.chart_PoS_frm, [1], [1])
         Grid_ratio(self.chart_con_frm, [1], [1])
         Grid_ratio(self.chart_voc_trail_frm, [1], [1])
         vs_frm.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=tk.TRUE)
@@ -236,7 +238,8 @@ class StatisticsController:
         if not self.context.preferences.tags_enabled:self.vocabulary_tags_panel.grid_remove()
         _show_summary(data['summary'], self.tot_res_voc_lbl, self.tot_res_lbl, self.succ_res_lbl, self.fail_res_lbl, self.rate_res_lbl)
         self.tot_sheet.set_data(self.df)
-        for values, frame, title, row in ((data['forecast'], self.chart_rep_frm, 'Number of words to review next days', 0), (data['growth'], self.chart_cr_frm, 'Growth of the vocabulary', 1), (data['pos'], self.chart_PoS_frm, 'Vocabulary by Part of Speech', 2), (data['trailing'], self.chart_voc_trail_frm, 'Vocabulary trailing successes', 3)):
+        self.chart_PoS_frm.set_data(data['pos'])
+        for values, frame, title, row in ((data['forecast'], self.chart_rep_frm, 'Number of words to review next days', 0), (data['growth'], self.chart_cr_frm, 'Growth of the vocabulary', 1), (data['trailing'], self.chart_voc_trail_frm, 'Vocabulary trailing successes', 3)):
             charts.append((values, frame, title, row))
         available = conjugation is not None
         _set_conjugation_available(self.window, available)
@@ -352,5 +355,27 @@ def _practise_tag(window,tag_id):
         if controller is not None:window.destroy()
     except (OSError,ValueError) as error:
         messagebox.showerror(parent=window,title=context.translate('Tags'),message=error_text(error, context.translate))
+    finally:
+        window._opening_practice = False
+
+
+def _practise_part_of_speech(window, part_of_speech):
+    if not window.winfo_exists() or getattr(window, '_opening_practice', False) or getattr(window, '_building', False):
+        return
+    window._opening_practice = True
+    context = get_context(window)
+    try:
+        from app.repositories.part_of_speech_lessons import part_of_speech_lesson
+        from app.vocabulary.practise import Rep
+        language = window._statistics_language.get()
+        frame = part_of_speech_lesson(context.vocabulary_path(language), part_of_speech)
+        if frame.empty:
+            return
+        controller = Rep(window.master, frame, language, context.preferences.learning_languages.index(language) + 1,
+                         context=context, on_back=_practice_return(window, 'Vocabulary'))
+        if controller is not None:
+            window.destroy()
+    except (OSError, ValueError) as error:
+        messagebox.showerror(parent=window, title=context.translate('Statistics'), message=error_text(error, context.translate))
     finally:
         window._opening_practice = False

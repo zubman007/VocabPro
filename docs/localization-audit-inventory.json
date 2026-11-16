@@ -1,13 +1,333 @@
 {
   "languages": 6,
-  "keys": 483,
+  "keys": 485,
+  "duplicate_values": {
+    "en": {
+      "Correct": [
+        "Correct",
+        "Correct answers"
+      ],
+      "Edit Czech course": [
+        "Czech edit course",
+        "Edit Czech course"
+      ],
+      "Edit English course": [
+        "Edit English course",
+        "English edit course"
+      ],
+      "Edit French course": [
+        "Edit French course",
+        "French edit course"
+      ],
+      "Edit German course": [
+        "Edit German course",
+        "German edit course"
+      ],
+      "Edit Spanish course": [
+        "Edit Spanish course",
+        "Spanish edit course"
+      ],
+      "Incorrect": [
+        "Incorrect",
+        "Incorrect answers"
+      ],
+      "Previous word": [
+        "Previous word",
+        "Review of the previous word"
+      ],
+      "Save changes": [
+        "Save changes",
+        "Save edit"
+      ],
+      "Settings": [
+        "Setting",
+        "Settings"
+      ],
+      "Statistics": [
+        "Statics",
+        "Statistics"
+      ]
+    },
+    "cs": {
+      "O aplikaci": [
+        "About the app",
+        "About the application"
+      ],
+      "Zpět": [
+        "Back",
+        "Undo"
+      ],
+      "Správně": [
+        "Correct",
+        "Correct answers"
+      ],
+      "Ukončit": [
+        "Exit",
+        "Exit app"
+      ],
+      "Předchozí slovíčko": [
+        "Previous word",
+        "Review of the previous word"
+      ],
+      "Uložit změny": [
+        "Save changes",
+        "Save edit"
+      ],
+      "Nastavení": [
+        "Setting",
+        "Settings"
+      ],
+      "Statistiky": [
+        "Statics",
+        "Statistics"
+      ]
+    },
+    "sk": {
+      "O aplikácii": [
+        "About the app",
+        "About the application"
+      ],
+      "Späť": [
+        "Back",
+        "Undo"
+      ],
+      "Správne": [
+        "Correct",
+        "Correct answers"
+      ],
+      "Ukončiť": [
+        "Exit",
+        "Exit app"
+      ],
+      "Nesprávne": [
+        "Incorrect",
+        "Incorrect answers"
+      ],
+      "Predchádzajúce slovíčko": [
+        "Previous word",
+        "Review of the previous word"
+      ],
+      "Uložiť zmeny": [
+        "Save changes",
+        "Save edit"
+      ],
+      "Nastavenia": [
+        "Setting",
+        "Settings"
+      ],
+      "Štatistiky": [
+        "Statics",
+        "Statistics"
+      ]
+    },
+    "es": {
+      "Acerca de la aplicación": [
+        "About the app",
+        "About the application"
+      ],
+      "Aplicar cambios": [
+        "Apply question",
+        "Apply theory"
+      ],
+      "Selecciona la respuesta correcta.": [
+        "Choose the correct answer.",
+        "Select the correct answer."
+      ],
+      "Editar curso de checo": [
+        "Czech edit course",
+        "Edit Czech course"
+      ],
+      "Editar curso de inglés": [
+        "Edit English course",
+        "English edit course"
+      ],
+      "Editar curso de francés": [
+        "Edit French course",
+        "French edit course"
+      ],
+      "Editar curso de alemán": [
+        "Edit German course",
+        "German edit course"
+      ],
+      "Editar curso de español": [
+        "Edit Spanish course",
+        "Spanish edit course"
+      ],
+      "Salir": [
+        "Exit",
+        "Exit app"
+      ],
+      "Palabra anterior": [
+        "Previous word",
+        "Review of the previous word"
+      ],
+      "Guardar cambios": [
+        "Save changes",
+        "Save edit"
+      ],
+      "Configuración": [
+        "Setting",
+        "Settings"
+      ],
+      "Estadísticas": [
+        "Statics",
+        "Statistics"
+      ]
+    },
+    "fr": {
+      "À propos de l’application": [
+        "About the app",
+        "About the application"
+      ],
+      "Appliquer les modifications": [
+        "Apply question",
+        "Apply theory"
+      ],
+      "Annuler": [
+        "Cancel",
+        "Undo"
+      ],
+      "Sélectionnez la bonne réponse.": [
+        "Choose the correct answer.",
+        "Select the correct answer."
+      ],
+      "Modifier le cours de tchèque": [
+        "Czech edit course",
+        "Edit Czech course"
+      ],
+      "Modifier le cours d’anglais": [
+        "Edit English course",
+        "English edit course"
+      ],
+      "Modifier le cours de français": [
+        "Edit French course",
+        "French edit course"
+      ],
+      "Modifier le cours d’allemand": [
+        "Edit German course",
+        "German edit course"
+      ],
+      "Modifier le cours d’espagnol": [
+        "Edit Spanish course",
+        "Spanish edit course"
+      ],
+      "Quitter": [
+        "Exit",
+        "Exit app"
+      ],
+      "Mot précédent": [
+        "Previous word",
+        "Review of the previous word"
+      ],
+      "Enregistrer les modifications": [
+        "Save changes",
+        "Save edit"
+      ],
+      "Paramètres": [
+        "Setting",
+        "Settings"
+      ],
+      "Statistiques": [
+        "Statics",
+        "Statistics"
+      ],
+      "Arrêter l’enregistrement": [
+        "Stop Recording",
+        "Stop saving"
+      ]
+    },
+    "de": {
+      "Änderungen übernehmen": [
+        "Apply question",
+        "Apply theory"
+      ],
+      "Wähle die richtige Antwort.": [
+        "Choose the correct answer.",
+        "Select the correct answer."
+      ],
+      "Konjugation": [
+        "Conjugation",
+        "conjugation"
+      ],
+      "Richtig": [
+        "Correct",
+        "Correct answers"
+      ],
+      "Tschechischkurs bearbeiten": [
+        "Czech edit course",
+        "Edit Czech course"
+      ],
+      "Englischkurs bearbeiten": [
+        "Edit English course",
+        "English edit course"
+      ],
+      "Französischkurs bearbeiten": [
+        "Edit French course",
+        "French edit course"
+      ],
+      "Deutschkurs bearbeiten": [
+        "Edit German course",
+        "German edit course"
+      ],
+      "Spanischkurs bearbeiten": [
+        "Edit Spanish course",
+        "Spanish edit course"
+      ],
+      "Fehler": [
+        "Error",
+        "Errors",
+        "Failure"
+      ],
+      "Beenden": [
+        "Exit",
+        "Exit app"
+      ],
+      "Falsch": [
+        "False",
+        "Incorrect",
+        "Incorrect answers"
+      ],
+      "Grammatik": [
+        "Grammar",
+        "grammar"
+      ],
+      "Lernen": [
+        "Learn",
+        "Learning"
+      ],
+      "Vorheriges Wort": [
+        "Previous word",
+        "Review of the previous word"
+      ],
+      "Fragen": [
+        "Questions",
+        "questions (7)"
+      ],
+      "Wiederholen": [
+        "Redo",
+        "Repeat"
+      ],
+      "Änderungen speichern": [
+        "Save changes",
+        "Save edit"
+      ],
+      "Einstellungen": [
+        "Setting",
+        "Settings"
+      ],
+      "Statistiken": [
+        "Statics",
+        "Statistics"
+      ]
+    }
+  },
   "catalog_sizes": {
-    "en": 483,
-    "cs": 483,
-    "sk": 483,
-    "es": 483,
-    "fr": 483,
-    "de": 483
+    "en": 485,
+    "cs": 485,
+    "sk": 485,
+    "es": 485,
+    "fr": 485,
+    "de": 485
   },
   "catalog_issues": [],
   "missing_source_keys": [],
@@ -155,6 +475,7 @@
       "Error",
       "ID",
       "OK",
+      "Real",
       "Saved grammar category filters",
       "Settings general",
       "Total"

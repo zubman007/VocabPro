@@ -16,8 +16,11 @@ from app.paths import ROOT_DIR
 from app.shared.translations import LANGUAGE_CODES, _unique_object
 
 TRANSLATORS = {'T', 'translate', 'tr'}
-SINKS = {'text', 'placeholder_text', 'title', 'message'}
+SINKS = {'text', 'placeholder_text', 'title', 'message', 'label'}
 POSITIONAL_SINKS = {'title', 'set_xlabel', 'set_ylabel', 'set_title', 'set_label', 'set_tooltip', 'set_content'}
+POSITIONAL_UI_SINKS = {'text': 1, 'ModuleHeader': 1, 'add_heading': 0,
+                       'popup_menu_add_command': 0, '_show_error': 0}
+TRANSLATED_UI_ARGUMENTS = {'action': 1, 'shell': 1, 'ReviewDialog': 1}
 # Technical identifiers/symbols, not English prose. Keep this list explicit.
 UI_LITERALS = {'ID', 'VocabPro'}
 MESSAGE_WRAPPERS = {'can_leave', 'read_document', 'commit_document'}
@@ -101,6 +104,11 @@ def source_findings(source, filename, keys):
         if not isinstance(node, ast.Call):
             continue
         name = _name(node)
+        position = TRANSLATED_UI_ARGUMENTS.get(name)
+        if position is not None and len(node.args) > position:
+            message = node.args[position]
+            if isinstance(message, ast.Constant) and isinstance(message.value, str) and message.value.strip() and message.value not in keys:
+                missing.append(dict(file=filename, line=node.lineno, key=message.value))
         if name == 'UserMessageError' and node.args and isinstance(node.args[0], ast.Constant):
             message_id = node.args[0].value
             if isinstance(message_id, str) and message_id not in keys:
@@ -114,6 +122,9 @@ def source_findings(source, filename, keys):
         values = [option.value for option in node.keywords if option.arg in SINKS]
         if name in POSITIONAL_SINKS and node.args:
             values.append(node.args[0])
+        position = POSITIONAL_UI_SINKS.get(name)
+        if position is not None and len(node.args) > position:
+            values.append(node.args[position])
         for value in values:
             raw_error = (isinstance(value, ast.Name) and value.id in ('error', 'exception', 'e')) or (
                 isinstance(value, ast.Call) and _name(value) == 'str' and value.args

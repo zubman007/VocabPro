@@ -46,7 +46,7 @@ class _HoverBlit:
         self.annotation.set_animated(False)
 
 
-def _release_chart(chart_frm):
+def _release_chart(chart_frm, *, destroying=False):
     """Release callbacks, scheduled redraws and the figure owned by a chart."""
     canvas = getattr(chart_frm, "_chart_canvas", None)
     if canvas is None:
@@ -54,7 +54,21 @@ def _release_chart(chart_frm):
     chart_frm._chart_canvas = None
     chart_frm._chart_snapshot = None
     for owner, sequence, token in getattr(chart_frm, '_chart_tk_bindings', ()):
-        owner.unbind(sequence, token)
+        if not destroying:
+            owner.unbind(sequence, token)
+            continue
+        # Destroy dispatch may already hold a snapshot of the toplevel binding
+        # script. Remove the binding now, but keep its Tcl command alive until
+        # that dispatch finishes. A Tcl-only idle job also survives destruction
+        # of the owning window without creating a stale Python after callback.
+        script = owner.bind(sequence) or ''
+        prefix = f'if {{"[{token} '
+        owner.tk.call('bind', owner._w, sequence,
+                      '\n'.join(line for line in script.split('\n') if not line.startswith(prefix)))
+        if token in (owner._tclCommands or ()):
+            owner._tclCommands.remove(token)
+        cleanup = owner.tk.call('list', 'catch', owner.tk.call('list', 'rename', token, ''))
+        owner.tk.call('after', 'idle', cleanup)
     chart_frm._chart_tk_bindings = ()
     hover_blit = getattr(chart_frm, '_chart_blit', None)
     if hover_blit is not None:
@@ -75,6 +89,17 @@ def _release_chart(chart_frm):
         widget.destroy()
 
 
+def _fit_chart_inset(frame):
+    """Tk canvases are rectangular; keep them inside CTk's scaled corner arcs."""
+    canvas = getattr(frame, '_chart_canvas', None)
+    if canvas is None:
+        return
+    inset = max(1, round(frame.cget('corner_radius') * frame._get_widget_scaling()))
+    if getattr(frame, '_chart_inset', None) != inset:
+        canvas.get_tk_widget().grid_configure(padx=inset, pady=inset)
+        frame._chart_inset = inset
+
+
 def Generate_chart(data, chart_frm, name, chart_row):
     from app.shared import settings as s
     from app.core.context import get_context
@@ -89,7 +114,9 @@ def Generate_chart(data, chart_frm, name, chart_row):
     _release_chart(chart_frm)
     if not getattr(chart_frm, '_chart_cleanup_bound', False):
         tk.Misc.bind(chart_frm, '<Destroy>',
-            lambda event, frame=chart_frm: _release_chart(frame) if event.widget is frame else None, add='+')
+            lambda event, frame=chart_frm: _release_chart(frame, destroying=True) if event.widget is frame else None, add='+')
+        tk.Misc.bind(chart_frm, '<Configure>',
+            lambda event, frame=chart_frm: _fit_chart_inset(frame) if event.widget is frame else None, add='+')
         chart_frm._chart_cleanup_bound = True
     if len(data) == 0:
         chart_frm.grid_remove()
@@ -229,7 +256,9 @@ def Generate_chart(data, chart_frm, name, chart_row):
     chart_frm._chart_canvas = canvas
     chart_frm._chart_blit = _HoverBlit(canvas, annot)
     chart_frm._chart_hover_id = canvas.mpl_connect("motion_notify_event", hover)
-    canvas.get_tk_widget().grid(row=0, column=0, sticky="NWES", padx=3, pady=3)
+    chart_frm._chart_inset = None
+    canvas.get_tk_widget().grid(row=0, column=0, sticky="NWES")
+    _fit_chart_inset(chart_frm)
     # Coalesce the first draw with Tk's final geometry instead of drawing twice.
     canvas.draw_idle()
     chart_frm._chart_snapshot = (signature, [value.copy(deep=True) for value in values])

@@ -359,7 +359,7 @@ class EditorController:
         self.Sync_changes(1, '')
         val = self.filt_entry_var.get().strip().casefold()
         if self.filt_col_var.get() not in self.transl_headers:
-            raise ValueError(self.translate('Selected column not found'))
+            raise ValueError('Selected column not found')
         idx = self.transl_headers.index(self.filt_col_var.get())
         column = self.headers[idx]
         if column=='Has synonyms':

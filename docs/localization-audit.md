@@ -4,7 +4,10 @@
 
 Aplikace má šest jazyků rozhraní: angličtinu (`en`), češtinu (`cs`), slovenštinu
 (`sk`), španělštinu (`es`), francouzštinu (`fr`) a němčinu (`de`). Na začátku
-auditu měl každý katalog 476 klíčů; po doplnění sedmi šablon má každý **483**.
+auditu měl každý katalog 476 klíčů; po doplnění sedmi šablon a dvou dynamických
+legend má každý **485**. Právě legendy `Real`/`Ideal` ukázaly, proč nestačí
+porovnat soubory: chyběly ve všech katalozích včetně angličtiny, ale za běhu se
+používaly při přejmenování sloupců grafu slovních druhů.
 
 Katalogy byly prověřeny proti zdrojovému kódu, nastavení načítanému z CSV,
 výchozím nabídkám tabulkové knihovny, grafům, dynamickým popiskům a chybovým
@@ -12,16 +15,25 @@ cestám. Shoda katalogů není důkaz úplné lokalizace. Statická kontrola neu
 dokázat všechny možné hodnoty předávané přes proměnné a nevztahuje se na obsah
 uživatelských kurzů. Jazyková revize není nezávislá korektura rodilými mluvčími.
 
+Automatický sken zahrnuje `app/**/*.py`, `start.py`, katalogy a názvy/nabídky
+nastavení z `files/settings.csv`. Testy a diagnostický auditovací CLI nejsou
+desktopové UI. Pracovní `sandbox.py`, staré záložní kopie a celé zdroje
+závislostí nejsou cílové rozhraní; z tksheet byly prověřeny aktivní nabídky.
+
 ## Katalogy a inventář
 
-| Jazyk | Klíče před / po | Chybějící vůči angličtině | Prázdné / neplatné | Duplicitní klíče | Chyby parametrů |
+| Jazyk | Klíče před / po | Chybějící dynamické klíče před / po | Prázdné / neplatné | Duplicitní klíče | Chyby parametrů |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Angličtina | 476 / 483 | 0 | 0 | 0 | 0 |
-| Čeština | 476 / 483 | 0 | 0 | 0 | 0 |
-| Slovenština | 476 / 483 | 0 | 0 | 0 | 0 |
-| Španělština | 476 / 483 | 0 | 0 | 0 | 0 |
-| Francouzština | 476 / 483 | 0 | 0 | 0 | 0 |
-| Němčina | 476 / 483 | 0 | 0 | 0 | 0 |
+| Angličtina | 476 / 485 | 2 / 0 | 0 | 0 | 0 |
+| Čeština | 476 / 485 | 2 / 0 | 0 | 0 | 0 |
+| Slovenština | 476 / 485 | 2 / 0 | 0 | 0 | 0 |
+| Španělština | 476 / 485 | 2 / 0 | 0 | 0 | 0 |
+| Francouzština | 476 / 485 | 2 / 0 | 0 | 0 | 0 |
+| Němčina | 476 / 485 | 2 / 0 | 0 | 0 | 0 |
+
+Rozdíly klíčů mezi samotnými katalogy byly nulové už před opravou. Dva chybějící
+klíče jsou počet konkrétně nalezených dynamických mezer, nikoli tvrzení o úplném
+pokrytí všech možných hodnot ze zdrojových proměnných.
 
 Kompletní strojový výstup je v [localization-audit-inventory.json](localization-audit-inventory.json).
 Obsahuje i shodné hodnoty, skupiny stejných překladů, technické výjimky a
@@ -40,9 +52,14 @@ nezobrazuje. Různé identifikátory se stejným viditelným textem jsou často
 úmyslné, například `Setting` a `Settings`; jejich automatické slučování by
 mohlo poškodit kompatibilitu. Jednoznačnost lokalizovaných enumů ověřují testy.
 
+Inventář obsahuje 74 skupin stejných hodnot: en 11, cs 8, sk 9, es 13, fr 15,
+de 18. Byly posouzeny podle kontextu. Například německé `Redo` a `Repeat`
+mohou oba zobrazit `Wiederholen`, protože první je akce editoru a druhé vstup
+do procvičování; nejde o dva různé datové enumy v jedné nabídce.
+
 ## Potvrzené problémy a opravy
 
-Bylo změněno **24 existujících překladových hodnot**: 22 oprav významu,
+Bylo změněno **27 existujících překladových hodnot**: 25 oprav významu,
 pravopisu či slovotvorby a dvě sjednocení francouzského označení ukládání.
 Nejde o tvrzení, že zbývající překlady nemohou mít stylistické nedostatky.
 
@@ -53,11 +70,12 @@ Nejde o tvrzení, že zbývající překlady nemohou mít stylistické nedostatk
 | „v repeat“ | Čeština a slovenština | „při opakování“ / „pri opakovaní“ |
 | „slůpec“, „němčiny“, „španělštiny“ | Slovenština, 3 hodnoty | `stĺpec`, `nemčiny`, `španielčiny` |
 | „Englisch Kurs bearbeiten“ a podobné historické popisky | Němčina, 5 hodnot | Složeniny jako `Englischkurs bearbeiten` |
+| Malá počáteční písmena podstatných jmen `konjugation`, `grammatik`, `verben zum konjugieren` | Němčina, 3 hodnoty | `Konjugation`, `Grammatik`, `Verben zum Konjugieren` |
 | `Save` a ručně psaná zkratka používaly jiné sloveso než ostatní akce | Francouzština, 2 hodnoty | Jednotné `Enregistrer` pro akci ukládání |
 
-Sedm nových klíčů znamená **42 doplněných hodnot**: dvě úplné šablony počtů,
+Devět nových klíčů znamená **54 doplněných hodnot**: dvě úplné šablony počtů,
 tři chyby poskytovatelů, chybějící sloupce CSV a lokalizovaný obal technické
-chyby. Parametry jazyků se lokalizují až při zobrazení. Anglický text výjimky
+chyby a dvě legendy skutečného/cílového zastoupení. Parametry jazyků se lokalizují až při zobrazení. Anglický text výjimky
 zůstává dostupný pro logy a existující integrace.
 
 ### Pevné a dynamické texty mimo katalogy
@@ -73,6 +91,7 @@ zůstává dostupný pro logy a existující integrace.
 | Editor: klíč složený jako `Edit ` + jazyk + ` course` | Dvě samostatně přeložené části titulku; nevyžaduje nový klíč pro každou dvojici |
 | Conjugation tabulka: již přeložené názvy sloupců znovu předávané do překladače | Data mají stabilní názvy; překládá se až viditelné záhlaví |
 | Domovská stránka: číslo + přípona „slov…“ | Celé neutrální šablony s `{count}`, bez chybného skloňování pro 0/1/2/5/21 |
+| Graf slovních druhů: dynamické názvy `Real` a `Ideal` | Chyběly ve všech šesti katalozích; nyní mají překlad, v angličtině `Actual`/`Target` |
 
 Úvodní sken navíc označil sedm podezřelých literálů, které po kontrole nebyly
 nezlokalizovaným UI: tři předané klíče `can_leave`, tři revizní zprávy předané
@@ -181,7 +200,37 @@ ani plná lokalizace textů třetích stran.
 
 ## Výsledky testování
 
-Výsledky závěrečného průchodu se doplní po doběhnutí testů. Všechny testy běží
+Nové validační testy prošly **10/10**. Runtime smoke testy prošly **2/2** a
+pro všech šest jazyků ověřily **132 různých požadovaných ID**, včetně obou
+legend. Skutečná změna jazyka přes nastavení obnovila domovskou obrazovku,
+nové dialogy a ponechala studijní jazyky beze změny. Kontrolují se také aktivní
+Copy/Paste nabídky tksheet, titulky, validace, data kurzů a sekce statistik.
+
+Kompletní mapovaný průchod obrazovkami v šesti jazycích byl také spuštěn; byl
+nákladný (175 s) a odhalil pozdní Tk chyby při uvolňování grafů. Oprava odkládá
+odstranění Tcl příkazu až po skončení aktuální události Destroy. Regresní test
+ověřuje, že po zavření hostitele nezůstává příkaz a nevzniká Tcl `bgerror`.
+Modul vykreslování po opravě prošel **8/8** testů.
+
+Trvalý rychlejší smoke test sestavuje statistiky ve skrytém okně a bez
+opakovaného rasterizování 30 grafů. Ověřuje skutečné lookupy, widgety a obsah
+grafů, nikoli jejich pixely. Pixely a skutečně zobrazené okno ověřují samostatné
+testy `test_chart_rendering` a `test_statistics_improvements`; další geometrii
+všech jazyků ověřují stávající UI scénáře. Tento rozdíl nelze zaměňovat za
+úplnou vizuální kontrolu všech šesti jazyků na všech DPI.
+
+Úplný závěrečný běh provedl **508 testů v 81 modulech, bez přeskočení**.
+V 80 modulech nebyla chyba. Jediná chyba byla v `tearDown` jednoho testu v
+`test_tag_scenarios`: `root.after_cancel` odstranil Tcl příkaz časovače
+potomka, ale ponechal jeho záznam ve vlastníkovi; následné zničení widgetu ho
+zkusilo odstranit znovu. Úklid byl opraven na zrušení Tcl časovače bez smazání
+příkazu jiného vlastníka. **Dotčený modul po opravě prošel 7/7**.
+Celý běh po této čistě testovací opravě znovu spouštěn nebyl; nejde o tvrzení
+o jednom úplném zeleném průchodu. Rozšířený validátor byl po posledních
+úpravách navíc znovu ověřen **10/10** testy. CLI audit vrací kód **0**:
+žádné chyby katalogů, parametrů, zjištěných klíčů ani kontrolovaných UI sinků.
+
+Všechny testy běží
 s existujícími pojistkami proti síti, mikrofonu, přehrávání a zápisům do
 uživatelských dat. Existující změny v `sandbox.py`, `files/Spanish_gra.csv`
 a předchozí úpravy statistik/jazykového modelu zůstaly zachované.

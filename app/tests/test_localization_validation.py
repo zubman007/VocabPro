@@ -55,10 +55,14 @@ label.configure(text="  ·  ID " + identifier)
 label.configure(text="Not translated {}".format(name))
 tr(f"Dynamic {count}")
 mail['Subject'] = f'{app_name} - backup'
+text(parent, "Raw helper text")
+menu.add_command(label="Raw menu")
+shell(parent, "Unknown shell title", image)
+popup_menu_add_command("Raw popup command", callback)
 '''
         missing, hardcoded, _, _ = source_findings(source, 'fixture.py', {'Known'})
-        self.assertEqual(len(missing), 3)
-        self.assertEqual(len(hardcoded), 6)
+        self.assertEqual(len(missing), 4)
+        self.assertEqual(len(hardcoded), 9)
         self.assertNotIn('Known', [item['text'] for item in hardcoded])
 
     def test_whitespace_and_missing_translations_fall_back_then_unknown_ids_survive(self):

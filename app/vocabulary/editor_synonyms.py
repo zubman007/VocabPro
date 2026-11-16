@@ -20,7 +20,7 @@ class SynonymsDialog(AppDialog):
         words['ID'] = words.ID.astype(int)
         relations, revision = synonyms.load(course, words)
         if int(word_id) not in set(words.ID):
-            raise ValueError(s.T('Save the vocabulary before editing synonyms.'))
+            raise ValueError('Save the vocabulary before editing synonyms.')
         super().__init__(owner, fg_color='#ded4bf')
         self.withdraw()
         self.course, self.language, self.learned_by = course, language, learned_by

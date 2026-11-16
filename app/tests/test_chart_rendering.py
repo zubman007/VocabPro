@@ -12,6 +12,27 @@ from app.statistics.charts import _HoverBlit
 
 
 class ChartRenderingTests(TestCase):
+    def test_destroying_chart_host_does_not_delete_commands_during_tcl_dispatch(self):
+        import customtkinter as cst
+        import pandas as pd
+        from app.statistics.charts import Generate_chart
+        root = cst.CTk()
+        root.tk.eval('set ::chart_errors {}; proc bgerror {message} {lappend ::chart_errors $message}')
+        try:
+            for _ in range(3):
+                host = cst.CTkFrame(root)
+                Generate_chart(pd.Series([1, 2]), host, 'Vocabulary trailing successes', 0)
+                root.update()
+                tokens = [token for _, _, token in host._chart_tk_bindings]
+                host.destroy()
+                root.update()
+                for token in tokens:
+                    self.assertFalse(root.tk.call('info', 'commands', token))
+            self.assertFalse(root.tk.call('set', '::chart_errors'))
+        finally:
+            for job in root.tk.call('after', 'info'): root.tk.call('after', 'cancel', job)
+            root.destroy()
+
     def test_real_tk_hover_show_hide_and_release(self):
         import customtkinter as cst
         import pandas as pd

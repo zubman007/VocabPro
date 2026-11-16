@@ -39,3 +39,29 @@ mezery. Různé kontexty mohou mít různé klíče i pro stejný viditelný tex
 Překládej pouze rozhraní. Do CSV patří původní interní hodnoty jako `No audio`,
 `Own` nebo `True`, nikdy jejich lokalizované popisky. Jazyk rozhraní nesmí měnit
 uložená data ani pravidla učení.
+
+## Opakovatelný audit
+
+```powershell
+.venv/Scripts/python.exe -B -m app.shared.localization_audit
+.venv/Scripts/python.exe -B -m app.tests.run_all
+```
+
+Audit kontroluje katalogy, pojmenované parametry, formátování, známá rozhraní
+pro UI texty a nastavení načítaná z CSV. Testy doplňují reálné přepínání jazyka
+a tvorbu obrazovek ve všech šesti jazycích. Neznámé texty vznikající z proměnných
+nelze obecně dokázat statickou kontrolou. Katalogy se shodnými klíči proto samy
+o sobě neznamenají úplný překlad.
+
+Zprávy formátuj až po překladu: `translate('Words to review: {count}', language).format(count=count)`.
+Pro nové parametrizované chyby používej `UserMessageError`; v UI `error_text`.
+Neskládej překladové ID z uživatelských textů ani neposílej do překladače již
+přeložené záhlaví. Číselná data a datumy lokalizuj až při zobrazení pomocí
+`app.shared.localization_format`, nikdy před uložením CSV.
+
+Nový jazyk rozhraní vyžaduje výslovné přidání do `UI_LANGUAGE_IDS`, kompletní
+katalog, nabídku jazyka v nastavení a runtime/vizuální ověření. Přidání
+studijního jazyka samo o sobě rozhraní aplikace nerozšiřuje.
+
+Podrobný výsledek, omezení automatických kontrol a ruční checklist jsou v
+[auditu lokalizace](../docs/localization-audit.md).
