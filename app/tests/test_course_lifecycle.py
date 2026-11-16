@@ -165,6 +165,42 @@ class CourseLifecycleTests(TestCase):
         self.assertIn('Czech_French_voc.csv', saved.attrs['course_cleanup_warnings'])
         self.assertNotIn('French', RuntimePreferences.from_frame(load_preferences(self.settings)).learning_languages)
 
+    def test_empty_file_populated_during_cleanup_is_not_removed(self):
+        self.save(); path = self.assets()['tags'][0]
+        from app.repositories import course_files
+        actual = course_files._empty_csv; reads = 0
+        def changed(candidate, required):
+            nonlocal reads
+            if candidate == path:
+                reads += 1
+                if reads == 2:
+                    pd.DataFrame([dict(ID=1,Czech='Nové',French='Nouveau',Note='keep')]).to_csv(path,sep=';',index=False)
+            return actual(candidate, required)
+        with patch.object(course_files,'_empty_csv',side_effect=changed):
+            self.save(tuple(replace(item,enabled=False) if item.target=='fr' else item for item in COURSES))
+        self.assertEqual(pd.read_csv(path,sep=';').Note.tolist(),['keep'])
+
+    def test_rollback_keeps_a_concurrently_changed_empty_schema(self):
+        path = self.assets()['vocabulary'][0]
+        def fail(*args, **kwargs):
+            data=pd.read_csv(path,sep=';');data['User extra']=''
+            data.to_csv(path,sep=';',index=False)
+            raise PermissionError('synthetic failure')
+        with patch('app.repositories.preferences.commit_document',side_effect=fail):
+            with self.assertRaises(PermissionError):self.save()
+        self.assertIn('User extra',pd.read_csv(path,sep=';').columns)
+
+    def test_source_change_preserves_shared_grammar_and_all_populated_old_pair_data(self):
+        self.save()
+        old=self.assets()['vocabulary'][0]
+        course().rename(columns={'English':'French'}).to_csv(old,sep=';',index=False)
+        original=old.read_bytes();grammar=self.assets()['grammar'][0];before=grammar.read_bytes()
+        save_preferences(load_preferences(self.settings), {'Learned by':'English',
+            COURSE_FIELD:encode_courses('en',(StudyCourse('fr'),))},self.settings)
+        self.assertEqual(old.read_bytes(),original)
+        self.assertEqual(grammar.read_bytes(),before)
+        self.assertTrue((self.files/'English_French_voc.csv').exists())
+
     def test_disabled_grammar_never_reads_a_retained_malformed_file(self):
         self.save(tuple(replace(item,grammar_enabled=False) for item in COURSES))
         path = self.assets()['grammar'][0]; path.write_text('malformed retained data',encoding='utf-8')
@@ -242,3 +278,47 @@ class CourseLifecycleUiTests(TestCase):
         self.assertNotIn(self.context.translate('Grammar'),tabs.navigation.cget('values'))
         for entry in (Grammar_training,Edit_grammar,Edit_grammar_theory):
             self.assertIsNone(entry(self.root,'French',context=self.context))
+
+    def test_disabled_populated_course_disappears_from_settings_and_about_omits_disabled_grammar(self):
+        from app.preferences.dialog import PreferencesDialog
+        from app.about.shortcuts import shortcut_sections
+        words=self.files/'Czech_French_voc.csv'
+        course().rename(columns={'English':'French'}).to_csv(words,sep=';',index=False)
+        before=words.read_bytes()
+        dialog=PreferencesDialog(self.root,self.context.translate,self.settings)
+        dialog.course_editor.rows[-1]['toggle'].toggle();dialog.save()
+        dialog=PreferencesDialog(self.root,self.context.translate,self.settings)
+        self.assertEqual(len(dialog.course_editor.rows),2)
+        self.assertEqual(words.read_bytes(),before)
+        dialog.destroy()
+        saved=save_preferences(load_preferences(self.settings),{COURSE_FIELD:encode_courses('cs',
+            tuple(replace(item,grammar_enabled=False) for item in COURSES))},self.settings)
+        self.context.preferences=RuntimePreferences.from_frame(saved)
+        dialog=PreferencesDialog(self.root,self.context.translate,self.settings)
+        self.assertNotIn('Remember grammar categories',dialog.fields)
+        self.assertFalse(any(title in ('Grammar','Grammar editors') for title,_ in shortcut_sections(grammar_enabled=False)))
+
+    def test_real_statistics_switch_hides_grammar_tab_and_summary_and_skips_corrupt_disabled_data(self):
+        from app.statistics.viewer import Stats
+        from time import monotonic, sleep
+        courses=tuple(replace(item,grammar_enabled=False) if item.target=='fr' else item for item in COURSES)
+        saved=save_preferences(load_preferences(self.settings),{COURSE_FIELD:encode_courses('cs',courses)},self.settings)
+        self.context.preferences=RuntimePreferences.from_frame(saved)
+        (self.files/'French_gra.csv').write_text('retained malformed data',encoding='utf-8')
+        def settle(window):
+            deadline=monotonic()+25
+            while not window.ready and monotonic()<deadline:self.root.update();sleep(.005)
+            self.assertTrue(window.ready)
+        with patch('app.statistics.viewer.Generate_chart'):
+            window=Stats(self.root,context=self.context,language='French',section='Grammar')
+            try:
+                settle(window)
+                self.assertEqual(window.statistics_tabs.selected,'Vocabulary')
+                self.assertNotIn('Grammar',window.statistics_tabs.navigation.cget('values'))
+                self.assertFalse(window.summary_cards[2].master.grid_info())
+                window.controller.language_switch._command('English');settle(window)
+                self.assertIn('Grammar',window.statistics_tabs.navigation.cget('values'))
+                self.assertTrue(window.summary_cards[2].master.grid_info())
+                window.statistics_tabs.select('Grammar')
+                self.assertEqual(window.statistics_tabs.selected,'Grammar')
+            finally:window.destroy()
