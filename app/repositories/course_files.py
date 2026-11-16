@@ -26,7 +26,8 @@ def course_assets(files, source, target):
         'vocabulary': (files/f'{stem}_voc.csv', vocabulary_columns(source, target), {'ID', 'Repetition'}),
         'tags': (files/f'{stem}_tags.csv', catalog_columns(source, target), {'ID', source, target, 'Note'}),
         'synonyms': (files/f'{stem}_synonyms.csv', SYNONYM_COLUMNS, set(SYNONYM_COLUMNS)),
-        'grammar': (files/f'{target}_gra.csv', GRAMMAR_COLUMNS, set(GRAMMAR_COLUMNS)),
+        'grammar': (files/f'{target}_gra.csv', GRAMMAR_COLUMNS,
+                    {'question_id', 'prompt', 'anchor', 'option_1', 'option_2', 'option_3', 'option_4'}),
         'theory': (files/f'{stem}_gra_ex.csv', THEORY_FIELDS, {'category'}),
         'records': (files/f'{target}_gra_records.csv', RECORD_COLUMNS, set(RECORD_COLUMNS)),
         # Conjugation stays optional; an existing unused empty file can retire.

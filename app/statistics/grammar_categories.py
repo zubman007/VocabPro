@@ -70,8 +70,8 @@ class GrammarCategoriesPanel(cst.CTkFrame):
         self.description=cst.CTkLabel(self,text=translate('Grammar category statistics description'),font=(FONT,14),
                      text_color='#665d48',anchor='w',justify='left',wraplength=850)
         self.description.grid(row=1,sticky='ew',padx=24,pady=(0,8))
-        self.record=cst.CTkLabel(self,text='',font=(FONT,16,'bold'),text_color='#815632',anchor='w',justify='left')
-        self.record.grid(row=2,sticky='ew',padx=24,pady=(0,8))
+        self.category_count=cst.CTkLabel(self,text='',font=(FONT,13),text_color='#665d48',anchor='w',justify='left',height=0)
+        self.category_count.grid(row=2,sticky='ew',padx=24,pady=(0,8))
         self.bind('<Configure>',self._resize_description,add='+')
         totals=cst.CTkFrame(self,fg_color='transparent',corner_radius=0)
         totals.grid(row=3,sticky='ew',padx=16,pady=(0,8))
@@ -131,7 +131,7 @@ class GrammarCategoriesPanel(cst.CTkFrame):
     def _resize_description(self,event):
         if event.widget is not self._canvas:return
         width=max(80,int(event.width/self._get_widget_scaling())-48)
-        if self.record.cget('wraplength')!=width:self.record.configure(wraplength=width)
+        if self.category_count.cget('wraplength')!=width:self.category_count.configure(wraplength=width)
         if self.description.cget('wraplength')!=width:self.description.configure(wraplength=width)
         for label in getattr(self,'summary_labels',()):label.configure(wraplength=max(60,(width-92)//3))
 
@@ -140,14 +140,18 @@ class GrammarCategoriesPanel(cst.CTkFrame):
         summary=(len(frame),int(history.str.count('S').sum()),int(history.str.count('F').sum())) if history is not None else (len(frame),0,0)
         self.set_items(grammar_categories(frame),summary=summary)
 
-    def set_items(self,items,*,summary=None,best_streak=0):
-        self.record.configure(text=self.translate('All-time best streak: {count}').format(count=best_streak))
+    def set_items(self,items,*,summary=None):
         items=tuple(items)
-        self.items=items
+        self.category_count.configure(text=self.translate('Total categories: {count}').format(count=len(items)))
+        unchanged=items==self.items and bool(self.rows.winfo_children())
+        if not unchanged:
+            self.items=items
         if summary is None:summary=(sum(item.questions for item in items),sum(item.successes for item in items),sum(item.failures for item in items))
         _,successes,failures=summary
         for caption,value in (('Recorded answers',successes+failures),('Correct answers',successes),('Incorrect answers',failures)):
             self.summary_counts[caption].configure(text=str(value))
+        if unchanged:
+            return
         for child in self.rows.winfo_children():
             child.destroy()
         self._category_rows=[]
@@ -156,22 +160,22 @@ class GrammarCategoriesPanel(cst.CTkFrame):
                          font=(FONT, 18), text_color=TEXT).grid(padx=12, pady=16, sticky='w')
         for index, item in enumerate(items):
             row = cst.CTkFrame(self.rows, fg_color=DETAIL_ROW_COLORS[index%2], corner_radius=16)
-            row.grid(row=index, sticky='ew', pady=3)
+            row.grid(row=index, sticky='ew', pady=2)
             row.grid_columnconfigure(0, weight=1)
             self._category_rows.append((item,row))
             name = cst.CTkLabel(row, text=item.name or self.translate('Uncategorised'),
-                font=(FONT, 19, 'bold'), text_color=TEXT, anchor='w', justify='left', wraplength=650)
-            name.grid(row=0, column=0, sticky='ew', padx=18, pady=(8, 1))
+                font=(FONT, 18, 'bold'), text_color=TEXT, anchor='w', justify='left', wraplength=650, height=24)
+            name.grid(row=0, column=0, sticky='ew', padx=18, pady=(5, 0))
             text=f'{item.practised} / {item.questions}  {self.translate("Practised questions")}'
-            coverage=cst.CTkLabel(row,text=text,font=(FONT,15),text_color='#5e6655',anchor='w',justify='left')
-            coverage.grid(row=1,column=0,columnspan=2,sticky='ew',padx=18,pady=(0,3))
+            coverage=cst.CTkLabel(row,text=text,font=(FONT,14),text_color='#5e6655',anchor='w',justify='left',height=20)
+            coverage.grid(row=1,column=0,columnspan=2,sticky='ew',padx=18,pady=(0,2))
             results=cst.CTkFrame(row,fg_color='transparent',corner_radius=0)
-            results.grid(row=2,column=0,columnspan=2,sticky='ew',padx=18,pady=(0,4))
+            results.grid(row=2,column=0,columnspan=2,sticky='ew',padx=18,pady=(0,3))
             results.grid_columnconfigure((0,1,2),weight=1,uniform='results')
             result_labels=[]
             for column,(caption,value,color) in enumerate((('Recorded answers',item.attempts,TEXT),
                     ('Correct answers',item.successes,'#355e59'),('Incorrect answers',item.failures,'#976042'))):
-                label=cst.CTkLabel(results,text=f'{self.translate(caption)}: {value}',font=(FONT,14),
+                label=cst.CTkLabel(results,text=f'{self.translate(caption)}: {value}',font=(FONT,13),
                     text_color=color,anchor='w',justify='left',height=0)
                 label.grid(row=0,column=column,sticky='ew',padx=(0,8))
                 result_labels.append(label)
@@ -184,14 +188,14 @@ class GrammarCategoriesPanel(cst.CTkFrame):
                 for label in labels:label.configure(wraplength=max(60,available/3-16))
             row.bind('<Configure>',resize,add='+')
             cst.CTkLabel(row, text=percent(item.accuracy, get_context(self).preferences.app_language) if item.attempts else '—',
-                font=(FONT, 23, 'bold'), text_color='#976042' if item.attempts and item.accuracy < .6 else '#355e59',
-                width=90).grid(row=0, column=1, padx=18, pady=(6, 0))
-            bar = cst.CTkProgressBar(row, height=7, corner_radius=4,
+                font=(FONT, 21, 'bold'), text_color='#976042' if item.attempts and item.accuracy < .6 else '#355e59',
+                width=90, height=24).grid(row=0, column=1, padx=18, pady=(4, 0))
+            bar = cst.CTkProgressBar(row, height=6, corner_radius=3,
                 fg_color='#b5ad97', progress_color='#417766')
-            bar.grid(row=3, column=0, columnspan=2, sticky='ew', padx=18, pady=(2, 8))
+            bar.grid(row=3, column=0, columnspan=2, sticky='ew', padx=18, pady=(2, 6))
             bar.set(item.accuracy if item.attempts else 0)
             if self.on_practise is not None:
                 detail_practise_button(cst.CTkButton(row, text=self.translate('Practise category'),
                     command=lambda name=item.name: self.on_practise(name))).grid(
-                        row=0, column=2, rowspan=4, padx=(0, 16), pady=10)
+                        row=0, column=2, rowspan=4, padx=(0, 16), pady=8)
         self._order_rows()

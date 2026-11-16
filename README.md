@@ -50,7 +50,11 @@ v nápovědě. Editor nabízí počítané sloupce s příznakem a počtem synon
 příznak lze filtrovat hodnotami 1 (má) a 0 (nemá). Do CSV slovíček se neukládají.
 
 Kurzy, historie a nastavení jsou v `files/*.csv`, audio v `files/audio`.
-Při výběru nového jazyka vznikne jeho slovníkový CSV s potřebnými sloupci.
+Po uložení nového jazyka se připraví slovník, štítky, synonyma a složka audia.
+Přepínač **Zapnout gramatiku** navíc připraví otázky, teorii a soubor rekordů.
+Vypnutá gramatika se pro daný jazyk skryje z nabídky i statistik. Vypnutý kurz
+po uložení zmizí z formuláře; odstraní se pouze prázdné CSV a zcela prázdná
+složka audia. Vyplněné soubory i nahrávky zůstávají pro opětovné přidání.
 Synonyma a audio vznikají až při použití. Prázdné slovníkové a synonymní CSV
 nepoužívaných kurzů se při načtení nastavení uklidí; soubory s daty zůstávají.
 Kurzy již nepoužívají sloupec `Enabled`; všechna zbývající slovíčka patří do procvičování.

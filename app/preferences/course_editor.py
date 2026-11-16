@@ -66,7 +66,7 @@ class CourseEditor(cst.CTkFrame):
         grammar_toggle.grid(row=2, column=0, columnspan=2, sticky='w', padx=14, pady=(0, 12))
         fields.append(grammar_toggle)
         row = dict(target=target, enabled=enabled, context=context, audio=audio, grammar=grammar,
-                   fields=fields, toggle=toggle, chooser=chooser, card=card)
+                   fields=fields, toggle=toggle, chooser=chooser, card=card, last_target=course.target)
         self.rows.append(row)
         def update():
             for field in fields:
@@ -95,6 +95,10 @@ class CourseEditor(cst.CTkFrame):
 
     def _target_changed(self, row):
         target = self.names[row['target'].get()]
+        if target == row['last_target']:
+            self.refresh_add_button()
+            return
+        row['last_target'] = target
         saved = self.known.get(target, StudyCourse(target))
         row['context'].set(str(saved.context_percent))
         row['audio'].set(str(saved.audio_percent))

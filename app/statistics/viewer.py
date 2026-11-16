@@ -2,6 +2,7 @@ from app.shared.messages import error_text
 from app.statistics.table import StatisticsTable
 from app.statistics.difficult_words import DifficultWordsPanel
 from app.statistics.grammar_categories import GrammarCategoriesPanel
+from app.statistics.grammar_progress_panel import GrammarProgressPanel, GrammarRecordPanel
 from app.statistics.vocabulary_tags import VocabularyTagsPanel
 from app.statistics.parts_of_speech import PartsOfSpeechPanel
 from app.statistics.conjugation_panel import ConjugationProgressPanel
@@ -119,7 +120,11 @@ class StatisticsController:
         self.vocabulary_tags_panel=VocabularyTagsPanel(vocabulary_body,self.translate,lambda tag:_practise_tag(window,tag))
         self.vocabulary_tags_panel.grid(row=4,column=0,columnspan=2,sticky='ew',padx=20,pady=12)
         self.grammar_categories_panel = GrammarCategoriesPanel(grammar_body, self.translate, lambda category: _practise_category(window, category))
-        self.grammar_categories_panel.grid(row=0, column=0, columnspan=2, sticky='ew', padx=20, pady=12)
+        self.grammar_record_panel = GrammarRecordPanel(grammar_body, self.translate)
+        self.grammar_record_panel.grid(row=0, column=0, columnspan=2, sticky='ew', padx=20, pady=12)
+        self.grammar_categories_panel.grid(row=1, column=0, columnspan=2, sticky='ew', padx=20, pady=12)
+        self.grammar_progress_panel = GrammarProgressPanel(grammar_body, self.translate)
+        self.grammar_progress_panel.grid(row=2, column=0, columnspan=2, sticky='ew', padx=20, pady=(12, 20))
         sheet_lbl = self.tot_sheet.title_label
         self.chart_rep_frm = cst.CTkFrame(vocabulary_body)
         self.chart_cr_frm = cst.CTkFrame(vocabulary_body)
@@ -181,7 +186,8 @@ class StatisticsController:
                 canvas_background.add_panel(button, navigation_surface)
         for panel in tabs.panels.values():
             canvas_background.add_panel(panel, tabs_surface)
-        for panel in (self.tot_sheet, self.difficult_words_panel, self.vocabulary_tags_panel, self.grammar_categories_panel, self.chart_PoS_frm):
+        for panel in (self.tot_sheet, self.difficult_words_panel, self.vocabulary_tags_panel,
+                      self.grammar_categories_panel, self.grammar_record_panel, self.grammar_progress_panel, self.chart_PoS_frm):
             canvas_background.add_panel(panel)
         for panel in (self.chart_rep_frm, self.chart_cr_frm, self.chart_con_frm, self.chart_voc_trail_frm):
             canvas_background.add_panel(panel, rasterize_frame=True)
@@ -268,10 +274,14 @@ class StatisticsController:
             self.chart_con_frm.grid_remove()
             self.window.conjugation_empty.grid_remove()
         if grammar is not None:
-            self.grammar_categories_panel.set_items(grammar['categories'], summary=grammar['summary'],best_streak=grammar.get('best_streak',0))
+            self.grammar_categories_panel.set_items(grammar['categories'], summary=grammar['summary'])
+            self.grammar_record_panel.set_record(grammar.get('best_streak',0))
+            self.grammar_progress_panel.set_data(grammar.get('question_progress'))
             _show_summary(grammar['summary'], self.tot_verbs_res_gra_lbl, self.tot_res_gra_lbl, self.succ_res_gra_lbl, self.fail_res_gra_lbl, self.rate_res_gra_lbl)
         else:
             self.grammar_categories_panel.set_items([])
+            self.grammar_record_panel.set_record(0)
+            self.grammar_progress_panel.set_data(None)
             for label in (self.tot_verbs_res_gra_lbl, self.tot_res_gra_lbl, self.succ_res_gra_lbl, self.fail_res_gra_lbl, self.rate_res_gra_lbl):
                 label.configure(text='-')
         self._render_charts(iter(charts))

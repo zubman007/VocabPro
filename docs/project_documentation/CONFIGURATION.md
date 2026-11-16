@@ -3,7 +3,7 @@
 V záložce Jazyky se spravuje seznam **Studované jazyky**. Tlačítko **Přidat jazyk**
 přidá další kurz; každý má vlastní přepínač a procenta kontextových a zvukových
 otázek. Alespoň jeden kurz musí být zapnutý. Vypnutí zachová jeho nastavení,
-slovník, historii i audio. Aktivní jazyky se musí lišit od vlastního jazyka
+vyplněný slovník, historii i audio. Aktivní jazyky se musí lišit od vlastního jazyka
 a v seznamu se nesmějí opakovat. Jazyk rozhraní je samostatná volba.
 
 Seznam se zapisuje do verzovaného JSON řádku `Study courses` až při uložení
@@ -11,6 +11,17 @@ nastavení. Pokud chybí, aplikace beze změny dat přečte původní First/Seco
 learning language a Enable second learning language (chybějící přepínač znamená
 zapnuto). Pokud existují oba formáty, přednost má nový seznam; původní řádky
 zůstávají zachované. Podrobnosti: [Studované kurzy](../study-courses.md).
+
+Každý kurz má také příznak **Zapnout gramatiku**. Verze 2 JSON jej ukládá jako
+`grammar`; verze 1 se načte s výchozím zapnutím. Při uložení se připraví
+slovník, katalog štítků, synonyma a audio adresář; zapnutá gramatika přidá
+otázky, teorii a prázdnou hlavičku rekordů. Žádné otázky ani slova se nevymýšlejí.
+
+Vypnutý kurz po úspěšném uložení zmizí z formuláře. Vnitřní archiv zachová
+jeho volby pro opětovné přidání. Teprve po uložení se odstraní rozpoznané
+prázdné CSV a zcela prázdný audio adresář; každý neprázdný datový řádek či
+nahrávka zůstanou zachované. Vypnutí gramatiky čistí jen její prázdné soubory
+a skryje její nabídku, statistiky i vstupy do editorů/procvičování.
 
 V Nastavení → Učení jsou také preference štítků:
 

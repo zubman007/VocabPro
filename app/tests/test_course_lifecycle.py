@@ -55,6 +55,11 @@ class CourseLifecycleTests(TestCase):
         for key in ('vocabulary','tags','synonyms'):self.assertTrue(assets[key][0].exists())
         for key in ('grammar','theory','records'):self.assertFalse(assets[key][0].exists())
         self.assertFalse(RuntimePreferences.from_frame(load_preferences(self.settings)).grammar_enabled('fr'))
+        # Legacy editors/readers also accept a header without optional R/LR,
+        # category and explanation columns. Its empty placeholder can retire.
+        assets['grammar'][0].write_text('question_id;prompt;anchor;option_1;option_2;option_3;option_4\n',encoding='utf-8')
+        self.save(tuple(replace(item,grammar_enabled=False) for item in COURSES))
+        self.assertFalse(assets['grammar'][0].exists())
 
     def test_disabling_empty_course_removes_only_its_empty_assets_and_empty_audio_directory(self):
         self.save(); assets = self.assets()
@@ -322,3 +327,23 @@ class CourseLifecycleUiTests(TestCase):
                 window.statistics_tabs.select('Grammar')
                 self.assertEqual(window.statistics_tabs.selected,'Grammar')
             finally:window.destroy()
+
+    def test_saved_cleanup_warning_does_not_leave_settings_unsaved_and_same_language_keeps_edits(self):
+        from app.preferences.dialog import PreferencesDialog
+        from app.repositories import course_files
+        dialog=PreferencesDialog(self.root,self.context.translate,self.settings)
+        row=dialog.course_editor.rows[-1]
+        row['grammar'].set('0');row['context'].set('30')
+        row['chooser']._dropdown_callback('French')
+        self.assertEqual((row['context'].get(),row['grammar'].get()),('30','0'))
+        row['toggle'].toggle()
+        original=course_files._remove_empty_csv
+        def locked(path,*args,**kwargs):
+            if path.name=='Czech_French_voc.csv':raise PermissionError('synthetic lock')
+            return original(path,*args,**kwargs)
+        with patch.object(course_files,'_remove_empty_csv',side_effect=locked), \
+                patch('app.preferences.dialog.messagebox.showwarning') as warning:
+            dialog.save()
+        self.assertTrue(dialog.saved)
+        warning.assert_called_once()
+        self.assertIn('Czech_French_voc.csv',warning.call_args.kwargs['message'])

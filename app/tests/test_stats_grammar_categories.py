@@ -33,6 +33,8 @@ class GrammarCategoryTests(unittest.TestCase):
                         panel.pack(fill='both',expand=True);panel.set_data(source);root.update()
                         self.assertEqual([panel.summary_counts[key].cget('text') for key in
                             ('Recorded answers','Correct answers','Incorrect answers')],['6','4','2'])
+                        self.assertEqual(panel.category_count.cget('text'),
+                            translate('Total categories: {count}',locale).format(count=3))
                         rows=panel.rows.winfo_children()
                         texts=[label.cget('text') for label in labels(rows[0])]
                         self.assertIn(f"{translate('Correct answers',locale)}: 2",texts)
@@ -45,7 +47,7 @@ class GrammarCategoryTests(unittest.TestCase):
                         # Narrow layouts must retain wrapped translations; the
                         # compact height budget applies where a row fits on one line.
                         if width>=1200:
-                            self.assertLessEqual(rows[0].winfo_reqheight()/panel._get_widget_scaling(),110)
+                            self.assertLessEqual(rows[0].winfo_reqheight()/panel._get_widget_scaling(),90)
                         panel.set_items([]);root.update()
                         self.assertTrue(all(label.cget('text')=='0' for label in panel.summary_counts.values()))
                         panel.set_data(pd.DataFrame({'R':['SSFF']}));root.update()
@@ -120,6 +122,9 @@ class GrammarCategoryTests(unittest.TestCase):
                    GrammarCategory('Medium',20,8,2,2),GrammarCategory('Never',12,0,0,0)]
             panel.set_items(items);root.update()
             row_ids={str(row) for row in panel.rows.winfo_children()}
+            from dataclasses import replace
+            panel.set_items([replace(item) for item in items])
+            self.assertEqual({str(row) for row in panel.rows.winfo_children()},row_ids)
             self.assertEqual([label.cget('text') for label in panel.summary_counts.values()],['24','13','11'])
             for key,expected in [('questions',['Small','Never','Medium','Large']),
                                  ('questions',['Large','Medium','Never','Small']),

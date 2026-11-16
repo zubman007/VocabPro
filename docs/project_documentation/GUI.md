@@ -7,6 +7,13 @@ About app vypisuje jen aktivní jazyky. Sdíleným zdrojem seznamu je vlastnost
 Při opětovné aktivaci se obnoví přístup k existujícím souborům a pokroku.
 Load_setting již nevolá automatické odstraňování neaktivních prázdných CSV.
 
+Seznam N kurzů po uložení skrývá vypnuté řádky; přidání stejného jazyka obnoví
+dřívější volby i vyplněná data. Jen ukládání nastavení smí odstranit prázdné
+soubory. Inicializace doplňuje chybějící soubory aktivních kurzů. Příznak
+gramatiky je samostatný pro každý jazyk: řídí jeho domovskou sekci, kartu/tab
+statistik a vstupní funkce. Při přepnutí jazyka ve statistikách se nabídka
+aktualizuje; skrytí právě zvolené gramatiky přepne na slovní zásobu.
+
 Štítky právě zkoušeného slova jsou v samostatném spodním grid řádku karty
 zadání. `fit_question_prompt` rezervuje jejich skutečnou zalomenou výšku,
 aby deset dlouhých štítků nepřekrývalo slovo, kontext ani audio tlačítko.

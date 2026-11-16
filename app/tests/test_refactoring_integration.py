@@ -149,7 +149,7 @@ class StatisticsLifecycleTests(TestCase):
             controller=viewer.StatisticsController(window);window.controller=controller
             main_thread=get_ident();workers=[];charts=[];beats=[]
             calculate=viewer.prepare_statistics
-            def work(*args):workers.append(get_ident());return calculate(*args)
+            def work(*args, **kwargs):workers.append(get_ident());return calculate(*args, **kwargs)
             def chart(*args):charts.append(get_ident())
             def heartbeat():
                 if window.winfo_exists() and not window.ready:
@@ -172,7 +172,7 @@ class StatisticsLifecycleTests(TestCase):
         release=Event();started=Event()
         window=StatisticsWindow(self.root);controller=viewer.StatisticsController(window)
         window.controller=controller;controller.lang_var=cst.StringVar(value='English')
-        def slow(*args):started.set();release.wait(5);return None
+        def slow(*args, **kwargs):started.set();release.wait(5);return None
         with patch.object(viewer,'prepare_statistics',side_effect=slow):
             controller.load();self.assertTrue(started.wait(2))
             task=controller.task;window.destroy();release.set();task.thread.join(2)

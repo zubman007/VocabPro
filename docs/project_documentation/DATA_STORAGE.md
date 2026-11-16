@@ -157,8 +157,11 @@ revize existujícího souboru a replace od nekooperujícího externího procesu.
 # Rekordy gramatiky
 
 Volitelný soubor `<jazyk>_gra_records.csv` obsahuje hlavičku `best_streak`
-a jediný celočíselný nezáporný rekord. Chybějící soubor znamená 0 a samotné
-otevření jej nevytváří. Existující gramatické CSV se kvůli rekordu nemění.
+a nejvýše jeden celočíselný nezáporný rekord. Chybějící soubor nebo samotná
+hlavička znamená 0; příprava zapnutého modulu vytvoří prázdnou hlavičku.
+Žádná syntetická odpověď ani řádek rekordu se nepřidává. Existující gramatické
+CSV se kvůli rekordu nemění. Vypnutí modulu/kurzu odstraní jen prázdný soubor;
+uložený řádek (včetně nuly) zůstává zachovaný.
 Repository `grammar_records` používá atomické `save_csv`, maximum oproti
 uloženému rekordu a kontrolu revize. Při selhání zápisu odpovědí vrátí změnu
 rekordu. Dva soubory nejsou jednou transakcí odolnou proti výpadku napájení:

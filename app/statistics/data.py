@@ -5,6 +5,7 @@ from app.shared.learning_data import Count_trailing_s
 from app.statistics.cache import cache
 from app.statistics.difficult_words import difficult_words
 from app.statistics.grammar_categories import grammar_categories
+from app.statistics.grammar_progress import grammar_question_progress
 from app.statistics.vocabulary_tags import tag_statistics
 from app.repositories.csv_store import read_csv
 
@@ -100,6 +101,8 @@ def training_statistics(path, kind, language=None):
         if kind == 'conjugation' and language is not None:
             from app.statistics.conjugation import conjugation_progress
             result['progress'] = conjugation_progress(frame, language)
+        if kind == 'grammar':
+            result['question_progress'] = grammar_question_progress(frame)
         return result
     result=cache.get(path, kind, (language,), calculate)
     if kind=='grammar':

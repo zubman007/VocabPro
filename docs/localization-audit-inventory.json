@@ -1,6 +1,6 @@
 {
   "languages": 6,
-  "keys": 501,
+  "keys": 513,
   "duplicate_values": {
     "en": {
       "Correct": [
@@ -322,12 +322,12 @@
     }
   },
   "catalog_sizes": {
-    "en": 501,
-    "cs": 501,
-    "sk": 501,
-    "es": 501,
-    "fr": 501,
-    "de": 501
+    "en": 513,
+    "cs": 513,
+    "sk": 513,
+    "es": 513,
+    "fr": 513,
+    "de": 513
   },
   "catalog_issues": [],
   "missing_source_keys": [],

@@ -4,8 +4,12 @@
 
 Po zavedení N studijních kurzů měly katalogy 496 klíčů. Navazující opravy
 lokalizace upravily **120 existujících hodnot** (cs 41, sk 55, de 8, es 10,
-fr 3, en 3) a přidaly **5 klíčů / 30 hodnot** pro vlastní dialogy. Aktuálně
-má každý ze šesti katalogů **501 klíčů**. Audit nehlásí chybějící překlady,
+fr 3, en 3) a přidaly **5 klíčů / 30 hodnot** pro vlastní dialogy. Po této fázi
+měl každý katalog **501 klíčů**. Následná správa souborů kurzů
+a příznak gramatiky doplnily dva klíče. Graf aktuálních sérií otázek,
+samostatná karta rekordu a počet kategorií přidaly deset dalších;
+aktualizovaný inventář má **513 klíčů v každém ze šesti jazyků**.
+Audit nehlásí chybějící překlady,
 prázdné či duplicitní klíče, chyby parametrů ani kontrolované pevné UI texty.
 
 - Čeština a slovenština používají vykání ve zprávách, nápovědě i průvodci.
