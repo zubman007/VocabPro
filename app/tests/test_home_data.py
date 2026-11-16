@@ -75,7 +75,7 @@ class HomeDataTests(unittest.TestCase):
         frame=sample_preferences();frame.loc[frame.Name=='Learn batch','Value']='broken'
         context=get_context()
         previous=(context.preferences,context.preferences_frame)
-        with patch('app.main.load_preferences',return_value=frame), patch('app.main.ensure_course') as ensure:
+        with patch('app.main.load_preferences',return_value=frame), patch('app.main.ensure_course_files') as ensure:
             with self.assertRaises(PreferenceError):main.Load_setting()
         self.assertEqual((context.preferences,context.preferences_frame),previous)
         ensure.assert_not_called()

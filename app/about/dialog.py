@@ -14,6 +14,9 @@ AboutTabs = SectionTabs
 class AboutDialog(AppDialog):
     def __init__(self, parent, translate, app_name, learned_by, languages):
         super().__init__(parent)
+        from app.core.context import get_context
+        preferences = get_context(parent).preferences
+        grammar_enabled = any(preferences.grammar_enabled(language) for language in preferences.learning_languages)
         self.withdraw()
         self.owner=parent
         self._show_after=None
@@ -80,6 +83,7 @@ class AboutDialog(AppDialog):
                            ("Grammar","Guide grammar details"),("Conjugation","Guide conjugation details"),
                            ("Statistics","Guide statistics details"),("Backups","Guide storage details"),
                            ("API services","Guide services details")):
+            if title == 'Grammar' and not grammar_enabled:continue
             cst.CTkLabel(body,text=translate(title),font=(FONT,22,"bold"),text_color=TEAL).pack(anchor="w",padx=12,pady=(14,5))
             label=cst.CTkLabel(body,text=translate(text),font=(FONT,18),text_color=TEXT,wraplength=850,justify="left")
             label.pack(anchor="w",padx=12,pady=(0,10))
@@ -93,10 +97,8 @@ class AboutDialog(AppDialog):
         shortcuts.pack(fill="both",expand=True,padx=16,pady=12)
         shortcuts.grid_columnconfigure(1,weight=1)
         row=0
-        from app.core.context import get_context
         from app.about.shortcuts import shortcut_sections
-        preferences=get_context(parent).preferences
-        for title,items in shortcut_sections(preferences.show_synonyms,preferences.tags_enabled):
+        for title,items in shortcut_sections(preferences.show_synonyms,preferences.tags_enabled, grammar_enabled):
             cst.CTkLabel(shortcuts,text=translate(title),font=(FONT,21,"bold"),text_color=TEAL).grid(row=row,column=0,columnspan=2,sticky="w",padx=8,pady=(10,6))
             row+=1
             for key,label in items:

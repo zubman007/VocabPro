@@ -93,6 +93,11 @@ class RuntimePreferences:
         from app.shared.languages import LanguagePair
         return tuple(LanguagePair(self.learned_by, language) for language in self.learning_languages)
 
+    def grammar_enabled(self, language):
+        from app.shared.languages import language_id
+        target = language_id(language)
+        return any(course.target == target and course.enabled and course.grammar_enabled for course in self.study_courses)
+
     def testing_probabilities(self, language):
         """Resolve course settings by identity, regardless of list order or origin."""
         from app.shared.languages import legacy_name

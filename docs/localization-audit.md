@@ -1,5 +1,68 @@
 # Audit lokalizace VocabPro — 16. 11. 2026
 
+## Následné opravy — aktuální stav
+
+Po zavedení N studijních kurzů měly katalogy 496 klíčů. Navazující opravy
+lokalizace upravily **120 existujících hodnot** (cs 41, sk 55, de 8, es 10,
+fr 3, en 3) a přidaly **5 klíčů / 30 hodnot** pro vlastní dialogy. Aktuálně
+má každý ze šesti katalogů **501 klíčů**. Audit nehlásí chybějící překlady,
+prázdné či duplicitní klíče, chyby parametrů ani kontrolované pevné UI texty.
+
+- Čeština a slovenština používají vykání ve zprávách, nápovědě i průvodci.
+  Němčina používá převládající „du“; nové texty kurzů a SMTP už nepřepínají
+  do „Sie“. Španělština ponechává „tú“ také v novém nastavení kurzů.
+- Pro opakování učiva je španělské `repasar`/`repaso`. Výrazy o opakovaných
+  chybách (`errores repetidos`) zůstávají významově odlišené.
+- Angličtina používá britské `practise` jako sloveso a `practice` jako
+  podstatné jméno, včetně `practised`. Stabilní ID se nepřejmenovávala.
+- Slovenské mazání položek používá `Odstrániť`, vyprázdnění buněk
+  `Vyprázdniť obsah`; popis je jednotně `Opis`.
+- Francouzské ukládání změn používá `Enregistrer` i v průvodci. Zálohy
+  nadále používají odpovídající výraz `sauvegarde`.
+- Popisky posledních výsledků gramatiky mají nezlomitelnou mezeru před
+  procentem v cs/sk/de/es/fr; angličtina zachovává zápis bez mezery.
+
+Všechny chybové a potvrzovací messageboxy aplikace nyní používají společný
+`app/ui/messagebox.py` místo systémových dialogů. Přepojeno je 14 modulů.
+Tlačítka Ano/Ne/Zrušit/OK i výchozí titulky se určují podle kontextu aplikace,
+nikoli jazyka Windows. Zachované jsou návratové hodnoty `True`/`False`/`None`
+a `ok`, výchozí kladná volba původních dotazů, Escape/zavření jako odmítnutí
+nebo zrušení, Enter a možnost zkopírovat zprávu pomocí Ctrl+C. Dlouhé zprávy
+se zalamují a posouvají. Po zavření vnořené zprávy se obnovuje modalita
+původního dialogu. Titulky a obsah se znovu nepřekládají, proto se nemění
+uživatelská data ani technické podrobnosti. Výběr Yes/No/Cancel má stále
+stejný význam pro uložení, zahození změn a pokračování v práci.
+
+Kontrolní nástroj nově odmítá návrat importů nativního messageboxu a odhalí
+také pevné poziční titulky/zprávy. Validátor formátů nyní ověřuje skutečný
+výsledek vnořených specifikací, jejich hloubku i nepovolený přístup k atributům;
+neplatná šablona už neprojde jen kvůli přítomnosti `{width}`.
+
+Aktualizovaný inventář obsahuje **83 kandidátů bez literálového odkazu** a
+76 skupin shodných hodnot. Jde o podněty ke kontrole, ne prokázané chyby.
+Historické titulky a přípony zůstávají dostupné starším voláním; automatické
+smazání by odporovalo požadavku na kompatibilitu. Německé `Phrase` zůstává
+obecnou kategorií: kód ani editor ji neomezují na ustálené výrazy, takže
+nahrazení užším významem `Wendung` by nebylo podloženou opravou.
+Osm technických invariantů/diagnostik je uvedeno odděleně od UI textů.
+
+Nový regresní modul `test_localization_followup` prošel **10/10**. Ověřuje
+redakční pravidla, formátování, zákaz nativních dialogů, skutečné modální
+návratové hodnoty, zavření vlastníka, obnovu grabu, výchozí kontext, klávesy
+a dlouhé zprávy ve všech jazycích při třech simulovaných měřítkách UI.
+Český potvrzovací dialog byl také vizuálně zkontrolován v reálném okně Windows.
+Tato kontrola nenahrazuje nezávislou jazykovou korekturu ani fyzické ověření
+všech původních obrazovek na třech různých nastaveních DPI.
+
+Závěrečný úplný běh s limitem 240 sekund na modul prošel **542/542 testy
+v 85 modulech**, bez chyb a bez přeskočení. Zahrnuje původní funkce,
+lokalizaci, N kurzy, editory, ukládání, potvrzení odchodu i statistiky.
+Po posledním doplnění redakčního pravidla a kontroly konstruktoru dialogu
+byly navíc znovu spuštěny cílené kontroly politik a validace katalogů.
+Uživatelské slovníky, historie a nastavení se nepřepisovaly.
+
+Následující části zachycují původní audit a jeho tehdejší měření.
+
 ## Závěr a rozsah jistoty
 
 Aplikace má šest jazyků rozhraní: angličtinu (`en`), češtinu (`cs`), slovenštinu
@@ -155,25 +218,17 @@ nový testovací framework. Audit používá standardní knihovnu a nepotřebuje
   zachovají jako **technické podrobnosti s lokalizovaným kontextem**, nikoli
   jako údajně přeložený text. Nativní tlačítka Windows messageboxů se řídí OS.
 
-## Ruční posouzení a zbývající omezení
+## Redakční rozhodnutí a zbývající omezení
 
-Následující jsou návrhy ke stylistickému rozhodnutí, nikoli automaticky chyby:
+Původní stylistické návrhy byly při navazující opravě rozhodnuty a provedeny:
 
-1. Čeština/slovenština míchají tykání a vykání (např. stručná nápověda proti
-   zálohování a delším průvodcům). Doporučení: zvolit jednotný tón a teprve
-   podle něj provést celkovou redakci.
-2. Němčina míchá `du`, `Sie` a neosobní infinitiv. Doporučení: zachovat `du`
-   jako převládající styl výuky, formální texty zkontrolovat rodilým mluvčím.
-3. Španělština používá `repetir` i `repasar`. Obojí může být správně podle
-   kontextu; pro opakování látky by šlo preferovat `repasar`.
-4. Francouzské `Enregistrer` a `sauvegarder` mohou být oba správné. Hlavní
-   akce je sjednocená, prózu o zálohách neposuzovat jako stejný kontext.
-5. Anglické `practice`/`practise` a `practiced`/`practised` vyžadují rozhodnutí
-   o variantě angličtiny; stabilní ID kvůli tomu nepřejmenovávat.
-6. Německé `Phrase` pro slovní kategorii může být vhodné nahradit `Wendung`,
-   pokud ve slovnících znamená ustálený výraz. Bez potvrzení významu neměnit.
-7. Slovenské `zmazať`/`vymazať`/`odstrániť` sjednotit pouze podle zvolené
-   terminologie akcí, nejde samo o sobě o pravopisnou chybu.
+1. Čeština/slovenština: vykání; krátké názvy akcí zůstávají v infinitivu.
+2. Němčina: „du“; neosobní názvy akcí zůstávají v infinitivu.
+3. Španělština: „tú“ a `repasar` pro opakování učiva.
+4. Francouzština: `Enregistrer` pro změny, `sauvegarde` pro zálohy.
+5. Angličtina: britský pravopis při zachování všech stabilních ID.
+6. Německé `Phrase`: zachovat obecný význam stávající slovní kategorie.
+7. Slovenština: `Odstrániť` pro položky, `Vyprázdniť obsah` pro obsah buněk.
 
 Vizuální checklist pro každý z šesti jazyků:
 
@@ -190,9 +245,8 @@ Vizuální checklist pro každý z šesti jazyků:
 - [ ] Dialogy synonym/štítků, About a průvodce: všechny záložky a scroll.
 - [ ] Zamčený/chybějící CSV, chyba zařízení a služby: lokalizovaný kontext
       a užitečné technické podrobnosti; žádný nezformátovaný `{placeholder}`.
-- [ ] Porovnat jazyk tlačítek nativních messageboxů s jazykem Windows.
-      Pokud má i tato část vždy respektovat aplikaci, nahradit je jednotnými
-      vlastními dialogy v samostatném kroku.
+- [x] Nahradit systémové messageboxy vlastními dialogy v jazyce aplikace;
+      otestovat výsledky dotazů, obnovu modality, dlouhé texty a klávesy.
 
 Automatické testy geometrie nenahrazují vizuální korekturu na všech displejích.
 Není zde označena za hotovou nezávislá jazyková korektura, kontrola všech DPI

@@ -6,16 +6,20 @@ import pandas as pd
 from app.shared.storage import save_csv
 
 
-def ensure_course(files_dir, learned_by, language):
-    files_dir = Path(files_dir)
-    files_dir.mkdir(parents=True,exist_ok=True)
+def vocabulary_columns(learned_by, language):
     headers = ['ID', language, 'Phonetic', learned_by, 'Audio', 'Description', 'Example',
                'Part of Speech', 'Tags', 'Created', 'Repetition', 'Next repetition']
     if language == 'Spanish':
         headers.remove('Phonetic')
+    return headers
+
+
+def ensure_course(files_dir, learned_by, language):
+    files_dir = Path(files_dir)
+    files_dir.mkdir(parents=True,exist_ok=True)
     path = files_dir / f'{learned_by}_{language}_voc.csv'
     if not path.exists():
-        save_csv(pd.DataFrame(columns=headers), path, index=False, sep=';', expect_missing=True)
+        save_csv(pd.DataFrame(columns=vocabulary_columns(learned_by, language)), path, index=False, sep=';', expect_missing=True)
 
 
 def remove_unused_empty_courses(files_dir, learned_by, languages):

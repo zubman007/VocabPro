@@ -219,4 +219,5 @@ class GrammarEditor:
 
 def Edit_grammar(app,language,*,context=None):
     context=get_context(app,context)
+    if not context.preferences.grammar_enabled(language):return
     return GrammarEditor(app,language,context.grammar_path(language),context.go_home,context=context)

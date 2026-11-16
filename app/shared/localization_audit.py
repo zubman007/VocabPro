@@ -135,6 +135,8 @@ def source_findings(source, filename, keys):
         values = [option.value for option in node.keywords if option.arg in SINKS]
         if name in MESSAGEBOX_SINKS:
             values.extend(node.args[:2])
+        if name == 'MessageDialog':
+            values.extend(node.args[1:3])
         if name in POSITIONAL_SINKS and node.args:
             values.append(node.args[0])
         position = POSITIONAL_UI_SINKS.get(name)

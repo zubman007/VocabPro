@@ -52,13 +52,13 @@ class ContextTests(TestCase):
         from app.main import Load_setting
         context=AppContext()
         frame=sample_preferences()
-        with patch('app.main.load_preferences',return_value=frame),patch('app.main.ensure_course'),\
+        with patch('app.main.load_preferences',return_value=frame),patch('app.main.ensure_course_files'),\
                 patch('app.shared.audio_effects.configure') as audio:
             config=Load_setting(context)
         self.assertIs(context.preferences,config)
         audio.assert_called_once_with(config.sounds_enabled,config.sound_volume)
         invalid=frame.copy();invalid.loc[invalid.Name.eq('Learn batch'),'Value']='invalid'
-        with patch('app.main.load_preferences',return_value=invalid),patch('app.main.ensure_course') as ensure:
+        with patch('app.main.load_preferences',return_value=invalid),patch('app.main.ensure_course_files') as ensure:
             with self.assertRaises(ValueError):Load_setting(context)
         self.assertIs(context.preferences,config);self.assertIs(context.preferences_frame,frame)
         ensure.assert_not_called()

@@ -332,6 +332,7 @@ def Grammar_training(app_input,lang_input,categories=None,*,context=None,on_back
     """Keep the menu entry point; each call creates an independent lesson."""
     context=get_context(app_input,context)
     config=context.preferences
+    if not config.grammar_enabled(lang_input):return
     path=context.grammar_path(lang_input)
     try:questions = Load_questions_from_csv(path)
     except (OSError,ValueError,csv.Error) as error:

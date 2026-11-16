@@ -22,4 +22,5 @@ class GrammarTheoryEditor(GrammarEditor):
 
 def Edit_grammar_theory(app,language,*,context=None):
     context=get_context(app,context)
+    if not context.preferences.grammar_enabled(language):return
     return GrammarTheoryEditor(app,language,context.theory_path(language),context.go_home,context=context)

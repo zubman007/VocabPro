@@ -4,6 +4,8 @@ from pathlib import Path
 import pandas as pd
 from app.shared.storage import destination_lock, file_revision, save_csv, FileChangedError
 
+COLUMNS = ('best_streak',)
+
 
 def record_path(course):
     return Path(course).with_name(Path(course).stem+'_records.csv')
@@ -13,8 +15,9 @@ def load_record(course):
     path=record_path(course)
     if not path.exists():return 0
     frame=pd.read_csv(path,sep=';',dtype=str,keep_default_na=False)
-    if list(frame.columns)!=['best_streak'] or len(frame)!=1:
+    if list(frame.columns)!=list(COLUMNS) or len(frame)>1:
         raise ValueError('Invalid grammar record file.')
+    if frame.empty:return 0
     value=frame.best_streak.iloc[0]
     if not value.isascii() or not value.isdigit():raise ValueError('Invalid grammar record file.')
     return int(value)

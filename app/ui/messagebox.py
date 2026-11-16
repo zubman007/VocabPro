@@ -19,11 +19,11 @@ class MessageDialog(AppDialog):
         self.configure(fg_color=SECTION_SURFACE)
         self.cancel_result = 'cancel' if 'cancel' in choices else 'no' if 'no' in choices else 'ok'
         self.result = self.cancel_result
-        self.default = default if default in choices else self.cancel_result
+        self.default = default if default in choices else choices[0]
         self.title(title)
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
-        scale = self._get_widget_scaling()
+        scale = self._get_window_scaling()
         width = min(640, int(self.winfo_screenwidth() / scale) - 40)
         height = min(460 if len(message) > 250 or detail else 340,
                      int(self.winfo_screenheight() / scale) - 80)
@@ -38,7 +38,7 @@ class MessageDialog(AppDialog):
             text_color=TEXT, font=(FONT, 18), anchor='nw', justify='left', wraplength=width - 90, height=0)
         self.message_label.grid(sticky='ew', padx=14, pady=14)
         def resize(event):
-            wrap = max(80, int(event.width / self._get_widget_scaling()) - 32)
+            wrap = max(80, int(event.width / self.message_label._get_widget_scaling()) - 32)
             if self.message_label.cget('wraplength') != wrap:
                 self.message_label.configure(wraplength=wrap)
         body._parent_canvas.bind('<Configure>', resize, add='+')
@@ -55,8 +55,19 @@ class MessageDialog(AppDialog):
         dialog_actions(actions, list(self.buttons.values()))
         self.bind('<Return>', self._return)
         self.bind('<space>', self._space)
-        self.bind('<Escape>', lambda event: self.choose(self.cancel_result))
-        self.protocol('WM_DELETE_WINDOW', lambda: self.choose(self.cancel_result))
+        self.bind('<Escape>', self._escape)
+        self.bind('<Control-c>', self._copy_message)
+        self.bind('<Control-C>', self._copy_message)
+        self.protocol('WM_DELETE_WINDOW', self._escape)
+
+    def _escape(self, event=None):
+        self.choose(self.cancel_result)
+        return 'break'
+
+    def _copy_message(self, event=None):
+        self.clipboard_clear()
+        self.clipboard_append(self.message_label.cget('text'))
+        return 'break'
 
     def _focused_choice(self):
         widget = self.focus_get()

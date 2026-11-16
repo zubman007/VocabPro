@@ -8,6 +8,7 @@ class StatisticsTabs(cst.CTkFrame):
         super().__init__(parent, fg_color='transparent', corner_radius=0)
         self.grid_columnconfigure(0, weight=1)
         self.on_change = on_change
+        self.grammar_available = self.conjugation_available = True
         labels = {translate(key): key for key in ('Vocabulary', 'Grammar', 'Conjugation')}
         self.navigation = cst.CTkSegmentedButton(self, values=list(labels),
             command=lambda label: self.select(labels[label]), font=(FONT, 20), height=44,
@@ -25,7 +26,15 @@ class StatisticsTabs(cst.CTkFrame):
         self.select('Vocabulary')
 
     def set_conjugation_available(self, available):
-        keys = ['Vocabulary', 'Grammar', 'Conjugation'] if available else ['Vocabulary', 'Grammar']
+        self.conjugation_available = available
+        self._update_navigation()
+
+    def set_grammar_available(self, available):
+        self.grammar_available = available
+        self._update_navigation()
+
+    def _update_navigation(self):
+        keys = ['Vocabulary'] + (['Grammar'] if self.grammar_available else []) + (['Conjugation'] if self.conjugation_available else [])
         values = [self.labels[key] for key in keys]
         if self.navigation.cget('values') != values:
             self.navigation.configure(values=values)

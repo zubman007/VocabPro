@@ -59,7 +59,7 @@ class StudyCourseDataTests(TestCase):
 
     def test_bad_or_future_configuration_never_falls_back_to_two_courses(self):
         good = json.loads(encode_courses('cs', (StudyCourse('es'),)))
-        bad = ['{', '', 'null', '{}', json.dumps(dict(good, version=2)),
+        bad = ['{', '', 'null', '{}', json.dumps(dict(good, version=99)),
                json.dumps(dict(good, source='en')), json.dumps(dict(good, courses=[])),
                '{"version":1,"version":1,"source":"cs","courses":[]}']
         for text in bad:

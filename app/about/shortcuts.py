@@ -1,7 +1,7 @@
 """User-facing shortcut reference, including contextual and native editing keys."""
 
 
-def shortcut_sections(show_synonyms=True, tags_enabled=True):
+def shortcut_sections(show_synonyms=True, tags_enabled=True, grammar_enabled=True):
     vocabulary=[('Ctrl+S','Save'),('Ctrl+R','Record audio'),('Ctrl+P','Play audio (ctrl+p)'),('Ctrl+H','Show synonyms')]
     if tags_enabled:
         vocabulary.extend([('Ctrl+T','Word tags'),('Ctrl+Shift+T','Manage tags')])
@@ -9,7 +9,7 @@ def shortcut_sections(show_synonyms=True, tags_enabled=True):
     repeat=[('1–4','Choose answer (options only)'),('Enter','Confirm answer or play audio'),
         ('Ctrl+S','Save'),('Ctrl+R','Review of the previous word'),('Ctrl+P','Listen'),('Alt+→','Next'),('Esc','Close')]
     if not show_synonyms:repeat.append(('Ctrl+H','Show synonyms'))
-    return [
+    sections = [
         ('Vocabulary',vocabulary),
         ('Repeat',repeat),
         ('Grammar',[('1–4','Choose answer (options only)'),('Enter','Next after feedback'),('Ctrl+S','Save'),('Space','Reveal or next question'),
@@ -22,5 +22,6 @@ def shortcut_sections(show_synonyms=True, tags_enabled=True):
         ('Tables and text fields',[('Ctrl+C','Copy'),('Ctrl+X','Cut'),('Ctrl+V','Paste'),('Ctrl+A','Select all'),('Ctrl+Z','Undo'),('Ctrl+Shift+Z','Redo')]),
         ('Dialogs',[('Esc','Close')]),
     ]
+    return [section for section in sections if grammar_enabled or section[0] not in ('Grammar', 'Grammar editors')]
 
 

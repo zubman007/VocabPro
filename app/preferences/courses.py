@@ -24,6 +24,7 @@ class StudyCourse:
     enabled: bool = True
     context_percent: int = 0
     audio_percent: int = 0
+    grammar_enabled: bool = True
 
     @property
     def language(self):
@@ -63,7 +64,7 @@ def decode_courses(text, source):
         data = json.loads(text, object_pairs_hook=_unique_object)
         if not isinstance(data, dict) or set(data) != {'version', 'source', 'courses'}:
             raise ValueError
-        if type(data['version']) is not int or data['version'] != 1:
+        if type(data['version']) is not int or data['version'] not in (1, 2):
             raise CourseConfigurationError('Unsupported study course configuration version.')
         if data['source'] != language_id(source):
             raise CourseConfigurationError('Study course source does not match your own language.')
@@ -71,7 +72,8 @@ def decode_courses(text, source):
             raise ValueError
         result, seen = [], set()
         for item in data['courses']:
-            if not isinstance(item, dict) or set(item) != {'target', 'enabled', 'context', 'audio'}:
+            fields = {'target', 'enabled', 'context', 'audio'} | ({'grammar'} if data['version'] == 2 else set())
+            if not isinstance(item, dict) or set(item) != fields:
                 raise ValueError
             target = item['target']
             if language_id(target) != target or type(item['enabled']) is not bool:
@@ -79,17 +81,19 @@ def decode_courses(text, source):
             if target in seen:
                 raise CourseConfigurationError('Each study language may appear only once.')
             seen.add(target)
+            if type(item.get('grammar', True)) is not bool:
+                raise ValueError
             for kind in ('context', 'audio'):
                 if type(item[kind]) is not int or not 0 <= item[kind] <= 100:
                     raise CourseConfigurationError('Enter a percentage between 0 and 100.')
             if item['enabled'] and item['context'] + item['audio'] > 100:
                 raise CourseConfigurationError('Test percentages for each language must total at most 100.')
-            if item['enabled']:
+            if item['enabled'] or data['version'] == 2:
                 try:
                     LanguagePair(source, target)
                 except ValueError:
                     raise CourseConfigurationError('Your own language and all learned language need to be different.') from None
-            result.append(StudyCourse(target, item['enabled'], item['context'], item['audio']))
+            result.append(StudyCourse(target, item['enabled'], item['context'], item['audio'], item.get('grammar', True)))
         if not any(course.enabled for course in result):
             raise CourseConfigurationError('Enable at least one study course.')
         return tuple(result)
@@ -100,8 +104,8 @@ def decode_courses(text, source):
 
 
 def encode_courses(source, courses):
-    text = json.dumps({'version': 1, 'source': language_id(source), 'courses': [
+    text = json.dumps({'version': 2, 'source': language_id(source), 'courses': [
         dict(target=course.target, enabled=course.enabled, context=course.context_percent,
-             audio=course.audio_percent) for course in courses]}, separators=(',', ':'))
+             audio=course.audio_percent, grammar=course.grammar_enabled) for course in courses]}, separators=(',', ':'))
     decode_courses(text, source)
     return text

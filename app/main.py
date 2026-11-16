@@ -9,7 +9,7 @@ from app.ui import messagebox
 from app.core.context import get_context
 from app.home.layout import build_home, build_navigation
 from app.home.data import course_overview
-from app.repositories.courses import ensure_course
+from app.repositories.course_files import ensure_course_files
 from app.services.backup import backup_due, send_backup
 from app.preferences.data import RuntimePreferences
 from app.repositories.preferences import load_preferences
@@ -41,8 +41,7 @@ def Load_setting(context=None):
     context=get_context(context=context)
     frame=load_preferences(context.files_dir/'settings.csv')
     config=RuntimePreferences.from_frame(frame)
-    for language in config.learning_languages:
-        ensure_course(context.files_dir,config.learned_by,language)
+    ensure_course_files(context.files_dir, config.learned_by, config.study_courses)
     # Publish one immutable snapshot only after preparation succeeds.
     context.preferences=config
     context.preferences_frame=frame
@@ -109,7 +108,8 @@ def _try_bkp(app,context):
 
 def _load_vocab_stats(language,context):
     config=context.preferences
-    return course_overview(context.files_dir,config.learned_by,language,config.learn_batch,config.repeat_batch)
+    return course_overview(context.files_dir,config.learned_by,language,config.learn_batch,config.repeat_batch,
+                           grammar_enabled=config.grammar_enabled(language))
 
 
 def _build_main_window(app,stats,context):
@@ -135,6 +135,6 @@ def _build_main_window(app,stats,context):
     return build_home(app,stats,languages,dict(practice=lambda language:practice(language,'rep_words'),
         learn=lambda language:practice(language,'lrn_words'),edit=edit,conjugation=conjugation,
         grammar=grammar,edit_grammar=edit_grammar,refresh=context.go_home,
-        available=lambda language,kind:(context.conjugation_path(language) if kind=='conjugation'
-            else context.grammar_path(language)).exists()), initial_language=selected,
+        available=lambda language,kind:(context.conjugation_path(language).exists() if kind=='conjugation'
+            else config.grammar_enabled(language))), initial_language=selected,
         on_select=lambda language: setattr(context, 'selected_course', context.language_pair(language)))

@@ -35,6 +35,8 @@ def Stats(app, *, context=None, language=None, section='Vocabulary'):
     languages = context.preferences.learning_languages
     window.initial_language = language if language in languages else languages[0]
     window.initial_section = section if section in ('Vocabulary', 'Grammar', 'Conjugation') else 'Vocabulary'
+    if window.initial_section == 'Grammar' and not context.preferences.grammar_enabled(window.initial_language):
+        window.initial_section = 'Vocabulary'
     window.minsize(min(1400, window.winfo_screenwidth()), min(800, max(400, window.winfo_screenheight()-80)))
     window.title(s.app_name + ' - ' + context.translate('Statistics Viewer'))
     set_window_icon(window)
@@ -197,7 +199,8 @@ class StatisticsController:
         files = self.context.files_dir
         def calculate(cancelled, progress):
             return prepare_statistics(files, config.learned_by, language, s.stat_horizon,
-                s.days_gap_map, s.default_wait, s.PoS_types, s.PoS_ideal)
+                s.days_gap_map, s.default_wait, s.PoS_types, s.PoS_ideal,
+                grammar_enabled=config.grammar_enabled(language))
         self.task = BackgroundTask(self.window, calculate, self._prepared, self.window.fail).start()
         return False
 
@@ -246,7 +249,8 @@ class StatisticsController:
         for values, frame, title, row in ((data['forecast'], self.chart_rep_frm, 'Number of words to review next days', 0), (data['growth'], self.chart_cr_frm, 'Growth of the vocabulary', 1), (data['trailing'], self.chart_voc_trail_frm, 'Vocabulary trailing successes', 3)):
             charts.append((values, frame, title, row))
         available = conjugation is not None
-        _set_conjugation_available(self.window, available)
+        _set_conjugation_available(self.window, available,
+            grammar_available=self.context.preferences.grammar_enabled(self.lang_var.get()))
         if available:
             from app.statistics.conjugation import progress_table
             progress = conjugation.get('progress')
@@ -301,13 +305,15 @@ def _show_summary(summary, count_label, total_label, success_label, failure_labe
     ring.configure(text=percent(successes / attempts if attempts else 0,
         get_context(ring).preferences.app_language, places=2), attempts=attempts)
 
-def _set_conjugation_available(window, available):
+def _set_conjugation_available(window, available, *, grammar_available=True):
     window.statistics_tabs.set_conjugation_available(available)
+    window.statistics_tabs.set_grammar_available(grammar_available)
     vocabulary, conjugation, grammar = [card.master for card in window.summary_cards]
     container = vocabulary.master
     for column in range(3):container.grid_columnconfigure(column,weight=0,uniform='',minsize=0)
-    visible=[vocabulary,grammar]+([conjugation] if available else [])
+    visible=[vocabulary]+([grammar] if grammar_available else [])+([conjugation] if available else [])
     if not available:conjugation.grid_remove()
+    if not grammar_available:grammar.grid_remove()
     for column,card in enumerate(visible):
         container.grid_columnconfigure(column,weight=1,uniform='summary')
         card.grid(row=0,column=column,sticky='nsew',padx=6)

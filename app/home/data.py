@@ -7,7 +7,7 @@ from app.repositories.vocabulary import read_words
 from app.repositories.courses import row_count
 
 
-def course_overview(files_dir, learned_by, language, learn_batch, repeat_batch, now=None):
+def course_overview(files_dir, learned_by, language, learn_batch, repeat_batch, now=None, *, grammar_enabled=True):
     files_dir = Path(files_dir)
     result = dict(rep_words=pd.DataFrame(), lrn_words=pd.DataFrame(), rep_count=0,
                   lrn_count=0, all_count=0, con_count=0, gra_count=0)
@@ -28,5 +28,5 @@ def course_overview(files_dir, learned_by, language, learn_batch, repeat_batch, 
         repeat = data.loc[success_count.ge(4)].nsmallest(repeat_batch, 'Next repetition').copy()
     result.update(rep_words=repeat, lrn_words=learn,
         con_count=row_count(files_dir / f'{learned_by}_{language}_con.csv'),
-        gra_count=row_count(files_dir / f'{language}_gra.csv'))
+        gra_count=row_count(files_dir / f'{language}_gra.csv') if grammar_enabled else 0)
     return result

@@ -71,7 +71,9 @@ class PreferencesDialog(AppDialog):
                 surface(button, selector_surface)
         rows = dict.fromkeys(sections, 0)
         items = [item for item in with_defaults(self.frame).itertuples(index=False)
-                 if item.Type != 'JSON' and not is_legacy_course_field(item.Name)]
+                 if item.Type != 'JSON' and not is_legacy_course_field(item.Name)
+                 and (item.Name != 'Remember grammar categories'
+                      or any(course.enabled and course.grammar_enabled for course in courses))]
         # Keep groups contiguous even when new defaults were appended to an older CSV.
         grouped = {}
         for item in items:
@@ -230,7 +232,7 @@ class PreferencesDialog(AppDialog):
                       for name,var in self.variables.items()}
             if self.course_editor is not None:
                 values[COURSE_FIELD] = self.course_editor.configuration()
-            save_preferences(self.frame, values, self.path)
+            updated = save_preferences(self.frame, values, self.path)
         except PreferenceError as error:
             self._show_error(self.translate(error.field) + ": " + self.translate(error.message))
             self.tabs.set(self.field_sections[error.field])
@@ -241,6 +243,10 @@ class PreferencesDialog(AppDialog):
             return
         self.saved=True
         self.destroy()
+        failures = updated.attrs.get('course_cleanup_warnings', [])
+        if failures:
+            messagebox.showwarning(parent=self.owner, title=self.translate('Setting'),
+                message=self.translate('Settings saved. Some empty course files could not be removed: {files}').format(files=', '.join(failures)))
 
 
 def open_preferences(app,*,context=None):

@@ -44,7 +44,7 @@ uložená data ani pravidla učení.
 
 ```powershell
 .venv/Scripts/python.exe -B -m app.shared.localization_audit
-.venv/Scripts/python.exe -B -m app.tests.run_all
+.venv/Scripts/python.exe -B -m app.tests.run_all --timeout 240
 ```
 
 Audit kontroluje katalogy, pojmenované parametry, formátování, známá rozhraní
@@ -65,3 +65,18 @@ studijního jazyka samo o sobě rozhraní aplikace nerozšiřuje.
 
 Podrobný výsledek, omezení automatických kontrol a ruční checklist jsou v
 [auditu lokalizace](../docs/localization-audit.md).
+
+## Redakční pravidla
+
+Čeština a slovenština používají vykání, němčina „du“ a španělština „tú“.
+Krátké názvy akcí mohou být neosobní infinitivy. Angličtina používá britský
+pravopis: sloveso `practise`, podstatné jméno `practice`, minulé `practised`.
+Pro opakování učiva ve španělštině používej `repasar`; pro mazání položek ve
+slovenštině `Odstrániť`, pro vyprázdnění buněk `Vyprázdniť obsah`.
+Francouzské `Enregistrer` patří k ukládání změn, `sauvegarde` k zálohám.
+Neměň význam obsahových kategorií pouze kvůli stylistické preferenci.
+
+Chybové a potvrzovací dialogy importuj přes `from app.ui import messagebox`.
+Jejich tlačítka a výchozí titulky používají aktuální jazyk aplikace. Titulek
+a zprávu přelož před voláním, nikoliv znovu uvnitř dialogu. Nepřidávej závislost
+na `tkinter.messagebox`, jehož tlačítka řídí jazyk operačního systému.

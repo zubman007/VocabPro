@@ -9,14 +9,14 @@ from app.statistics.vocabulary_tags import tag_statistics
 from app.repositories.csv_store import read_csv
 
 
-def prepare_statistics(files, learned_by, language, horizon, gaps, default_wait, pos_types, pos_ideal):
+def prepare_statistics(files, learned_by, language, horizon, gaps, default_wait, pos_types, pos_ideal, *, grammar_enabled=True):
     """Prepare all language datasets without touching Tk or Matplotlib objects."""
     vocabulary = vocabulary_statistics(files/f'{learned_by}_{language}_voc.csv', language,
         learned_by, horizon, gaps, default_wait, pos_types, pos_ideal)
     con_file, gra_file = files/f'{learned_by}_{language}_con.csv', files/f'{language}_gra.csv'
     return (vocabulary,
             training_statistics(con_file,'conjugation', language) if con_file.exists() else None,
-            training_statistics(gra_file,'grammar') if gra_file.exists() else None)
+            training_statistics(gra_file,'grammar') if grammar_enabled and gra_file.exists() else None)
 
 
 def simulate_reps_per_day(frame, horizon, gaps, default_wait, today=None):

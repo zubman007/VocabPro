@@ -1,9 +1,10 @@
 """Validated preference persistence, preserving concurrent scheduling metadata."""
 from pathlib import Path
 from datetime import datetime,timedelta
+from dataclasses import replace
 import pandas as pd
 from app.preferences.data import PREFERENCES_FILE,validate_preferences,with_defaults
-from app.shared.storage import file_revision
+from app.shared.storage import file_revision,destination_lock
 from app.repositories.csv_store import commit_document
 
 
@@ -19,6 +20,11 @@ def load_preferences(path=PREFERENCES_FILE):
 
 
 def save_preferences(frame, values, path=PREFERENCES_FILE):
+    with destination_lock(path):
+        return _save_preferences(frame, values, path)
+
+
+def _save_preferences(frame, values, path):
     path = Path(path)
     revision=file_revision(path) if path.exists() else None
     if path.exists():
@@ -43,7 +49,31 @@ def save_preferences(frame, values, path=PREFERENCES_FILE):
             words=pd.read_csv(course,sep=';',dtype=str,keep_default_na=False)
             if any(len(normalize_tags(value).split(', '))>maximum for value in words.get('Tags',[]) if normalize_tags(value)):
                 raise PreferenceError('Maximum tags per word','Existing words exceed this tag limit.')
-    commit_document(path,updated,revision)
+    from app.preferences.courses import COURSE_FIELD, decode_courses, encode_courses, legacy_courses
+    if COURSE_FIELD in values:
+        previous = dict(zip(frame.Name, frame.Value))
+        current = dict(zip(updated.Name, updated.Value))
+        source = current['Learned by']
+        old_source = previous.get('Learned by', source)
+        old_courses = (decode_courses(previous[COURSE_FIELD], old_source)
+                       if COURSE_FIELD in previous else legacy_courses(previous))
+        courses = list(decode_courses(current[COURSE_FIELD], source))
+        from app.shared.languages import language_id
+        if old_source == source:
+            targets = {course.target for course in courses}
+            courses.extend(replace(course, enabled=False) for course in old_courses
+                           if course.target not in targets and course.target != language_id(source))
+        # Keep retired preferences by identity, hidden from the next settings
+        # form, so adding the language again also restores its previous choices.
+        updated.loc[updated.Name.eq(COURSE_FIELD), 'Value'] = encode_courses(source, courses)
+        from app.repositories.course_files import prepared_course_files, retire_course_files
+        with prepared_course_files(path.parent, source, courses):
+            committed = commit_document(path, updated, revision)
+        failures = (retire_course_files(path.parent, old_source, old_courses, source, courses)
+                    if file_revision(path) == committed else [])
+        if failures:updated.attrs['course_cleanup_warnings'] = failures
+    else:
+        commit_document(path,updated,revision)
     return updated
 
 

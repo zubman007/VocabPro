@@ -1,6 +1,6 @@
 {
   "languages": 6,
-  "keys": 485,
+  "keys": 501,
   "duplicate_values": {
     "en": {
       "Correct": [
@@ -322,12 +322,12 @@
     }
   },
   "catalog_sizes": {
-    "en": 485,
-    "cs": 485,
-    "sk": 485,
-    "es": 485,
-    "fr": 485,
-    "de": 485
+    "en": 501,
+    "cs": 501,
+    "sk": 501,
+    "es": 501,
+    "fr": 501,
+    "de": 501
   },
   "catalog_issues": [],
   "missing_source_keys": [],
@@ -335,7 +335,7 @@
   "exception_candidates": [
     {
       "file": "app/core/context.py",
-      "line": 58,
+      "line": 59,
       "text": "Home navigation has not been configured."
     },
     {
@@ -364,6 +364,11 @@
       "text": "Statistics did not become ready"
     },
     {
+      "file": "app/ui/messagebox.py",
+      "line": 101,
+      "text": "A message dialog requires an application window."
+    },
+    {
       "file": "app/vocabulary/tags_data.py",
       "line": 61,
       "text": "Invalid tag filter mode"
@@ -375,7 +380,6 @@
     " words in vocabulary",
     " words to repeat",
     "Back",
-    "Cancel",
     "Cancel edit",
     "Changes saved.",
     "Completed",
@@ -474,6 +478,7 @@
       "Audio",
       "Error",
       "ID",
+      "No",
       "OK",
       "Real",
       "Saved grammar category filters",
@@ -488,6 +493,7 @@
       "Guide",
       "ID",
       "Incorrect",
+      "Information",
       "Menu",
       "Note",
       "OK",
@@ -500,6 +506,7 @@
       "Adverb",
       "Audio",
       "ID",
+      "Information",
       "OK",
       "Phrase",
       "Saved grammar category filters",
