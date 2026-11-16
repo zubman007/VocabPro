@@ -70,7 +70,7 @@
   "Configure the sending account in Settings → Backups → Sending account.": "Nastavte odosielací účet v Nastavenia → Zálohy → Odosielací účet.",
   "Confirm answer or play audio": "Potvrdiť / prehrať",
   "Conjugation": "Časovanie",
-  "Conjugation statistics explanation": "Úspešnosť hodnotí celé slovesné záznamy, nie jednotlivé osoby. Záznamy môžu predstavovať rôzne časy. Tabuľka ukazuje najviac desať záznamov s chybami, od najslabších. Pokrytie vychádza zo súčasných tvarov; historické sa mohli líšiť.",
+  "Conjugation statistics explanation": "Úspešnosť hodnotí celé slovesné záznamy, nie jednotlivé osoby. Záznamy môžu predstavovať rôzne časy. Tabuľka ukazuje najviac desať záznamov s chybami, v predvolenom poradí od najslabších. Pokrytie vychádza zo súčasných tvarov; historické sa mohli líšiť.",
   "Conjugation trailing successes": "Po sebe idúce úspechy (časovanie)",
   "Contains all tags": "Obsahuje všetky",
   "Contains exactly these tags": "Práve tieto štítky",

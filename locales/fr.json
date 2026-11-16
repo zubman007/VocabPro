@@ -70,7 +70,7 @@
   "Configure the sending account in Settings → Backups → Sending account.": "Configurez le compte d’envoi dans Paramètres → Sauvegardes → Compte d’envoi.",
   "Confirm answer or play audio": "Valider / écouter",
   "Conjugation": "Conjugaison",
-  "Conjugation statistics explanation": "La précision concerne les tours complets, pas les personnes individuelles. Les entrées peuvent représenter différents temps. Le tableau affiche au plus dix entrées avec erreurs, les plus faibles en premier. La couverture utilise les formes actuelles ; les anciennes peuvent différer.",
+  "Conjugation statistics explanation": "La précision concerne les tours complets, pas les personnes individuelles. Les entrées peuvent représenter différents temps. Le tableau affiche au plus dix entrées avec erreurs, par défaut les plus faibles en premier. La couverture utilise les formes actuelles ; les anciennes peuvent différer.",
   "Conjugation trailing successes": "Réussites consécutives (conjugaison)",
   "Contains all tags": "Contient toutes",
   "Contains exactly these tags": "Ces étiquettes seules",

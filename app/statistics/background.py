@@ -55,12 +55,12 @@ class StatisticsBackdrop:
         self.layer.bind('<Destroy>', lambda event: self.close(), add='+')
         self.request()
 
-    def add_panel(self, widget, parent=None):
+    def add_panel(self, widget, parent=None, *, rasterize_frame=False):
         ancestor = widget
         while ancestor is not None and ancestor is not self.scroller.interior:
             ancestor = getattr(ancestor, 'master', None)
         provider = self.surface if ancestor is self.scroller.interior else self.backdrop
-        panel = surface(widget, parent if parent is not None else provider)
+        panel = surface(widget, parent if parent is not None else provider, rasterize_frame=rasterize_frame)
         self.panels.append(panel)
         return panel
 

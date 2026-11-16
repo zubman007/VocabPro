@@ -242,7 +242,7 @@ def Generate_chart(data, chart_frm, name, chart_row):
     ax.yaxis.set_major_formatter(FuncFormatter(lambda value, position:
         number(value, ui_language, 0 if float(value).is_integer() else 2)))
     style_chart(fig, ax, name, s.T(name), x_lbl_size)
-    chart_frm.configure(fg_color=STYLES[name][1], border_width=0, corner_radius=12)
+    chart_frm.configure(fg_color=STYLES[name][1], border_width=0, corner_radius=24)
     for w in chart_frm.winfo_children(): w.destroy()
     owner = chart_frm.winfo_toplevel()
     before = set(owner._tclCommands or ())

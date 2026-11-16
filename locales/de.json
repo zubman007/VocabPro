@@ -70,7 +70,7 @@
   "Configure the sending account in Settings → Backups → Sending account.": "Richten Sie das Absenderkonto unter Einstellungen → Sicherungen → Absenderkonto ein.",
   "Confirm answer or play audio": "Bestätigen / anhören",
   "Conjugation": "Konjugation",
-  "Conjugation statistics explanation": "Die Genauigkeit bewertet ganze Verbrunden, keine einzelnen Personen. Einträge können verschiedene Zeitformen darstellen. Die Tabelle zeigt bis zu zehn Einträge mit Fehlern, die schwächsten zuerst. Die Abdeckung verwendet aktuelle Formen; frühere können abweichen.",
+  "Conjugation statistics explanation": "Die Genauigkeit bewertet ganze Verbrunden, keine einzelnen Personen. Einträge können verschiedene Zeitformen darstellen. Die Tabelle zeigt bis zu zehn Einträge mit Fehlern, standardmäßig die schwächsten zuerst. Die Abdeckung verwendet aktuelle Formen; frühere können abweichen.",
   "Conjugation trailing successes": "Aufeinanderfolgende Erfolge (Konjugation)",
   "Contains all tags": "Enthält alle",
   "Contains exactly these tags": "Genau diese Schlagwörter",

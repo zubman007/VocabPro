@@ -8,7 +8,7 @@ from app.shared.localization_format import number
 from app.core.context import get_context
 from app.statistics.components import detail_sort_button
 from app.ui.sorting import sort_arrow
-from app.ui.theme import SECTION_SURFACE as SURFACE, SECTION_CONTROL as HEADER, TEXT, TITLE_FONT
+from app.ui.theme import SECTION_SURFACE as SURFACE, SECTION_CONTROL as HEADER, TEXT
 
 
 class StatisticsTable(cst.CTkFrame):
@@ -61,13 +61,16 @@ class StatisticsTable(cst.CTkFrame):
             font=(FONT, 15, "bold"), padding=(10, 12), borderwidth=1,
             bordercolor='#b7b995', lightcolor='#c8d0b6', darkcolor='#c8d0b6')
         # Windows' native heading ignores background colors. Clone only this
-        # component's heading border, leaving the application's ttk theme alone.
-        if 'VocabStats.heading.border' not in style.element_names():
-            style.element_create('VocabStats.heading.border', 'from', 'clam', 'Treeheading.border')
-        style.layout('VocabStats.Treeview.Heading', [('VocabStats.heading.border', {
+        # component's heading elements, leaving the application's ttk theme alone.
+        for element in ('cell', 'border'):
+            name = 'VocabStats.heading.' + element
+            if name not in style.element_names():
+                style.element_create(name, 'from', 'clam', 'Treeheading.' + element)
+        style.layout('VocabStats.Treeview.Heading', [('VocabStats.heading.cell', {'sticky': 'nswe'}), ('VocabStats.heading.border', {
             'sticky': 'nswe', 'children': [('Treeheading.padding', {
                 'sticky': 'nswe', 'children': [('Treeheading.text', {'sticky': 'we'})]})]})])
-        style.map('VocabStats.Treeview.Heading', background=[('active', '#b5c3a4')])
+        style.map('VocabStats.Treeview.Heading', background=[('active', '#b5c3a4'), ('!active', '#c8d0b6')],
+                  foreground=[('!disabled', TEXT)])
         style.map("VocabStats.Treeview", background=[("selected", "#b5c3a4")],
             foreground=[("selected", TEXT)])
         self.tree = ttk.Treeview(holder, show="headings", height=12, style="VocabStats.Treeview")

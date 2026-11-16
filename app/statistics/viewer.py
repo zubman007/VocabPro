@@ -179,8 +179,10 @@ class StatisticsController:
                 canvas_background.add_panel(button, navigation_surface)
         for panel in tabs.panels.values():
             canvas_background.add_panel(panel, tabs_surface)
-        for panel in (self.tot_sheet, self.difficult_words_panel, self.vocabulary_tags_panel, self.grammar_categories_panel, self.chart_rep_frm, self.chart_cr_frm, self.chart_PoS_frm, self.chart_con_frm, self.chart_voc_trail_frm):
+        for panel in (self.tot_sheet, self.difficult_words_panel, self.vocabulary_tags_panel, self.grammar_categories_panel, self.chart_PoS_frm):
             canvas_background.add_panel(panel)
+        for panel in (self.chart_rep_frm, self.chart_cr_frm, self.chart_con_frm, self.chart_voc_trail_frm):
+            canvas_background.add_panel(panel, rasterize_frame=True)
         sheet_lbl.configure(bg_color=SURFACE, fg_color='transparent', corner_radius=0)
         canvas_background.add_panel(self.conjugation_table)
         canvas_background.add_panel(self.conjugation_progress)

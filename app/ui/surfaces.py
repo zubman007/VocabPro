@@ -53,8 +53,9 @@ class BackdropSurface:
 
 
 class PanelSurface:
-    def __init__(self, widget, parent, filename=None, wash=0.65):
+    def __init__(self, widget, parent, filename=None, wash=0.65, *, rasterize_frame=False):
         self.widget, self.parent, self.wash = widget, parent, wash
+        self.rasterize_frame = rasterize_frame
         self.canvas = widget._canvas
         self.source = None
         if filename:
@@ -138,7 +139,7 @@ class PanelSurface:
                 and self._announced_revision == self.revision):
             return
         if self._painted_key != self._key:
-            self._photo = ImageTk.PhotoImage(self._image if self.source is not None else background, master=self.widget)
+            self._photo = ImageTk.PhotoImage(self._image if self.source is not None or self.rasterize_frame else background, master=self.widget)
             if self._item is None:
                 self._item = self.canvas.create_image(0, 0, anchor='nw', image=self._photo)
             else:
@@ -156,7 +157,7 @@ class PanelSurface:
             self._underlay.create_image(0, 0, anchor='nw', image=self._photo)
         if self.source is None:
             self.canvas.tag_lower(self._item)
-            self.canvas.itemconfigure('inner_parts', state='hidden' if self.widget.cget('fg_color') == 'transparent' else 'normal')
+            self.canvas.itemconfigure('inner_parts', state='hidden' if self.rasterize_frame or self.widget.cget('fg_color') == 'transparent' else 'normal')
             self.canvas.itemconfigure('background_parts', state='hidden')
         else:
             self.canvas.tag_raise(self._item)
@@ -183,8 +184,11 @@ class PanelSurface:
         self.parent.children.discard(self)
 
 
-def surface(widget, parent, filename=None, wash=0.65):
-    """Attach once; flat children retain their native rounded edges and hover."""
+def surface(widget, parent, filename=None, wash=0.65, *, rasterize_frame=False):
+    """Attach once; rasterize_frame uses the smooth mask for static frame fills.
+
+    Interactive controls keep their native fill/hover unless explicitly opted in.
+    """
     provider = getattr(parent, '_surface', parent)
-    widget._surface = PanelSurface(widget, provider, filename, wash)
+    widget._surface = PanelSurface(widget, provider, filename, wash, rasterize_frame=rasterize_frame)
     return widget._surface

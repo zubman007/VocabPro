@@ -70,7 +70,7 @@
   "Configure the sending account in Settings → Backups → Sending account.": "Configure the sending account in Settings → Backups → Sending account.",
   "Confirm answer or play audio": "Confirm / play audio",
   "Conjugation": "Conjugation",
-  "Conjugation statistics explanation": "Accuracy describes whole verb rounds, not individual persons. Records can represent different tenses. The table shows up to ten records with errors, weakest first. Coverage uses current forms; historical forms may differ.",
+  "Conjugation statistics explanation": "Accuracy describes whole verb rounds, not individual persons. Records can represent different tenses. The table shows up to ten records with errors, weakest first by default. Coverage uses current forms; historical forms may differ.",
   "Conjugation trailing successes": "Conjugation trailing successes",
   "Contains all tags": "Contains all tags",
   "Contains exactly these tags": "Contains exactly these tags",
