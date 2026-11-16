@@ -57,7 +57,9 @@ def _save_preferences(frame, values, path):
         old_source = previous.get('Learned by', source)
         old_courses = (decode_courses(previous[COURSE_FIELD], old_source)
                        if COURSE_FIELD in previous else legacy_courses(previous))
-        courses = list(decode_courses(current[COURSE_FIELD], source))
+        from app.repositories.course_files import resolve_conjugation_courses
+        old_courses=resolve_conjugation_courses(path.parent,old_source,old_courses)
+        courses = list(resolve_conjugation_courses(path.parent,source,decode_courses(current[COURSE_FIELD], source)))
         from app.shared.languages import language_id
         if old_source == source:
             targets = {course.target for course in courses}

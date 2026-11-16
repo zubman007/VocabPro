@@ -8,7 +8,9 @@ fr 3, en 3) a přidaly **5 klíčů / 30 hodnot** pro vlastní dialogy. Po této
 měl každý katalog **501 klíčů**. Následná správa souborů kurzů
 a příznak gramatiky doplnily dva klíče. Graf aktuálních sérií otázek,
 samostatná karta rekordu a počet kategorií přidaly deset dalších;
-aktualizovaný inventář má **513 klíčů v každém ze šesti jazyků**.
+po této změně měl inventář **513 klíčů**. Zobecnění Conjugation přidalo
+dalších 20 klíčů pro editor, konfiguraci a výsledky osob;
+aktuálně má každý ze šesti katalogů **533 klíčů**.
 Audit nehlásí chybějící překlady,
 prázdné či duplicitní klíče, chyby parametrů ani kontrolované pevné UI texty.
 

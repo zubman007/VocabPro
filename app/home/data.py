@@ -7,10 +7,10 @@ from app.repositories.vocabulary import read_words
 from app.repositories.courses import row_count
 
 
-def course_overview(files_dir, learned_by, language, learn_batch, repeat_batch, now=None, *, grammar_enabled=True):
+def course_overview(files_dir, learned_by, language, learn_batch, repeat_batch, now=None, *, grammar_enabled=True,conjugation_enabled=True):
     files_dir = Path(files_dir)
     result = dict(rep_words=pd.DataFrame(), lrn_words=pd.DataFrame(), rep_count=0,
-                  lrn_count=0, all_count=0, con_count=0, gra_count=0)
+                  lrn_count=0, all_count=0, con_count=0, con_practice_count=0, gra_count=0)
     path = files_dir / f'{learned_by}_{language}_voc.csv'
     if not path.exists():
         return result
@@ -27,6 +27,14 @@ def course_overview(files_dir, learned_by, language, learn_batch, repeat_batch, 
     if repeat.empty:
         repeat = data.loc[success_count.ge(4)].nsmallest(repeat_batch, 'Next repetition').copy()
     result.update(rep_words=repeat, lrn_words=learn,
-        con_count=row_count(files_dir / f'{learned_by}_{language}_con.csv'),
         gra_count=row_count(files_dir / f'{language}_gra.csv') if grammar_enabled else 0)
+    con_path=files_dir/f'{learned_by}_{language}_con.csv'
+    if conjugation_enabled and con_path.exists():
+        from app.repositories.conjugation_persons import load_configuration
+        from app.repositories.csv_store import read_csv
+        from app.conjugation.data import eligible_verbs
+        config,_=load_configuration(files_dir,language,con_path)
+        conjugation=read_csv(con_path)
+        result['con_count']=len(conjugation)
+        result['con_practice_count']=len(eligible_verbs(conjugation,config.practice))
     return result

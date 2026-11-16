@@ -26,8 +26,10 @@ class StudyCourseDataTests(TestCase):
     def test_legacy_adapter_is_read_only_and_retains_probabilities_and_disabled_values(self):
         frame = sample_preferences(); original = frame.copy(deep=True)
         config = RuntimePreferences.from_frame(frame)
-        self.assertEqual(config.study_courses, (StudyCourse('es', True, 20, 20), StudyCourse('en', True, 20, 20)))
-        self.assertEqual(replace(config, second_language_enabled=False).study_courses[1], StudyCourse('en', False, 20, 20))
+        self.assertEqual(config.study_courses, (StudyCourse('es', True, 20, 20,conjugation_enabled=None),
+                                               StudyCourse('en', True, 20, 20,conjugation_enabled=None)))
+        self.assertEqual(replace(config, second_language_enabled=False).study_courses[1],
+                         StudyCourse('en', False, 20, 20,conjugation_enabled=None))
         self.assertNotIn(COURSE_FIELD, frame.Name.values)
         pd.testing.assert_frame_equal(frame, original)
 
@@ -108,8 +110,10 @@ class StudyCourseDataTests(TestCase):
             Load_setting(context)
             self.assertEqual(path.read_bytes(), legacy_bytes)
             self.assertNotIn(COURSE_FIELD, load_preferences(path).Name.values)
+            from app.repositories.course_files import resolve_conjugation_courses
+            existing=resolve_conjugation_courses(files,'cs',context.preferences.study_courses)
             save_preferences(load_preferences(path), {COURSE_FIELD: encode_courses('cs', (
-                *context.preferences.study_courses, StudyCourse('fr', True, 15, 35)))}, path)
+                *existing, StudyCourse('fr', True, 15, 35)))}, path)
             for enabled in (True, False, True):
                 current = load_preferences(path); pref = RuntimePreferences.from_frame(current)
                 courses = tuple(replace(item, enabled=enabled) if item.target == 'fr' else item for item in pref.study_courses)

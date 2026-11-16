@@ -94,6 +94,12 @@ může pokračovat s původními názvy. Zobrazení žádné štítky ani CSV ne
 main sestavuje nabídky a karty Vocabulary, Grammar a Conjugation pro každý
 studovaný jazyk. Otevření výuky/editoru nahrazuje obsah hlavního rootu;
 About, Settings, Statistics a pomocné dialogy jsou samostatná okna.
+Conjugation má samostatné Repeat, Edit a Gramatické osoby. Repeat vyžaduje
+alespoň jeden vyplněný tvar mezi vybranými aktivními osobami; prázdný modul
+umožňuje editaci. Editor má vyhledávaný seznam vlevo a posuvný formulář
+vpravo, dynamická pole osob, Add/Delete/Apply a Save/Discard/Cancel při
+odchodu. Více než šest osob má posuvnou oblast také v procvičování.
+Vypnuté časování se do nabídky ani statistik daného kurzu nezařazuje.
 [Navigace](diagrams/GUI_NAVIGATION.md) a [životní cyklus](diagrams/APPLICATION_LIFECYCLE.md).
 
 ModuleHeader sjednocuje logo, nadpis a Save/Close/Exit app. SessionPanel,

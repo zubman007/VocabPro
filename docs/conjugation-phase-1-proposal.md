@@ -1,6 +1,8 @@
 # Conjugation: analýza a návrh 1. fáze
 
-Stav: návrh ke schválení před změnou datového modelu podle bodu 10 zadání.
+Stav: návrh schválen uživatelem; implementace a ověření jsou popsané
+v [reportu 1. fáze](conjugation-phase-1.md). Následující analýza zachycuje
+výchozí stav a schválená rozhodnutí před implementací.
 Předmětem jsou výhradně gramatické osoby. Dosavadní volný text `Description`
 zůstává zachován; nevzniká katalog časů, způsobů ani dalších kategorií.
 

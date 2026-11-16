@@ -7,7 +7,8 @@ from os.path import exists
 from app.ui import messagebox
 import customtkinter as cst
 from app.shared.audio_effects import play_effect
-from app.conjugation.data import PERSONS_MAP, select_verbs, build_verbs
+from app.conjugation.data import select_verbs, build_verbs, eligible_verbs, person_results, PERSONS_MAP
+from app.repositories.conjugation_persons import load_configuration
 from app.repositories.conjugation import save_results,load_source
 from app.conjugation.layout import build as build_layout
 from app.conjugation.session import ConjugationSession
@@ -50,7 +51,7 @@ class ConjugationController:
         first_entry = None
         for key, _ in self.session.persons:
             self.view.variables[key].set('')
-            available = getattr(verb, key) != ''
+            available = bool(getattr(verb,key,'').strip())
             entry = self.view.entries[key]
             entry.configure(state='normal' if available else 'disabled',
                             fg_color=ui.SURFACE if available else ui.PAGE)
@@ -80,11 +81,12 @@ class ConjugationController:
             self._reveal_answers(answers)
 
     def _reveal_answers(self, answers):
+        results=person_results(self.session.current,answers,self.session.persons)
         for key, _ in self.session.persons:
-            expected = getattr(self.session.current, key)
-            if not expected:
+            expected = getattr(self.session.current,key,'')
+            if not expected.strip():
                 value, color = '', ui.PAGE
-            elif answers[key].strip() != expected:
+            elif not results[key]:
                 value, color = expected, ui.ERROR
             else:
                 value, color = answers[key], ui.SURFACE
@@ -137,19 +139,24 @@ def Conjugation(app_input,lang_input,*,context=None):
     """Load a lesson before replacing the current screen, as before."""
     context=get_context(app_input,context)
     config=context.preferences
+    if not context.conjugation_enabled(lang_input):return None
+    from app.shared.languages import legacy_name
+    lang_input=legacy_name(lang_input)
     path=context.conjugation_path(lang_input)
     if not exists(path):
         messagebox.showerror(parent=app_input, title=context.translate('Error'),
                              message=f"{context.translate('Something got wrong.')}\n{path}")
         return None
     try:
-        source=load_source(path,lang_input,config.learned_by)
-        selection = select_verbs(source, config.conjugation_batch)
-        verbs = build_verbs(selection, lang_input, config.learned_by)
+        people,_=load_configuration(context.files_dir,lang_input,path)
+        source=load_source(path,lang_input,config.learned_by,people)
+        source.attrs['person_ids']=tuple(key for key,_ in people.practice)
+        selection = select_verbs(eligible_verbs(source,people.practice),config.conjugation_batch)
+        verbs = build_verbs(selection,lang_input,config.learned_by,people.practice)
     except (OSError,ValueError,KeyError) as error:
         messagebox.showerror(parent=app_input,title=context.translate('Error'),message=error_text(error, context.translate))
         return None
     if not verbs:
         return None
     return ConjugationController(app_input, source, selection, verbs,
-        PERSONS_MAP.get(lang_input, ()), path,context.go_home,context=context)
+        people.practice,path,context.go_home,context=context)

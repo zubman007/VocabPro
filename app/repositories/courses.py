@@ -54,6 +54,15 @@ def row_count(path):
 def backup_files(files_dir):
     """Yield original bytes of nonempty data CSVs; never email settings/API keys."""
     for path in sorted(Path(files_dir).iterdir(), key=lambda item: item.name.casefold()):
+        if path.is_file() and path.name.endswith('_con_persons.json') and not path.is_symlink():
+            from app.shared.languages import LANGUAGE_CODES
+            from app.conjugation.persons import decode_configuration
+            language=path.name.removesuffix('_con_persons.json')
+            if language in LANGUAGE_CODES:
+                data=path.read_bytes()
+                decode_configuration(data.decode('utf-8-sig'),language)
+                yield path.name,data
+            continue
         if not path.is_file() or path.suffix.casefold() != '.csv' or path.name.casefold() == 'settings.csv':
             continue
         data = path.read_bytes()

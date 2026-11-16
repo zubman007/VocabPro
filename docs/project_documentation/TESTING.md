@@ -24,6 +24,12 @@ Limit 240 sekund je určený i pro moduly se všemi šesti lokalizacemi a mnoha
 velikostmi oken. Není to časový limit jedné uživatelské operace. Výchozí limit
 runneru zůstává 120 sekund; rozsáhlý `test_tag_scenarios` jej může překročit.
 Podporu N kurzů a kompatibilitu nastavení ověřuje `test_study_courses`.
+Conjugation doplňují `test_conjugation_model`, `test_conjugation_lifecycle`
+a `test_conjugation_persons_ui`: stabilní identity osob/sloves, 5/6 i 14 osob,
+neprázdné i prázdné výběry, aktivaci a obnovení, rollback, atomické zápisy,
+konflikty, původní R/LR a neznámé sloupce, individuální výsledky bez domýšlení
+historie, editor a šest lokalizací. Skutečný statistický worker se ověřuje
+proti ID UI vlákna; nezměněný panel zachovává stejné widgety.
 
 Spouštěč izoluje moduly do samostatných procesů. safety blokuje skutečné
 HTTP/SMTP/socket spojení, mikrofon, přehrávání a zápisy do files/images/locales.

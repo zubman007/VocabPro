@@ -17,6 +17,21 @@ Každý kurz má také příznak **Zapnout gramatiku**. Verze 2 JSON jej uklád�
 slovník, katalog štítků, synonyma a audio adresář; zapnutá gramatika přidá
 otázky, teorii a prázdnou hlavičku rekordů. Žádné otázky ani slova se nevymýšlejí.
 
+**Zapnout časování** je nezávislý přepínač `conjugation_enabled` v modelu
+kurzu, ukládaný jako `conjugation` ve verzi 3 JSON. Starší verze 1/2 a původní
+sloty zachovají dosavadní dostupnost podle existence CSV; parser sám na disk
+nesahá. Nový kurz má časování vypnuté. Zapnutí po Save připraví chybějící
+CSV a `<Language>_con_persons.json`, nikdy nepřepíše existující obsah.
+Samostatné vypnutí časování zachová i prázdné CSV a konfiguraci a skryje
+modul, jeho statistiky i přímé vstupy. Konfigurace osob se při odebrání celého
+kurzu také nemaže.
+
+Tlačítko **Gramatické osoby** je v kartě kurzu a na Home u časování. Dialog
+má vlastní Save: názvy a pořadí osob, bezpečnou deaktivaci a oddělený výběr
+osob k procvičování. Tato uživatelská konfigurace se vztahuje k cílovému
+jazyku, nezávisle na jazyku UI a výchozím jazyku dvojice. Podrobnosti:
+[Conjugation, 1. fáze](../conjugation-phase-1.md).
+
 Vypnutý kurz po úspěšném uložení zmizí z formuláře. Vnitřní archiv zachová
 jeho volby pro opětovné přidání. Teprve po uložení se odstraní rozpoznané
 prázdné CSV a zcela prázdný audio adresář; každý neprázdný datový řádek či

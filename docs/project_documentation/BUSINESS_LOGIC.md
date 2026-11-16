@@ -85,11 +85,18 @@ zachovaná. Tento přehled se nezapisuje do CSV a nemění výukové algoritmy.
 
 ## Časování
 
-select_verbs zamíchá priority, pak řadí koncové S vzestupně a LR od nejstaršího,
+Nejdřív se vyřadí záznamy bez vyplněných tvarů pro vybrané aktivní osoby.
+Prázdný výběr nepovolí lekci. select_verbs zamíchá priority, pak řadí koncové S vzestupně a LR od nejstaršího,
 neznámé LR první; vrací conjugation_batch položek. Prázdný očekávaný tvar
 osoby se nezkouší. Odpověď ignoruje case a nahrazuje ñ (u odpovědi též ň) za n.
 Chybný pokus zapisuje F, ukáže očekávané tvary. Následná správná odpověď po
 odhalení nepřidává S, pouze dokončí sloveso. Neodhalený správný pokus zapisuje S.
+První vyhodnocení navíc zaznamená vlastní S/F každé vybrané osobě s neprázdným
+tvarem; správná osoba dostane S i při F celého kola. Opakované potvrzení
+odhaleného řešení a přeskočení další výsledky nevytvářejí. Původní R/LR se
+nepřevádějí na domnělé výsledky osob. Osoby mají stabilní ID; změna popisku,
+pořadí a deaktivace nemažou tvary ani historii. Časy a způsoby zůstávají mimo
+strukturovaný model této fáze; Description je dál volný text.
 
 Algoritmy jsou v [practise_session](../../app/vocabulary/practise_session.py),
 [practise_data](../../app/vocabulary/practise_data.py),

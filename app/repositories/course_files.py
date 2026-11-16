@@ -12,8 +12,26 @@ from app.repositories.synonyms import COLUMNS as SYNONYM_COLUMNS
 from app.repositories.grammar_theory import THEORY_FIELDS
 from app.repositories.grammar_records import COLUMNS as RECORD_COLUMNS
 from app.grammar.editor_data import COLUMNS as GRAMMAR_COLUMNS
+from dataclasses import replace
+from app.conjugation.persons import default_configuration
+from app.repositories.conjugation import conjugation_columns
+from app.repositories.conjugation_persons import configuration_path, load_configuration, save_configuration
 
 logger = logging.getLogger(__name__)
+
+
+def resolve_conjugation_courses(files,source,courses):
+    """Legacy auto-detection belongs to storage, not the settings JSON parser."""
+    result=[]
+    for course in courses:
+        if course.conjugation_enabled is None:
+            try:exists=(Path(files)/f'{LanguagePair(source,course.target).legacy_stem}_con.csv').exists()
+            except (ValueError,KeyError):
+                if course.enabled:raise
+                exists=False
+            course=replace(course,conjugation_enabled=exists)
+        result.append(course)
+    return tuple(result)
 
 
 def course_assets(files, source, target):
@@ -30,8 +48,7 @@ def course_assets(files, source, target):
                     {'question_id', 'prompt', 'anchor', 'option_1', 'option_2', 'option_3', 'option_4'}),
         'theory': (files/f'{stem}_gra_ex.csv', THEORY_FIELDS, {'category'}),
         'records': (files/f'{target}_gra_records.csv', RECORD_COLUMNS, set(RECORD_COLUMNS)),
-        # Conjugation stays optional; an existing unused empty file can retire.
-        'conjugation': (files/f'{stem}_con.csv', (), {'ID', 'R'}),
+        'conjugation': (files/f'{stem}_con.csv', conjugation_columns(target,source,default_configuration(target)), {'ID', 'R'}),
         'audio': files/'audio'/stem,
     }
 
@@ -74,13 +91,23 @@ def prepared_course_files(files, source, courses):
     """Roll back only our unchanged, empty creations if preparation/save fails."""
     files = Path(files)
     files.mkdir(parents=True, exist_ok=True)
-    created, directories = [], []
+    created, directories, configurations = [], [], []
     try:
         for course in courses:
             if not course.enabled:continue
             assets = course_assets(files, source, course.target)
             kinds = ['vocabulary', 'tags', 'synonyms']
             if course.grammar_enabled:kinds.extend(('grammar', 'theory', 'records'))
+            if course.conjugation_enabled is True:
+                con_path=assets['conjugation'][0]
+                config_path=configuration_path(files,course.target)
+                with destination_lock(config_path):
+                    config,revision=load_configuration(files,course.target,con_path)
+                    if revision is None:
+                        saved=save_configuration(files,config,None)
+                        configurations.append((config_path,saved))
+                assets['conjugation']=(con_path,conjugation_columns(course.language,legacy_name(source),config),{'ID','R'})
+                kinds.append('conjugation')
             for kind in kinds:
                 path, columns, required = assets[kind]
                 with destination_lock(path):
@@ -99,6 +126,11 @@ def prepared_course_files(files, source, courses):
         for directory in reversed(directories):
             try:_remove_empty_directory(directory, files)
             except OSError:logger.warning('Could not roll back empty course directory %s', directory.name)
+        for path,revision in reversed(configurations):
+            try:
+                with destination_lock(path):
+                    if _local_path(path,files) and path.exists() and file_revision(path)==revision:path.unlink()
+            except OSError:logger.warning('Could not roll back course configuration %s',path.name)
         raise
 
 

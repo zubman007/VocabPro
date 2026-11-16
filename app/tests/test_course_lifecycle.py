@@ -126,7 +126,7 @@ class CourseLifecycleTests(TestCase):
                         (StudyCourse('fr', grammar_enabled='yes'),)):
             with self.assertRaises(CourseConfigurationError):encode_courses('cs', courses)
         self.save()
-        self.assertEqual(json.loads(load_preferences(self.settings).set_index('Name').at[COURSE_FIELD,'Value'])['version'],2)
+        self.assertEqual(json.loads(load_preferences(self.settings).set_index('Name').at[COURSE_FIELD,'Value'])['version'],3)
 
     def test_invalid_save_and_failed_commit_leave_settings_and_existing_data_intact(self):
         initial = self.settings.read_bytes()

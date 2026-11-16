@@ -17,6 +17,7 @@ class AboutDialog(AppDialog):
         from app.core.context import get_context
         preferences = get_context(parent).preferences
         grammar_enabled = any(preferences.grammar_enabled(language) for language in preferences.learning_languages)
+        conjugation_enabled=any(get_context(parent).conjugation_enabled(language) for language in preferences.learning_languages)
         self.withdraw()
         self.owner=parent
         self._show_after=None
@@ -84,6 +85,7 @@ class AboutDialog(AppDialog):
                            ("Statistics","Guide statistics details"),("Backups","Guide storage details"),
                            ("API services","Guide services details")):
             if title == 'Grammar' and not grammar_enabled:continue
+            if title=='Conjugation' and not conjugation_enabled:continue
             cst.CTkLabel(body,text=translate(title),font=(FONT,22,"bold"),text_color=TEAL).pack(anchor="w",padx=12,pady=(14,5))
             label=cst.CTkLabel(body,text=translate(text),font=(FONT,18),text_color=TEXT,wraplength=850,justify="left")
             label.pack(anchor="w",padx=12,pady=(0,10))
@@ -98,7 +100,7 @@ class AboutDialog(AppDialog):
         shortcuts.grid_columnconfigure(1,weight=1)
         row=0
         from app.about.shortcuts import shortcut_sections
-        for title,items in shortcut_sections(preferences.show_synonyms,preferences.tags_enabled, grammar_enabled):
+        for title,items in shortcut_sections(preferences.show_synonyms,preferences.tags_enabled,grammar_enabled,conjugation_enabled):
             cst.CTkLabel(shortcuts,text=translate(title),font=(FONT,21,"bold"),text_color=TEAL).grid(row=row,column=0,columnspan=2,sticky="w",padx=8,pady=(10,6))
             row+=1
             for key,label in items:

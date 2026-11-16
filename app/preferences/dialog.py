@@ -25,7 +25,9 @@ class PreferencesDialog(AppDialog):
         self.withdraw()
         self._show_after = None
         self.owner = parent
-        self.translate, self.path, self.saved = translate, path, False
+        from pathlib import Path
+        self.translate, self.path, self.saved = translate, Path(path), False
+        self.persons_saved=False
         self.variables, self.fields, self.field_sections, self.secret_entries = {}, {}, {}, []
         self.field_labels, self.group_headers = {}, []
         self._tag_trace = None
@@ -35,6 +37,8 @@ class PreferencesDialog(AppDialog):
             self.frame = load_preferences(path)
             stored = dict(zip(self.frame.Name, self.frame.Value))
             courses = decode_courses(stored[COURSE_FIELD], stored['Learned by']) if COURSE_FIELD in stored else legacy_courses(stored)
+            from app.repositories.course_files import resolve_conjugation_courses
+            courses=resolve_conjugation_courses(self.path.parent,stored.get('Learned by',''),courses)
         except Exception:
             self.destroy()
             raise
@@ -73,7 +77,9 @@ class PreferencesDialog(AppDialog):
         items = [item for item in with_defaults(self.frame).itertuples(index=False)
                  if item.Type != 'JSON' and not is_legacy_course_field(item.Name)
                  and (item.Name != 'Remember grammar categories'
-                      or any(course.enabled and course.grammar_enabled for course in courses))]
+                      or any(course.enabled and course.grammar_enabled for course in courses))
+                 and (item.Name!='Random repeat batch - Conjugation'
+                      or any(course.enabled and course.conjugation_enabled for course in courses))]
         # Keep groups contiguous even when new defaults were appended to an older CSV.
         grouped = {}
         for item in items:
@@ -138,7 +144,8 @@ class PreferencesDialog(AppDialog):
         self.course_editor = None
         if 'Learned by' in self.fields:
             source = lambda: self.choice_maps['Learned by'].get(self.variables['Learned by'].get(), self.variables['Learned by'].get())
-            self.course_editor = CourseEditor(sections['Languages'], translate, source, courses)
+            self.course_editor = CourseEditor(sections['Languages'], translate, source, courses,
+                                             on_persons=self.open_conjugation_persons)
             self.course_editor.grid(row=rows['Languages'], column=0, columnspan=2, sticky='ew', padx=12, pady=12)
             self.field_sections[COURSE_FIELD] = translate('Languages')
             self.fields[COURSE_FIELD] = self.course_editor
@@ -183,6 +190,11 @@ class PreferencesDialog(AppDialog):
             return
         super().present(modal=True)
         self.focus_set()
+
+    def open_conjugation_persons(self,language):
+        from app.conjugation.persons_dialog import open_persons
+        self.persons_saved=bool(open_persons(self,language,files=self.path.parent,
+                     source=self.choice_maps['Learned by'].get(self.variables['Learned by'].get(),''),translate=self.translate)) or self.persons_saved
 
     def destroy(self):
         if getattr(self, '_sound_trace', None) is not None:
@@ -260,5 +272,5 @@ def open_preferences(app,*,context=None):
         messagebox.showerror(parent=app, title=settings.T("Error"), message=error_text(error, settings.T))
         return
     app.wait_window(dialog)
-    if dialog.saved:
+    if dialog.saved or dialog.persons_saved:
         context.go_home()

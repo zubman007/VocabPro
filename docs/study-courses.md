@@ -13,6 +13,12 @@ home section, statistics tab/card or public practice/editor entry point. If all
 courses disable grammar, its global setting, About section and shortcut groups
 are hidden too.
 
+**Enable conjugation** works independently. Enabling prepares an empty verb CSV
+and a language-specific person configuration. The home section offers Repeat,
+Edit and Grammatical persons. Turning this module off hides its entry points
+and statistics while keeping even empty verb files and all person definitions.
+See [Conjugation phase 1](conjugation-phase-1.md).
+
 Unchecking **Enable course** changes no files immediately. After a successful
 save the row disappears from the form, whether or not it has data. Previous
 options stay archived by identity; **Add language** restores them and all
@@ -36,7 +42,7 @@ External providers retain their existing capability restrictions.
 The optional `Study courses` row in `settings.csv` has type `JSON`:
 
 ```json
-{"version":2,"source":"cs","courses":[{"target":"es","enabled":true,"context":20,"audio":20,"grammar":true},{"target":"en","enabled":true,"context":20,"audio":20,"grammar":true},{"target":"fr","enabled":true,"context":15,"audio":35,"grammar":false}]}
+{"version":3,"source":"cs","courses":[{"target":"es","enabled":true,"context":20,"audio":20,"grammar":true,"conjugation":true},{"target":"en","enabled":true,"context":20,"audio":20,"grammar":true,"conjugation":false},{"target":"fr","enabled":true,"context":15,"audio":35,"grammar":false,"conjugation":false}]}
 ```
 
 Language identities are registry codes. The source identifies the common own
@@ -45,8 +51,10 @@ but question settings are looked up by language identity, never by position.
 Inactive courses retain their settings. An inactive legacy course whose two
 percentages total more than 100 can remain disabled; enabling it requires fixing
 the total. Individual percentages must always be whole numbers from 0 to 100.
-Version 1 remains readable and defaults grammar to enabled. Saving the course
-configuration writes version 2 with explicit grammar booleans. Disabled entries
+Versions 1/2 remain readable; version 1 defaults grammar to enabled. Legacy
+conjugation availability follows the existing pair CSV without rewriting it.
+Saving the course configuration writes version 3 with explicit grammar and
+conjugation booleans. Disabled entries
 are archived metadata, not rows in the next settings form.
 
 - Without the new row, runtime adapts the existing first/second-language settings
@@ -83,10 +91,13 @@ ensures missing active assets during application/home initialization:
 | `<target>_gra.csv` | Active course with grammar enabled |
 | `<own>_<target>_gra_ex.csv` | Active course with grammar enabled |
 | `<target>_gra_records.csv` | Active course with grammar enabled |
+| `<own>_<target>_con.csv` | Active course with conjugation enabled |
+| `<target>_con_persons.json` | Active course with conjugation enabled |
 
 New CSVs contain schemas only. An empty record schema reads as streak zero;
-no synthetic answer or word is inserted. Conjugation remains optional: existing
-data are retained, but this grammar change generates no verb content/files.
+no synthetic answer or word is inserted. Conjugation remains optional and
+creates schemas and person definitions only, without generated verb content.
+Person configuration is user content and is never automatically retired.
 
 Only after a successful settings commit does retirement inspect affected
 old/disabled courses. A recognized CSV with no nonblank data row can be removed.

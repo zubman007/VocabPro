@@ -8,9 +8,10 @@ from app.ui.theme import FONT, TEXT, SECTION_CONTROL
 
 
 class CourseEditor(cst.CTkFrame):
-    def __init__(self, parent, translate, source, courses):
+    def __init__(self, parent, translate, source, courses, on_persons=None):
         super().__init__(parent, fg_color='transparent', corner_radius=0)
         self.translate, self.source = translate, source
+        self.on_persons=on_persons
         self.rows = []
         self.archived = {course.target: course for course in courses if not course.enabled}
         self.known = {course.target: course for course in courses}
@@ -43,6 +44,7 @@ class CourseEditor(cst.CTkFrame):
         context = cst.StringVar(value=str(course.context_percent))
         audio = cst.StringVar(value=str(course.audio_percent))
         grammar = cst.StringVar(value='1' if course.grammar_enabled else '0')
+        conjugation=cst.StringVar(value='1' if course.conjugation_enabled else '0')
         chooser = cst.CTkOptionMenu(card, variable=target, values=list(self.names), font=(FONT, 18),
             fg_color=SECTION_CONTROL, button_color=SECTION_CONTROL, button_hover_color='#315347',
             dropdown_fg_color='#eee4d0', dropdown_text_color=TEXT, height=36,
@@ -63,9 +65,19 @@ class CourseEditor(cst.CTkFrame):
             entry.grid(row=0, column=1); fields.append(entry)
         grammar_toggle = cst.CTkCheckBox(card, text=self.translate('Enable grammar'), variable=grammar,
             onvalue='1', offvalue='0', text_color=TEXT, font=(FONT, 16), fg_color='#ad694e')
-        grammar_toggle.grid(row=2, column=0, columnspan=2, sticky='w', padx=14, pady=(0, 12))
+        grammar_toggle.grid(row=2, column=0, sticky='w', padx=14, pady=(0, 12))
         fields.append(grammar_toggle)
-        row = dict(target=target, enabled=enabled, context=context, audio=audio, grammar=grammar,
+        con_toggle=cst.CTkCheckBox(card,text=self.translate('Enable conjugation'),variable=conjugation,
+            onvalue='1',offvalue='0',text_color=TEXT,font=(FONT,16),fg_color='#ad694e')
+        con_toggle.grid(row=2,column=1,sticky='w',padx=14,pady=(0,12))
+        fields.append(con_toggle)
+        if self.on_persons is not None:
+            button=cst.CTkButton(card,text=self.translate('Grammatical persons'),font=(FONT,15),
+                fg_color=SECTION_CONTROL,hover_color='#315347',
+                command=lambda:self.on_persons(self.names[target.get()]))
+            button.grid(row=3,column=1,sticky='ew',padx=14,pady=(0,12))
+            fields.append(button)
+        row = dict(target=target, enabled=enabled, context=context, audio=audio, grammar=grammar, conjugation=conjugation,
                    fields=fields, toggle=toggle, chooser=chooser, card=card, last_target=course.target)
         self.rows.append(row)
         def update():
@@ -103,6 +115,7 @@ class CourseEditor(cst.CTkFrame):
         row['context'].set(str(saved.context_percent))
         row['audio'].set(str(saved.audio_percent))
         row['grammar'].set('1' if saved.grammar_enabled else '0')
+        row['conjugation'].set('1' if saved.conjugation_enabled else '0')
         self.refresh_add_button()
 
     def configuration(self):
@@ -119,7 +132,7 @@ class CourseEditor(cst.CTkFrame):
                     raise PreferenceError(COURSE_FIELD, 'Enter a percentage between 0 and 100.')
                 percentages.append(int(value))
             course = StudyCourse(self.names[row['target'].get()], row['enabled'].get() == '1',
-                                 *percentages, row['grammar'].get() == '1')
+                                 *percentages,row['grammar'].get()=='1',row['conjugation'].get()=='1')
             # An unchecked source-language row is being removed, not activated.
             if course.enabled or course.target != language_id(self.source()):
                 courses.append(course)

@@ -113,7 +113,17 @@ jediného bodu. Dřívější hladká kubická interpolace SciPy byla odstraněn
 změnil se pouze tvar spojnice, nikoli vstupní hodnoty nebo výpočet prognózy.
 SuccessRing rasterizuje ve vyšším rozlišení a zmenšuje LANCZOS pro hladké
 okraje. StatisticsBackdrop posouvá již připravené pixely; při scrollu
-nespouští Pillow rendering. Chybějící conjugation skryje kartu i záložku.
+nespouští Pillow rendering. Chybějící nebo vypnuté conjugation skryje kartu
+i záložku a vypnuté soubory se při přípravě dat vůbec nečtou.
+
+Conjugation má dole přehled úspěšnosti podle gramatických osob. Výpočty
+probíhají ve stávajícím workeru, cache zahrnuje také konfiguraci osob.
+Přejmenování, deaktivace a přesun mění popisky a aktuální počet tvarů,
+nikoliv identitu výsledků. Nativní pruhy drží widgety pro nezměněný snapshot;
+scrollování neagreguje historii ani nevytváří graf. Výsledky používají jen
+nový `Person history`; staré R se nedopočítává. Bez pozorování je úspěšnost
+neznámá (pomlčka). Neaktivní osoby zůstávají se svými výsledky viditelné.
+Původní souhrny celých kol a R/LR zůstávají zachované.
 
 [Tok statistik](diagrams/STATISTICS_FLOW.md). Známé omezení: samotné vytvoření
 jedné složité Matplotlib figury stále zabere část UI vlákna; nedělí se do

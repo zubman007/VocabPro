@@ -1,5 +1,6 @@
 """Cached statistics calculations; chart construction remains eager in the UI."""
 from datetime import date, timedelta
+from pathlib import Path
 import pandas as pd
 from app.shared.learning_data import Count_trailing_s
 from app.statistics.cache import cache
@@ -10,13 +11,13 @@ from app.statistics.vocabulary_tags import tag_statistics
 from app.repositories.csv_store import read_csv
 
 
-def prepare_statistics(files, learned_by, language, horizon, gaps, default_wait, pos_types, pos_ideal, *, grammar_enabled=True):
+def prepare_statistics(files, learned_by, language, horizon, gaps, default_wait, pos_types, pos_ideal, *, grammar_enabled=True,conjugation_enabled=True):
     """Prepare all language datasets without touching Tk or Matplotlib objects."""
     vocabulary = vocabulary_statistics(files/f'{learned_by}_{language}_voc.csv', language,
         learned_by, horizon, gaps, default_wait, pos_types, pos_ideal)
     con_file, gra_file = files/f'{learned_by}_{language}_con.csv', files/f'{language}_gra.csv'
     return (vocabulary,
-            training_statistics(con_file,'conjugation', language) if con_file.exists() else None,
+            training_statistics(con_file,'conjugation', language) if conjugation_enabled and con_file.exists() else None,
             training_statistics(gra_file,'grammar') if grammar_enabled and gra_file.exists() else None)
 
 
@@ -93,6 +94,11 @@ def vocabulary_statistics(path, language, learned_by, horizon, gaps, default_wai
 
 
 def training_statistics(path, kind, language=None):
+    path=Path(path)
+    config=None
+    if kind=='conjugation' and language is not None:
+        from app.repositories.conjugation_persons import load_configuration
+        config,_=load_configuration(path.parent,language,path)
     def calculate(source):
         frame = read_csv(source)
         result = dict(summary=_summary(frame, frame['R']),
@@ -100,11 +106,13 @@ def training_statistics(path, kind, language=None):
             trailing=_trailing(frame['R']) if kind == 'conjugation' else None)
         if kind == 'conjugation' and language is not None:
             from app.statistics.conjugation import conjugation_progress
-            result['progress'] = conjugation_progress(frame, language)
+            result['progress'] = conjugation_progress(frame,language,config)
+            from app.statistics.conjugation import person_statistics
+            result['persons']=person_statistics(frame,config)
         if kind == 'grammar':
             result['question_progress'] = grammar_question_progress(frame)
         return result
-    result=cache.get(path, kind, (language,), calculate)
+    result=cache.get(path,kind,(language,config),calculate)
     if kind=='grammar':
         from app.repositories.grammar_records import load_record
         result['best_streak']=load_record(path)

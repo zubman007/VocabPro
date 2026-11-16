@@ -77,8 +77,11 @@ def build_home(app, stats_by_lang, languages, callbacks, *, initial_language=Non
             sections.append(('Grammar', data['gra_count'], 'Number of questions',
                 [('Repeat', 'grammar', data['gra_count'] > 0, None), ('Edit', 'edit_grammar', True, None)]))
         if callbacks['available'](language, 'conjugation'):
+            con_actions=[('Repeat','conjugation',data.get('con_practice_count',data['con_count'])>0,None)]
+            if 'edit_conjugation' in callbacks:con_actions.append(('Edit','edit_conjugation',True,None))
+            if 'conjugation_persons' in callbacks:con_actions.append(('Grammatical persons','conjugation_persons',True,None))
             sections.append(('Conjugation', data['con_count'], 'Number of verbs',
-                [('Repeat', 'conjugation', data['con_count'] > 0, None)]))
+                con_actions))
         for row, (title, count, count_label, actions) in enumerate(sections, 1):
             section = cst.CTkFrame(card, fg_color='#eee5d2', corner_radius=18)
             section.grid(row=row, sticky='ew', padx=14, pady=(6, 12))
@@ -89,14 +92,17 @@ def build_home(app, stats_by_lang, languages, callbacks, *, initial_language=Non
                 text_color='#615c45').grid(row=1, sticky='w', padx=14, pady=(0, 10))
             buttons = cst.CTkFrame(section, fg_color='transparent', corner_radius=0)
             buttons.grid(row=2, sticky='ew', padx=10, pady=(0, 12))
+            person_actions=any(item[1]=='conjugation_persons' for item in actions)
             for position, (caption, key, enabled, badge) in enumerate(actions):
-                buttons.grid_columnconfigure(position, weight=1, uniform='actions')
+                column=position%2 if person_actions else position
+                buttons.grid_columnconfigure(column, weight=1, uniform='actions')
                 label = s.T(caption)
                 cst.CTkButton(buttons, text=label, command=lambda lang=language, action=key: callbacks[action](lang),
                     state='normal' if enabled else 'disabled', height=40, width=60,
                     font=(UI_FONT, 16), fg_color='#49736b' if caption!='Edit' else '#a16d48',
                     hover_color='#355e59' if caption!='Edit' else '#86573a', text_color='#fff4dc',
-                    corner_radius=12).grid(row=0, column=position, sticky='ew', padx=3)
+                    corner_radius=12).grid(row=position//2 if person_actions else 0,column=column,
+                        columnspan=2 if key=='conjugation_persons' else 1,sticky='ew',padx=3,pady=(4,0) if position==2 and person_actions else 0)
             if title == 'Vocabulary':
                 counts = (s.T('Words to review: {count}').format(count=data['rep_count']) + '  ·  '
                           + s.T('New words to learn: {count}').format(count=data['lrn_count']))

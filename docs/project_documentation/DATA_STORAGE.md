@@ -96,8 +96,22 @@ Neuloží se interní _editor_id; extra sloupce teorie se zachovávají.
 ## Časování, synonyma, nastavení
 
 `<Learned by>_<Language>_con.csv`: ID, vlastní jazyk, cílový jazyk,
-Description, s1/s2/s3/m1/m2/m3 (tvary osob), R a LR. Pořadí sloupců se nemění
-zápisem relace. Repository aktualizuje pouze skutečně změněné R/LR.
+Description, sloupce stabilních ID osob, R, LR a volitelný `Person history`.
+Původní s1/s2/s3/m1/m2/m3 se zachovávají. Nové osoby mají `p_<uuidhex>`;
+označení a pořadí jsou v `<Language>_con_persons.json` (verze 1), odděleně
+od výběru `practice_person_ids`. Deaktivace nemaže definici, sloupec ani
+výsledky. Nová slovesa mají stabilní UUID; stará ID včetně nul na začátku
+zůstanou beze změny. Pořadí existujících sloupců a neznámá data se uchovávají.
+
+`Person history` je verzovaný JSON `{"version":1,"results":{"s1":"SF"}}`.
+Vzniká pouze z nových prvních odpovědí; starší R se nerozděluje podle osob.
+R, LR a individuální výsledky se ukládají v jedné atomické CSV operaci.
+Před prvním rozšířením schématu při zápisu vznikne neobnovovaná kopie
+`<soubor>.csv.pre-persons.bak` původních bytů. Pouhé čtení nic nemigruje.
+Ukládání odmítá konflikt výsledků i změnu právě procvičovaných tvarů;
+nesouvisející externí změny zachová. JSON používá stejnou kontrolu revize,
+atomickou výměnu a ochranu proti přepsání souběžně vytvořeného souboru.
+Zálohy přenášejí jen validní rozpoznané `*_con_persons.json`, nikoli všechny JSON.
 
 `<Learned by>_<Language>_synonyms.csv`: ID 1;ID 2;Date. Neorientované dvojice
 se normalizují vzestupně, nesmějí být duplicitní, zrcadlové ani samy na sebe.

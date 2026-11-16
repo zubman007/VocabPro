@@ -22,12 +22,22 @@ def build(app, persons, confirm, next_verb, save, exit_app, back):
     view.count.grid(row=0, column=2, padx=28, pady=20)
     view.description = text(card, size=21, color=ui.MUTED)
     view.description.grid(row=1, column=0, columnspan=3, sticky='ew', padx=28, pady=(0, 16))
+    fields=card
+    offset=2
+    if len(persons)>6:
+        fields=cst.CTkScrollableFrame(card,fg_color='transparent',corner_radius=0)
+        fields.grid(row=2,column=0,columnspan=3,sticky='nsew',padx=16,pady=(0,12))
+        card.grid_rowconfigure(2,weight=1)
+        fields.grid_columnconfigure(0,weight=1);fields.grid_columnconfigure(1,weight=3)
+        offset=0
     view.variables, view.entries = {}, {}
-    for row, (key, person) in enumerate(persons, 2):
-        card.grid_rowconfigure(row, weight=1)
-        text(card, person, size=22).grid(row=row, column=0, sticky='w', padx=28, pady=6)
-        variable = cst.StringVar(master=card)
-        entry = cst.CTkEntry(card, textvariable=variable)
+    for row, (key, person) in enumerate(persons, offset):
+        fields.grid_rowconfigure(row, weight=1 if fields is card else 0)
+        label=text(fields,person,size=22)
+        label.configure(wraplength=280,justify='left')
+        label.grid(row=row,column=0,sticky='w',padx=28,pady=6)
+        variable = cst.StringVar(master=fields)
+        entry = cst.CTkEntry(fields, textvariable=variable)
         ui.entry(entry)
         entry.grid(row=row, column=1, columnspan=2, sticky='ew', padx=(12, 28), pady=6)
         view.variables[key], view.entries[key] = variable, entry

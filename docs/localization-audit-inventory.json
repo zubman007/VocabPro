@@ -1,6 +1,6 @@
 {
   "languages": 6,
-  "keys": 513,
+  "keys": 533,
   "duplicate_values": {
     "en": {
       "Correct": [
@@ -30,6 +30,10 @@
       "Incorrect": [
         "Incorrect",
         "Incorrect answers"
+      ],
+      "Practise": [
+        "Practise",
+        "Practise category"
       ],
       "Previous word": [
         "Previous word",
@@ -156,6 +160,10 @@
       "Salir": [
         "Exit",
         "Exit app"
+      ],
+      "Repasar": [
+        "Practise",
+        "Repeat"
       ],
       "Palabra anterior": [
         "Previous word",
@@ -295,6 +303,10 @@
         "Learn",
         "Learning"
       ],
+      "Üben": [
+        "Practise",
+        "Practise category"
+      ],
       "Vorheriges Wort": [
         "Previous word",
         "Review of the previous word"
@@ -322,12 +334,12 @@
     }
   },
   "catalog_sizes": {
-    "en": 513,
-    "cs": 513,
-    "sk": 513,
-    "es": 513,
-    "fr": 513,
-    "de": 513
+    "en": 533,
+    "cs": 533,
+    "sk": 533,
+    "es": 533,
+    "fr": 533,
+    "de": 533
   },
   "catalog_issues": [],
   "missing_source_keys": [],
@@ -335,7 +347,7 @@
   "exception_candidates": [
     {
       "file": "app/core/context.py",
-      "line": 59,
+      "line": 69,
       "text": "Home navigation has not been configured."
     },
     {

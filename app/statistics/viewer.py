@@ -6,6 +6,7 @@ from app.statistics.grammar_progress_panel import GrammarProgressPanel, GrammarR
 from app.statistics.vocabulary_tags import VocabularyTagsPanel
 from app.statistics.parts_of_speech import PartsOfSpeechPanel
 from app.statistics.conjugation_panel import ConjugationProgressPanel
+from app.statistics.conjugation_persons_panel import ConjugationPersonsPanel
 from app.statistics.components import summary_cards, style_summary_cards, SuccessRing, arrange_success_ring, summary_metrics
 from app.statistics.charts import Generate_chart, _release_chart
 from app.statistics.background import StatisticsBackdrop
@@ -38,6 +39,8 @@ def Stats(app, *, context=None, language=None, section='Vocabulary'):
     window.initial_section = section if section in ('Vocabulary', 'Grammar', 'Conjugation') else 'Vocabulary'
     if window.initial_section == 'Grammar' and not context.preferences.grammar_enabled(window.initial_language):
         window.initial_section = 'Vocabulary'
+    if window.initial_section=='Conjugation' and not context.conjugation_enabled(window.initial_language):
+        window.initial_section='Vocabulary'
     window.minsize(min(1400, window.winfo_screenwidth()), min(800, max(400, window.winfo_screenheight()-80)))
     window.title(s.app_name + ' - ' + context.translate('Statistics Viewer'))
     set_window_icon(window)
@@ -138,6 +141,8 @@ class StatisticsController:
             sort_columns=('Recorded answers', 'Incorrect answers', 'Review accuracy'))
         self.conjugation_table.title_label.configure(text=self.translate('Difficult conjugation rounds'))
         self.conjugation_table.grid(row=3, column=0, columnspan=2, sticky='ew', padx=20, pady=12)
+        self.conjugation_persons=ConjugationPersonsPanel(conjugation_body,self.translate)
+        self.conjugation_persons.grid(row=4,column=0,columnspan=2,sticky='ew',padx=20,pady=(12,20))
         self.chart_voc_trail_frm = cst.CTkFrame(vocabulary_body)
         conjugation_empty = cst.CTkLabel(conjugation_body, text=self.translate('No conjugation statistics available.'), font=(FONT, 20), text_color=TEXT)
         window.conjugation_empty = conjugation_empty
@@ -194,6 +199,7 @@ class StatisticsController:
         sheet_lbl.configure(bg_color=SURFACE, fg_color='transparent', corner_radius=0)
         canvas_background.add_panel(self.conjugation_table)
         canvas_background.add_panel(self.conjugation_progress)
+        canvas_background.add_panel(self.conjugation_persons)
         content.update_idletasks()
         return self.load()
 
@@ -206,7 +212,8 @@ class StatisticsController:
         def calculate(cancelled, progress):
             return prepare_statistics(files, config.learned_by, language, s.stat_horizon,
                 s.days_gap_map, s.default_wait, s.PoS_types, s.PoS_ideal,
-                grammar_enabled=config.grammar_enabled(language))
+                grammar_enabled=config.grammar_enabled(language),
+                conjugation_enabled=self.context.conjugation_enabled(language))
         self.task = BackgroundTask(self.window, calculate, self._prepared, self.window.fail).start()
         return False
 
@@ -261,6 +268,7 @@ class StatisticsController:
             from app.statistics.conjugation import progress_table
             progress = conjugation.get('progress')
             self.conjugation_progress.set_data(progress)
+            self.conjugation_persons.set_data(conjugation.get('persons'))
             if progress is not None:
                 self.conjugation_table.set_data(progress_table(progress))
             charts.append((conjugation['trailing'], self.chart_con_frm, 'Conjugation trailing successes', 0))
@@ -271,6 +279,7 @@ class StatisticsController:
             _show_summary(conjugation['summary'], self.tot_verbs_res_con_lbl, self.tot_res_con_lbl, self.succ_res_con_lbl, self.fail_res_con_lbl, self.rate_res_con_lbl)
         else:
             _release_chart(self.chart_con_frm)
+            self.conjugation_persons.set_data(None)
             self.chart_con_frm.grid_remove()
             self.window.conjugation_empty.grid_remove()
         if grammar is not None:

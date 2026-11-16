@@ -45,6 +45,16 @@ class AppContext:
     def conjugation_path(self,language):
         return self.files_dir/f'{self.language_pair(language).legacy_stem}_con.csv'
 
+    def conjugation_enabled(self, language):
+        from app.shared.languages import language_id
+        try:target=language_id(language)
+        except KeyError:return False
+        course=next((c for c in self.preferences.study_courses if c.target==target and c.enabled),None)
+        if course is None:return False
+        if course.conjugation_enabled is not None:return course.conjugation_enabled
+        try:return self.conjugation_path(language).exists()
+        except (KeyError,ValueError):return False  # Bootstrap/legacy slots before preferences load.
+
     def grammar_path(self,language):
         return self.files_dir/f'{legacy_name(language)}_gra.csv'
 
