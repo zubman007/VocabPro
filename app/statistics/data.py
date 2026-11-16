@@ -15,7 +15,7 @@ def prepare_statistics(files, learned_by, language, horizon, gaps, default_wait,
         learned_by, horizon, gaps, default_wait, pos_types, pos_ideal)
     con_file, gra_file = files/f'{learned_by}_{language}_con.csv', files/f'{language}_gra.csv'
     return (vocabulary,
-            training_statistics(con_file,'conjugation') if con_file.exists() else None,
+            training_statistics(con_file,'conjugation', language) if con_file.exists() else None,
             training_statistics(gra_file,'grammar') if gra_file.exists() else None)
 
 
@@ -91,13 +91,17 @@ def vocabulary_statistics(path, language, learned_by, horizon, gaps, default_wai
     return cache.get(path, 'vocabulary', options, calculate)
 
 
-def training_statistics(path, kind):
+def training_statistics(path, kind, language=None):
     def calculate(source):
         frame = read_csv(source)
-        return dict(summary=_summary(frame, frame['R']),
+        result = dict(summary=_summary(frame, frame['R']),
             categories=grammar_categories(frame) if kind == 'grammar' else [],
             trailing=_trailing(frame['R']) if kind == 'conjugation' else None)
-    result=cache.get(path, kind, (), calculate)
+        if kind == 'conjugation' and language is not None:
+            from app.statistics.conjugation import conjugation_progress
+            result['progress'] = conjugation_progress(frame, language)
+        return result
+    result=cache.get(path, kind, (language,), calculate)
     if kind=='grammar':
         from app.repositories.grammar_records import load_record
         result['best_streak']=load_record(path)

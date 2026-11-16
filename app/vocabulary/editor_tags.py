@@ -1,4 +1,5 @@
 """Table-based tag catalog editor; catalog changes never rewrite vocabulary."""
+from app.shared.messages import error_text
 from tkinter import messagebox
 
 import customtkinter as cst
@@ -110,7 +111,7 @@ class TagsDialog(AppDialog):
         except (OSError, ValueError) as error:
             report_error(error, operation='save tag catalog')
             message = (self.translate(error.message).format(row=error.row)
-                       if isinstance(error, TagValidationError) else self.translate(str(error)))
+                       if isinstance(error, TagValidationError) else error_text(error, self.translate))
             messagebox.showerror(parent=self, title=self.translate('Manage tags'), message=message)
             return 'break'
         self.destroy()

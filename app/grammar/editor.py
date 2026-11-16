@@ -1,4 +1,5 @@
 """Grammar question editor controller; changes reach CSV only on explicit save."""
+from app.shared.messages import error_text
 from app.core.context import get_context
 from tkinter import messagebox
 import customtkinter as cst
@@ -201,7 +202,7 @@ class GrammarEditor:
                 self.refresh(error.identifier)
             prefix = f"{self.translate('Question ID')}: {error.identifier}\n\n"
             self.view.fields['option_1'].focus_set()
-        messagebox.showerror(parent=self.app, title=self.translate(self.title_key), message=prefix+self.translate(str(error)))
+        messagebox.showerror(parent=self.app, title=self.translate(self.title_key), message=prefix+error_text(error, self.translate))
 
     def _sync_theory(self):
         from app.repositories.grammar_theory import ensure_theory_categories

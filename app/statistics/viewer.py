@@ -1,3 +1,4 @@
+from app.shared.messages import error_text
 from app.statistics.table import StatisticsTable
 from app.statistics.difficult_words import DifficultWordsPanel
 from app.statistics.grammar_categories import GrammarCategoriesPanel
@@ -120,6 +121,12 @@ class StatisticsController:
         self.chart_cr_frm = cst.CTkFrame(vocabulary_body)
         self.chart_PoS_frm = cst.CTkFrame(vocabulary_body)
         self.chart_con_frm = cst.CTkFrame(conjugation_body)
+        self.conjugation_progress = cst.CTkLabel(conjugation_body, text='', font=(FONT, 17), text_color=TEXT,
+                                               justify='left', anchor='w', wraplength=850)
+        self.conjugation_progress.grid(row=2, column=0, columnspan=2, sticky='ew', padx=24, pady=12)
+        self.conjugation_table = StatisticsTable(conjugation_body, self.translate)
+        self.conjugation_table.title_label.configure(text=self.translate('Difficult conjugation rounds'))
+        self.conjugation_table.grid(row=3, column=0, columnspan=2, sticky='ew', padx=20, pady=12)
         self.chart_voc_trail_frm = cst.CTkFrame(vocabulary_body)
         conjugation_empty = cst.CTkLabel(conjugation_body, text=self.translate('No conjugation statistics available.'), font=(FONT, 20), text_color=TEXT)
         window.conjugation_empty = conjugation_empty
@@ -172,6 +179,7 @@ class StatisticsController:
         for panel in (self.tot_sheet, self.difficult_words_panel, self.vocabulary_tags_panel, self.grammar_categories_panel, self.chart_rep_frm, self.chart_cr_frm, self.chart_PoS_frm, self.chart_con_frm, self.chart_voc_trail_frm):
             canvas_background.add_panel(panel)
         sheet_lbl.configure(bg_color=SURFACE, fg_color='transparent', corner_radius=0)
+        canvas_background.add_panel(self.conjugation_table)
         content.update_idletasks()
         return self.load()
 
@@ -233,6 +241,15 @@ class StatisticsController:
         available = conjugation is not None
         _set_conjugation_available(self.window, available)
         if available:
+            from app.statistics.conjugation import progress_table
+            progress = conjugation.get('progress')
+            if progress is not None:
+                lines = [f'{self.translate(key)}: {progress[field]}' for key, field in (
+                    ('Practised conjugation rounds', 'practised'), ('Unpractised conjugation rounds', 'unpractised'),
+                    ('Forms in practised rounds', 'covered_forms'))]
+                lines.append(self.translate('Conjugation statistics explanation'))
+                self.conjugation_progress.configure(text='\n'.join(lines))
+                self.conjugation_table.set_data(progress_table(progress))
             charts.append((conjugation['trailing'], self.chart_con_frm, 'Conjugation trailing successes', 0))
             if conjugation['trailing'].empty:
                 self.window.conjugation_empty.grid(row=1, column=0, columnspan=2, padx=24, pady=32)
@@ -271,13 +288,15 @@ class StatisticsController:
 
 
 def _show_summary(summary, count_label, total_label, success_label, failure_label, ring):
+    from app.shared.localization_format import percent
     count, successes, failures = summary
     attempts = successes + failures
     count_label.configure(text=count)
     total_label.configure(text=attempts)
     success_label.configure(text=successes)
     failure_label.configure(text=failures)
-    ring.configure(text=f'{successes / attempts * 100 if attempts else 0:.2f}%', attempts=attempts)
+    ring.configure(text=percent(successes / attempts if attempts else 0,
+        get_context(ring).preferences.app_language, places=2), attempts=attempts)
 
 def _set_conjugation_available(window, available):
     window.statistics_tabs.set_conjugation_available(available)
@@ -309,7 +328,7 @@ def _practise_category(window, category):
         controller = Grammar_training(window.master,window._statistics_language.get(),categories=[category],
             context=get_context(window),on_back=_practice_return(window, 'Grammar'))
     except Exception as error:
-        messagebox.showerror(parent=window, title=get_context(window).translate('Statistics'), message=get_context(window).translate(str(error)))
+        messagebox.showerror(parent=window, title=get_context(window).translate('Statistics'), message=error_text(error, get_context(window).translate))
     else:
         if controller is not None:window.destroy()
     finally:
@@ -332,6 +351,6 @@ def _practise_tag(window,tag_id):
             context=context,on_back=_practice_return(window, 'Vocabulary'))
         if controller is not None:window.destroy()
     except (OSError,ValueError) as error:
-        messagebox.showerror(parent=window,title=context.translate('Tags'),message=context.translate(str(error)))
+        messagebox.showerror(parent=window,title=context.translate('Tags'),message=error_text(error, context.translate))
     finally:
         window._opening_practice = False

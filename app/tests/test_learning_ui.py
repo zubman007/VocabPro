@@ -149,7 +149,7 @@ class LearningUiTests(unittest.TestCase):
                 dialog.save()
             self.assertTrue(dialog.winfo_exists())
             self.assertFalse(dialog.saved)
-            self.assertEqual(dialog.error.cget('text'),'Locked file')
+            self.assertEqual(dialog.error.cget('text'),dialog.translate('Operation failed. Details: {details}').format(details='Locked file'))
             self.assertEqual(path.read_bytes(),before)
             dialog.save()
             self.assertTrue(dialog.saved)

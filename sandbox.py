@@ -2,16 +2,25 @@
 
 
 
-Synonyma projít extra hard
+
 Nejde nějak zrychlit načítání statistik? Možná prvostní načítání neni takový problém. Ale když pak sjíždím dolů, trošku se to seká..
 Nějaká další statistika na conjugation?
 Nešlo by nějak šikovněji udělat to nastavení na jazyk 1 a 2.. Aby to bylo více obecné.. A co třeba přidání třetího jazyka?
-Co s tím mailem?
+
 Lokalizace.. Je tam všechno? Existuje nějaká kontrola na to, že je tam všechno? Je to dobře přeložené?
+
+
+Synonyma projít extra hard
+
+Co s tím mailem?
+
 Pořádek ve scriptech a souborech - třeba refactoring nebo requiements.lock.. Je to tam potřeba?
+
 Šlo by ještě nějaký prvek, design, příznak sjednotit napříč celou aplikací aby byla jednotnost jistější?
 Exe?
+
 Rozdíl mezi readme a dokumentací
+
 Čitelná dokumentace - včetně seznamu scriptů a nějaké obecné hodnoty počtu řádků kódu - pdf?
 
 

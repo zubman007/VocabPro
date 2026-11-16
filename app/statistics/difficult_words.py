@@ -1,5 +1,7 @@
 """Read-only recent difficulty ranking and its compact answer-history cards."""
 from dataclasses import dataclass
+from app.shared.localization_format import percent
+from app.core.context import get_context
 import customtkinter as cst
 from app.ui.theme import FONT, TEXT, SECTION_SURFACE
 
@@ -79,6 +81,7 @@ class DifficultWordsPanel(cst.CTkFrame):
                 cst.CTkFrame(strip, width=12, height=18, corner_radius=4,
                     fg_color='#416d58' if result == 'S' else '#ad6548' if result == 'F' else '#c7bfa9').grid(
                         row=0, column=position, padx=2)
-            cst.CTkLabel(row, text=f'{item.errors}/{len(item.history)}  ·  {item.errors / len(item.history):.0%}  '
+            cst.CTkLabel(row, text=f'{item.errors}/{len(item.history)}  ·  '
+                         + percent(item.errors / len(item.history), get_context(self).preferences.app_language) + '  '
                          + self.translate('Errors'), font=(FONT, 16, 'bold'), text_color='#8d4d34').grid(
                              row=1, column=2, padx=20, pady=(0, 5))

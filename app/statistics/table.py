@@ -3,6 +3,9 @@ from app.ui.theme import FONT
 from tkinter import ttk
 import customtkinter as cst
 import pandas as pd
+from numbers import Real, Integral
+from app.shared.localization_format import number
+from app.core.context import get_context
 from app.ui.theme import SECTION_SURFACE as SURFACE, SECTION_CONTROL as HEADER, TEXT, TITLE_FONT
 
 
@@ -116,11 +119,15 @@ class StatisticsTable(cst.CTkFrame):
         items = self.tree.get_children()
         if items:
             self.tree.delete(*items)
+        ui_language = get_context(self).preferences.app_language
         for index, row in enumerate(view.iloc[start:start+self.page_size].fillna("").itertuples(index=False, name=None)):
-            self.tree.insert("", "end", values=row, tags=("even" if index % 2 == 0 else "odd",))
+            shown = [number(value, ui_language, 2)
+                     if isinstance(value, Real) and not isinstance(value, Integral) else value for value in row]
+            self.tree.insert("", "end", values=shown, tags=("even" if index % 2 == 0 else "odd",))
         for column in view.columns:
             arrow = (" ↑" if self.ascending else " ↓") if column == self.sort_column else ""
-            self.tree.heading(column, text=self.translate(column) + arrow,
+            unit = ' (%)' if column == 'Review accuracy' else ''
+            self.tree.heading(column, text=self.translate(column) + unit + arrow,
                 command=lambda selected=column: self.sort(selected))
         self.count.configure(text=f"{start + 1 if total else 0}–{min(start+self.page_size, total)} / {total}")
         self.previous.configure(state="normal" if self.page else "disabled")

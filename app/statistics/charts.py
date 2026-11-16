@@ -5,6 +5,9 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
+import tkinter as tk
+from app.shared.localization_format import number, percent, date_pattern, date_text
+from matplotlib.ticker import FuncFormatter
 
 
 class _HoverBlit:
@@ -49,6 +52,10 @@ def _release_chart(chart_frm):
     if canvas is None:
         return
     chart_frm._chart_canvas = None
+    chart_frm._chart_snapshot = None
+    for owner, sequence, token in getattr(chart_frm, '_chart_tk_bindings', ()):
+        owner.unbind(sequence, token)
+    chart_frm._chart_tk_bindings = ()
     hover_blit = getattr(chart_frm, '_chart_blit', None)
     if hover_blit is not None:
         hover_blit.close()
@@ -70,9 +77,19 @@ def _release_chart(chart_frm):
 
 def Generate_chart(data, chart_frm, name, chart_row):
     from app.shared import settings as s
+    from app.core.context import get_context
+    ui_language = get_context(chart_frm).preferences.app_language
+    signature = (name, chart_row, ui_language)
+    snapshot = getattr(chart_frm, '_chart_snapshot', None)
+    values = data if isinstance(data, list) else [data]
+    if snapshot is not None and snapshot[0] == signature and len(snapshot[1]) == len(values):
+        if all(old.equals(new) for old, new in zip(snapshot[1], values)):
+            chart_frm.grid()
+            return
     _release_chart(chart_frm)
     if not getattr(chart_frm, '_chart_cleanup_bound', False):
-        chart_frm.bind('<Destroy>', lambda event, frame=chart_frm: _release_chart(frame), add='+')
+        tk.Misc.bind(chart_frm, '<Destroy>',
+            lambda event, frame=chart_frm: _release_chart(frame) if event.widget is frame else None, add='+')
         chart_frm._chart_cleanup_bound = True
     if len(data) == 0:
         chart_frm.grid_remove()
@@ -97,7 +114,7 @@ def Generate_chart(data, chart_frm, name, chart_row):
             if not cont: hide(); return
             i = ind["ind"][0]
             x, y = x_nz[i], y_nz[i]
-            show(x, y, f"{x.strftime('%Y-%m-%d')}\n{s.T('Number of words')}: {int(y)}")
+            show(x, y, f"{date_text(x, ui_language)}\n{s.T('Number of words')}: {int(y)}")
             return
         if name == "Growth of the vocabulary":
             cont, ind = scat.contains(event)
@@ -106,13 +123,13 @@ def Generate_chart(data, chart_frm, name, chart_row):
                 return
             i = ind["ind"][0]
             x, y = x_pts[i], y_pts[i]
-            show(x, y, f"{x.strftime('%Y-%m-%d')}\n{s.T('Number of words')}: {int(y)}")
+            show(x, y, f"{date_text(x, ui_language)}\n{s.T('Number of words')}: {int(y)}")
             return
         for p, (lbl, ser_name, y) in patch_info.items():
             hit, _ = p.contains(event)
             if not hit: continue
             x = p.get_x() + p.get_width() / 2
-            if name == "Vocabulary by Part of Speech": show(x, y, f"{y:.2f}%\n{int(df_nom.loc[lbl, ser_name])}"); return
+            if name == "Vocabulary by Part of Speech": show(x, y, f"{percent(y / 100, ui_language, 2)}\n{int(df_nom.loc[lbl, ser_name])}"); return
             if name == "Conjugation trailing successes": show(x, y, f"{lbl}\n{s.T('Number of verbs')}: {int(y)}"); return
             if name == "Vocabulary trailing successes": show(x, y, f"{lbl}\n{s.T('Number of words')}: {int(y)}"); return
         hide()
@@ -139,7 +156,7 @@ def Generate_chart(data, chart_frm, name, chart_row):
         x_nz, y_nz = ser.index[mask], ser.values[mask]
         scat = ax.scatter(x_nz, y_nz, picker=False, color=STYLES[name][0])
         ax.xaxis.set_major_locator(mdates.MonthLocator(bymonthday=1, interval=1))
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter(date_pattern(ui_language)))
         ax.margins(x=0.01)
         ax.set_xlabel(s.T("Date"), fontsize=14)
         ax.set_ylabel(s.T("Number of words"), fontsize=14)
@@ -154,7 +171,7 @@ def Generate_chart(data, chart_frm, name, chart_row):
         x_pts, y_pts = ser.index, y_vals
         scat = ax.scatter(x_pts, y_pts, s=7, picker=False, color=STYLES[name][0])
         ax.xaxis.set_major_locator(mdates.MonthLocator(bymonthday=1, interval=1))
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter(date_pattern(ui_language)))
         ax.margins(x=0.01)
         ax.set_xlabel(s.T("Date"), fontsize=14)
         ax.set_ylabel(s.T("Number of words"), fontsize=14)
@@ -195,14 +212,25 @@ def Generate_chart(data, chart_frm, name, chart_row):
         ax.set_ylabel(s.T("Number of words"), fontsize=14)
         x_lbl_size = 12
 
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda value, position:
+        number(value, ui_language, 0 if float(value).is_integer() else 2)))
     style_chart(fig, ax, name, s.T(name), x_lbl_size)
     chart_frm.configure(fg_color=STYLES[name][1], border_width=0, corner_radius=12)
     for w in chart_frm.winfo_children(): w.destroy()
+    owner = chart_frm.winfo_toplevel()
+    before = set(owner._tclCommands or ())
     canvas = FigureCanvasTkAgg(fig, master=chart_frm)
+    # TkAgg installs callbacks on the toplevel. Remove these explicitly when
+    # replacing a chart, rather than waiting for weakref cleanup during destroy.
+    created = set(owner._tclCommands or ()) - before
+    chart_frm._chart_tk_bindings = [(owner, sequence, token)
+        for sequence in ('<MouseWheel>', '<Destroy>')
+        for token in created if token in (owner.bind(sequence) or '')]
     chart_frm._chart_canvas = canvas
     chart_frm._chart_blit = _HoverBlit(canvas, annot)
     chart_frm._chart_hover_id = canvas.mpl_connect("motion_notify_event", hover)
     canvas.get_tk_widget().grid(row=0, column=0, sticky="NWES", padx=3, pady=3)
     # Coalesce the first draw with Tk's final geometry instead of drawing twice.
     canvas.draw_idle()
+    chart_frm._chart_snapshot = (signature, [value.copy(deep=True) for value in values])
 

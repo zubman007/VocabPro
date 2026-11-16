@@ -73,7 +73,7 @@ class SuccessRing(cst.CTkFrame):
         line = 13 * scale
         rate = None
         if self.value.endswith('%') and self.attempts:
-            rate = max(0, min(100, float(self.value[:-1])))
+            rate = max(0, min(100, float(self.value[:-1].strip().replace(',', '.'))))
         self._ring_photo = ImageTk.PhotoImage(
             ring_image(diameter, line, self.surface, self.accent, rate), master=self.canvas)
         self.canvas.create_image(center_x, center_y, image=self._ring_photo)

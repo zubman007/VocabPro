@@ -1,5 +1,7 @@
 """Weighted tag statistics and a compact, paginated vocabulary panel."""
 from dataclasses import dataclass
+from app.shared.localization_format import percent
+from app.core.context import get_context
 import customtkinter as cst
 
 from app.ui.theme import FONT, TEXT, SECTION_SURFACE
@@ -148,7 +150,7 @@ class VocabularyTagsPanel(cst.CTkFrame):
             rate.grid(row=0,column=3,padx=3);rate.grid_propagate(False)
             bar=cst.CTkProgressBar(rate,width=100,height=7,fg_color='#b5ad97',progress_color='#417766')
             bar.grid(row=0,column=0,padx=(8,6),pady=11);bar.set(item.accuracy or 0)
-            cst.CTkLabel(rate,text=f'{item.accuracy:.1%}' if item.accuracy is not None else '—',width=70,
+            cst.CTkLabel(rate,text=percent(item.accuracy, get_context(self).preferences.app_language, 1) if item.accuracy is not None else '—',width=70,
                 text_color=TEXT,font=(FONT,15,'bold')).grid(row=0,column=1)
             if self.on_practise is not None:
                 detail_practise_button(cst.CTkButton(row,text=self.translate('Repeat'),

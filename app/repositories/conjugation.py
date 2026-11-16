@@ -2,13 +2,14 @@
 import pandas as pd
 from app.shared.storage import save_csv, file_revision
 from app.repositories.csv_store import apply_delta
+from app.shared.messages import UserMessageError
 
 
 def load_source(path,language,learned_by):
     source=pd.read_csv(path,delimiter=';').fillna('')
     required={'ID','R','LR','s1','s2','s3','m1','m2','m3','Description',learned_by,language}
     missing=required.difference(source.columns)
-    if missing:raise ValueError('Missing required CSV columns: '+', '.join(sorted(missing)))
+    if missing:raise UserMessageError('Missing required CSV columns: {columns}', columns=', '.join(sorted(missing)))
     if source.ID.isna().any() or source.ID.eq('').any() or source.ID.duplicated().any():
         raise ValueError('Practice requires unique word IDs')
     return source

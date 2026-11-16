@@ -1,6 +1,7 @@
 """Speech generation; editor-facing API is in app.services.api."""
 from app.repositories.api_settings import audio_path, load_settings
 from app.services.api_http import download_audio
+from app.shared.messages import UserMessageError
 
 VOICES = {
     "Spanish": "IKne3meq5aSn9XLyUdCD",
@@ -12,7 +13,7 @@ VOICES = {
 
 def generate_audio(i,frame,language,learning_by,*,settings_path=None):
     if language not in VOICES:
-        raise ValueError(f"No speech voice configured for {language}")
+        raise UserMessageError('No speech voice configured for {language}', language=language)
     token = load_settings(settings_path).get("11Labs token", "")
     if not token:
         raise ValueError("Missing ElevenLabs token")

@@ -1,4 +1,5 @@
 """Statistics window lifecycle: present loading first, reveal prepared content."""
+from app.shared.messages import error_text
 import logging
 from tkinter import messagebox
 import customtkinter as cst
@@ -68,7 +69,7 @@ class StatisticsWindow(cst.CTkToplevel):
             self.content.update_idletasks()
         except Exception as error:
             logger.exception('Statistics preparation failed')
-            messagebox.showerror(parent=self, title=s.T('Statistics'), message=str(error))
+            messagebox.showerror(parent=self, title=s.T('Statistics'), message=error_text(error, s.T))
             self.destroy()
             return
         if not deferred:
@@ -82,7 +83,7 @@ class StatisticsWindow(cst.CTkToplevel):
         if self._closing:
             return
         logger.error('Statistics preparation failed: %s', type(error).__name__)
-        messagebox.showerror(parent=self, title=s.T('Statistics'), message=s.T(str(error)))
+        messagebox.showerror(parent=self, title=s.T('Statistics'), message=error_text(error, s.T))
         self.destroy()
 
     def _reveal(self):

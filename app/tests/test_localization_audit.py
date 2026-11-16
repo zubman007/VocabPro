@@ -74,7 +74,8 @@ class LocalizationAuditTests(unittest.TestCase):
     def test_no_raw_english_widget_text_and_shared_ui_titles_are_in_catalog(self):
         catalog=get_catalog('English');missing=[]
         for path in (ROOT_DIR/'app').rglob('*.py'):
-            if 'tests' in path.parts:continue
+            # The audit command emits developer diagnostics, not desktop UI text.
+            if 'tests' in path.parts or path.name == 'localization_audit.py':continue
             for node in ast.walk(ast.parse(path.read_text(encoding='utf-8-sig'))):
                 if not isinstance(node,ast.Call):continue
                 for option in node.keywords:

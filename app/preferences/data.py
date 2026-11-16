@@ -73,6 +73,17 @@ class RuntimePreferences:
     def learning_languages(self):
         return (self.first_language,self.second_language) if self.second_language_enabled else (self.first_language,)
 
+    @property
+    def language_pairs(self):
+        from app.shared.languages import LanguagePair
+        return tuple(LanguagePair(self.learned_by, language) for language in self.learning_languages)
+
+    def testing_probabilities(self, language):
+        """Resolve legacy ordinal preferences at the boundary, by language identity."""
+        from app.shared.languages import legacy_name
+        index = self.learning_languages.index(legacy_name(language))
+        return self.context_probabilities[index], self.audio_probabilities[index]
+
     @classmethod
     def from_frame(cls, frame):
         validated = validate_preferences(frame, {})

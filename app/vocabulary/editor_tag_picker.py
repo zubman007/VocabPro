@@ -1,4 +1,5 @@
 """Searchable multiple selection of a word's tags from the saved catalog."""
+from app.shared.messages import error_text
 from tkinter import messagebox
 import customtkinter as cst
 
@@ -111,7 +112,7 @@ class WordTagsDialog(AppDialog):
                 value=translated_tags(value,mapping).replace(' · ', ', ')
             self.on_apply(value)
         except (OSError,ValueError) as error:
-            message=self.translate(str(error))
+            message=error_text(error, self.translate)
             if hasattr(error,'tag'):message=message.format(tag=error.tag,word_id=error.word_id)
             elif hasattr(error,'row'):message=message.format(row=error.row)
             messagebox.showerror(parent=self,title=self.translate('Word tags'),message=message)

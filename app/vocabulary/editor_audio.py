@@ -1,4 +1,5 @@
 """Styled recording dialog; microphone work never touches Tk widgets."""
+from app.shared.messages import error_text
 from app.ui.theme import FONT, PAGE, SURFACE, TEXT
 from pathlib import Path
 import queue
@@ -144,7 +145,7 @@ class AudioRecorderPlayer:
         else:
             self.status.configure(text=s.T("Recording failed"),text_color="#a14343")
             if not self.closing:
-                messagebox.showerror(parent=self.app,title=s.T("Audio Recorder"),message=error)
+                messagebox.showerror(parent=self.app,title=s.T("Audio Recorder"),message=error_text(error, s.T))
         try:
             pygame.mixer.init()
         except pygame.error:
@@ -197,4 +198,4 @@ class AudioRecorderPlayer:
             pygame.mixer.music.load(str(path))
             pygame.mixer.music.play()
         except (pygame.error,OSError) as error:
-            messagebox.showerror(parent=self.app,title=s.T("Audio Recorder"),message=str(error))
+            messagebox.showerror(parent=self.app,title=s.T("Audio Recorder"),message=error_text(error, s.T))

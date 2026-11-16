@@ -1,4 +1,5 @@
 """Conjugation screen controller; no module-level lesson state."""
+from app.shared.messages import error_text
 from app.core.context import get_context
 from app.shared.diagnostics import report_error
 from pathlib import Path
@@ -107,7 +108,7 @@ class ConjugationController:
             updated = save_results(self.source, self.session.selection, self.path)
         except Exception as error:
             report_error(error, operation='conjugation screen')
-            messagebox.showerror(parent=self.app, title=self.translate('Error'), message=self.translate(str(error)))
+            messagebox.showerror(parent=self.app, title=self.translate('Error'), message=error_text(error, self.translate))
             return False
         self.source = updated
         self._initial_selection=self.session.selection.copy(deep=True)
@@ -146,7 +147,7 @@ def Conjugation(app_input,lang_input,*,context=None):
         selection = select_verbs(source, config.conjugation_batch)
         verbs = build_verbs(selection, lang_input, config.learned_by)
     except (OSError,ValueError,KeyError) as error:
-        messagebox.showerror(parent=app_input,title=context.translate('Error'),message=context.translate(str(error)))
+        messagebox.showerror(parent=app_input,title=context.translate('Error'),message=error_text(error, context.translate))
         return None
     if not verbs:
         return None

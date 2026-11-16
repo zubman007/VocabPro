@@ -9,12 +9,12 @@ from collections.abc import Mapping
 from functools import lru_cache
 import json
 from types import MappingProxyType
+from app.shared.languages import legacy_name
 
 LOCALES_DIR = ROOT_DIR / 'locales'
-LANGUAGE_CODES = MappingProxyType({
-    'English': 'en', 'Czech': 'cs', 'Slovak': 'sk',
-    'Spanish': 'es', 'French': 'fr', 'German': 'de',
-})
+# UI support is explicit: registering a learning language does not create a UI catalog.
+UI_LANGUAGE_IDS = ('en', 'cs', 'sk', 'es', 'fr', 'de')
+LANGUAGE_CODES = MappingProxyType({legacy_name(code): code for code in UI_LANGUAGE_IDS})
 LANGUAGES = tuple(LANGUAGE_CODES)
 _CODES = frozenset(LANGUAGE_CODES.values())
 
@@ -52,9 +52,10 @@ def get_catalog(language='English'):
 def translate(message_id, language='English'):
     """Resolve a stable ID, falling back to English and then the original ID."""
     text = get_catalog(language).get(message_id)
-    if text:
+    if text and text.strip():
         return text
-    return get_catalog('English').get(message_id) or message_id
+    fallback = get_catalog('English').get(message_id)
+    return fallback if fallback and fallback.strip() else message_id
 
 
 class _MessageLanguages(Mapping):

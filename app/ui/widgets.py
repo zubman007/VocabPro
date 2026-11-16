@@ -16,6 +16,7 @@ class VerticalScrolledFrame_class(ttk.Frame):
         self.canvas.yview_moveto(0)
         self.interior = ttk.Frame(self.canvas, style="Stats.TFrame")
         self.interior_id = self.canvas.create_window(0, 0, window=self.interior, anchor=NW)
+        self._scroll_region = None
         self.interior.bind("<Configure>", self.configure_interior)
         self.canvas.bind("<Configure>", self.configure_canvas)
         self._wheel_owner = self.winfo_toplevel()
@@ -23,7 +24,10 @@ class VerticalScrolledFrame_class(ttk.Frame):
     def configure_interior(self, event=None):
         width = self.interior.winfo_reqwidth()
         height = self.interior.winfo_reqheight()
-        self.canvas.config(scrollregion=(0, 0, width, height))
+        region = (0, 0, width, height)
+        if region != self._scroll_region:
+            self.canvas.config(scrollregion=region)
+            self._scroll_region = region
         if width != self.winfo_width(): self.canvas.config(width=width)
     def configure_canvas(self, event=None):
         width = self.winfo_width()

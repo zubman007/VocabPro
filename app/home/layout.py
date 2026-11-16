@@ -74,7 +74,8 @@ def build_home(app, stats_by_lang, languages, callbacks):
                     hover_color='#355e59' if caption!='Edit' else '#86573a', text_color='#fff4dc',
                     corner_radius=12).grid(row=0, column=position, sticky='ew', padx=3)
             if title == 'Vocabulary':
-                counts = f"{data['rep_count']}{s.T(' words to repeat')}  ·  {data['lrn_count']}{s.T(' new words to learn')}"
+                counts = (s.T('Words to review: {count}').format(count=data['rep_count']) + '  ·  '
+                          + s.T('New words to learn: {count}').format(count=data['lrn_count']))
                 cst.CTkLabel(section, text=counts, font=(UI_FONT, 14), text_color='#615c45',
                     anchor='w', justify='left', wraplength=290).grid(
                         row=3, sticky='ew', padx=14, pady=(0, 12))

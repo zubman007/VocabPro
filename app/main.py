@@ -1,4 +1,5 @@
 """Application composition: contexts, navigation and home-screen entry points."""
+from app.shared.messages import error_text
 import os
 import sys
 from dataclasses import replace
@@ -71,7 +72,7 @@ def Back_up(app,context=None):
                     context.preferences=replace(current,next_backup=next_date)
         def failed(error):
             messagebox.showerror(parent=app,title=context.translate('Backups'),
-                message=context.translate("The backup mail should have been sent but it wasn't.")+'\n'+context.translate(str(error)))
+                message=context.translate("The backup mail should have been sent but it wasn't.")+'\n'+error_text(error, context.translate))
         app._backup_coordinator=BackupCoordinator(app,sent,failed)
     sender=partial(send_backup,files,recipient,
         os.environ.get('VOC_SMTP_USER',''),os.environ.get('VOC_SMTP_PASSWORD',''),
@@ -102,7 +103,7 @@ def _try_bkp(app,context):
     try:Back_up(app,context)
     except Exception as error:
         messagebox.showerror(parent=app,title=context.translate('Error'),
-            message=context.translate("The backup mail should have been sent but it wasn't.")+'\n'+context.translate(str(error)))
+            message=context.translate("The backup mail should have been sent but it wasn't.")+'\n'+error_text(error, context.translate))
 
 
 def _load_vocab_stats(language,context):

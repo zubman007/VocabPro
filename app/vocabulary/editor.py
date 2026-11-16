@@ -1,4 +1,5 @@
 """Screen controller with per-instance state; menu entry point preserved."""
+from app.shared.messages import error_text
 from app.vocabulary.editor_audio import AudioRecorderPlayer
 from app.shared.background_task import BackgroundTask, CancelledError
 from app.shared.audio_effects import play_effect
@@ -61,7 +62,8 @@ class EditorController:
         self._resetting_filter = False
         self.edit_frm = cst.CTkFrame(app, fg_color=s.clr_bg)
         action_frm = cst.CTkFrame(self.edit_frm, fg_color=s.clr_bg)
-        self.head_frm=ModuleHeader(self.edit_frm,self.translate('Edit '+self.lang_desc+' course'),translate=self.translate)
+        self.head_frm=ModuleHeader(self.edit_frm,
+            self.translate('Edit course') + ' · ' + self.translate(self.lang_desc), translate=self.translate)
         self.edit_tbl = tksheet.Sheet(action_frm, expand_sheet_if_paste_too_big=True, default_row_index_width=50, **sheet_options(s.tbl_set), rounded_boxes=True)
         self.edit_tbl.enable_bindings(s.tbl_bind)
         self.headers = ['ID', self.lang_desc, 'Phonetic', self.learned_by, 'Audio', 'Description', 'Example', 'Part of Speech', 'Tags', 'Repetition', 'Next repetition']
@@ -152,7 +154,7 @@ class EditorController:
                 target=self.context.preferences.tag_display_language=='Learning language')
             return decoded.Tags.iloc[0]
         except ValueError as error:
-            message=self.translate(str(error))
+            message=error_text(error, self.translate)
             if hasattr(error,'tag'):message=message.format(tag=error.tag,word_id=error.word_id)
             messagebox.showerror(parent=self.app,title=self.translate('Tags'),message=message)
             return None
@@ -179,7 +181,7 @@ class EditorController:
                 self.filt_df.loc[self.filt_df['ID'] == int(val), 'Audio'] = 'No audio'
                 self.edit_tbl.set_cell_data(row, self.headers.index('Audio'), 'No audio')
         except Exception as e:
-            messagebox.showerror(title=self.translate('Error'), message=str(e))
+            messagebox.showerror(title=self.translate('Error'), message=error_text(e, self.translate))
         finally:
             pygame.mixer.init()
 
@@ -228,7 +230,7 @@ class EditorController:
             SynonymsDialog(self.app, self.file_voc, self.edit_tbl.get_cell_data(row, 0),
                            self.lang_desc, self.learned_by, on_changed=self._synonyms_changed)
         except (OSError, ValueError) as error:
-            messagebox.showerror(parent=self.app, title=self.translate('Synonyms'), message=self.translate(str(error)))
+            messagebox.showerror(parent=self.app, title=self.translate('Synonyms'), message=error_text(error, self.translate))
 
     def Open_tags(self):
         if self._saving or not self.context.preferences.tags_enabled:return
@@ -242,7 +244,7 @@ class EditorController:
         except (OSError, ValueError, UnicodeError) as error:
             report_error(error,operation='open tag catalog')
             message=(self.translate(error.message).format(row=error.row)
-                     if hasattr(error,'message') and hasattr(error,'row') else self.translate(str(error)))
+                     if hasattr(error,'message') and hasattr(error,'row') else error_text(error, self.translate))
             messagebox.showerror(parent=self.app,title=self.translate('Manage tags'),message=message)
 
     def Tag_shortcut(self, *, manage=False):
@@ -277,7 +279,7 @@ class EditorController:
             WordTagsDialog(self.app,self.lang_desc,identifier,str(word[self.lang_desc]),
                            word['Tags'],apply,context=self.context)
         except (OSError,ValueError) as error:
-            message=self.translate(str(error))
+            message=error_text(error, self.translate)
             if hasattr(error,'row'):message=message.format(row=error.row)
             messagebox.showerror(parent=self.app,title=self.translate('Word tags'),message=message)
 
@@ -333,7 +335,7 @@ class EditorController:
                 apply,context=self.context,selection_only=True)
             self.lifecycle.own_dialog(dialog)
         except (OSError,ValueError) as error:
-            message=self.translate(str(error))
+            message=error_text(error, self.translate)
             if hasattr(error,'row'):message=message.format(row=error.row)
             messagebox.showerror(parent=self.app,title=self.translate('Filter tags'),message=message)
 
@@ -529,7 +531,7 @@ class EditorController:
             report_error(error, operation='vocabulary screen')
             if self._saving:
                 self._set_saving(False)
-            message=self.translate(str(error))
+            message=error_text(error, self.translate)
             if hasattr(error,'tag'):message=message.format(tag=error.tag,word_id=error.word_id)
             messagebox.showerror(parent=app, title=self.translate('Error'), message=message)
 
@@ -581,7 +583,7 @@ class EditorController:
         self._set_saving(False)
         self._close_after_save=False
         if not isinstance(error, CancelledError):
-            message=self.translate(str(error))
+            message=error_text(error, self.translate)
             if hasattr(error,'tag'):message=message.format(tag=error.tag,word_id=error.word_id)
             messagebox.showerror(parent=self.app, title=self.translate('Error'), message=message)
 
@@ -616,7 +618,7 @@ class EditorController:
             AudioRecorderPlayer(top, lbl_1, lbl_2, lbl_3, id, row, self.edit_tbl, self.main_df, self.audio_folder, self.lang_desc)
         except Exception as error:
             report_error(error, operation='vocabulary screen')
-            messagebox.showerror(parent=app, title=self.translate('Error'), message=self.translate(str(error)))
+            messagebox.showerror(parent=app, title=self.translate('Error'), message=error_text(error, self.translate))
 
     def Play_audio(self, app, event):
         if self._saving:
@@ -638,7 +640,7 @@ class EditorController:
                 else:
                     messagebox.showerror(parent=app, title=self.translate('Error'), message=self.translate('Audio-error'))
         except (OSError, pygame.error) as error:
-            messagebox.showerror(parent=app, title=self.translate('Error'), message=self.translate('Audio-error') + '\n' + str(error))
+            messagebox.showerror(parent=app, title=self.translate('Error'), message=self.translate('Audio-error') + '\n' + error_text(error, self.translate))
 
     def _update_sort_button(self):
         if hasattr(self.edit_frm,'_sort_button'):

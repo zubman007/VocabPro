@@ -1,4 +1,5 @@
 """Screen controller with per-instance state; menu entry point preserved."""
+from app.shared.messages import error_text
 from app.vocabulary.practise_session import PracticeSession, ChoicePool
 from app.ui import learning_layout as ui
 from app.vocabulary.practise_layout import style_practice
@@ -54,15 +55,14 @@ class PracticeController:
                     catalog[[self.learned_by,lang]].itertuples(index=False,name=None)}
             except (OSError,ValueError) as error:
                 report_error(error,operation='load practice tag labels')
-                message=self.translate(str(error))
+                message=error_text(error, self.translate)
                 if hasattr(error,'row'):message=message.format(row=error.row)
                 messagebox.showerror(parent=self.app,title=self.translate('Tags'),message=message)
         translations = self.synonym_words[self.learned_by]
         self.choice_pool = ChoicePool(translations)
         self.synonym_relations, _ = synonyms.load(file_path, self.synonym_words)
         self.audio = PracticeAudio(self.learned_by,self.lang_desc,folder=self.context.audio_folder(self.lang_desc))
-        type_2 = self.context.preferences.context_probabilities[self.lang_ord - 1]
-        type_3 = self.context.preferences.audio_probabilities[self.lang_ord - 1]
+        type_2, type_3 = self.context.preferences.testing_probabilities(self.lang_desc)
         self.test_weights = ((100 - type_2 - type_3) / 100, type_2 / 100, type_3 / 100)
         s.Clear_frames(self.app)
         self.rep_frm = cst.CTkFrame(self.app)
@@ -298,7 +298,7 @@ class PracticeController:
                         lambda:self.Edit_review_attribute('Description'),lambda:self.Edit_review_attribute('Example'),
                         tags=self.tag_text(self.w_old.id),on_tags=self.Edit_review_tags if self.context.preferences.tags_enabled else None)
         except (OSError, TclError) as error:
-            messagebox.showerror(parent=self.app, title=self.translate('Error'), message=self.translate(str(error)))
+            messagebox.showerror(parent=self.app, title=self.translate('Error'), message=error_text(error, self.translate))
 
     def Edit_review_tags(self):
         from app.vocabulary.editor_tag_picker import WordTagsDialog
@@ -377,7 +377,7 @@ class PracticeController:
             self.audio.delete(self.w_old.id)
             self.session.set_attribute(int(self.w_old.id), 'Audio', 'No audio')
         except (OSError, pygame.error) as error:
-            messagebox.showerror(parent=self.app, title=self.translate('Error'), message=self.translate(str(error)))
+            messagebox.showerror(parent=self.app, title=self.translate('Error'), message=error_text(error, self.translate))
         self.Play_btn_ability()
         self.Review_w_end('')
 
@@ -389,7 +389,7 @@ class PracticeController:
             save_practice(file_voc, remaining, completed, self.headers, original=self._initial_session_data,maximum_tags=self.context.preferences.maximum_tags)
         except Exception as error:
             report_error(error, operation='vocabulary screen')
-            messagebox.showerror(parent=self.app, title=self.translate('Error'), message=self.translate(str(error)))
+            messagebox.showerror(parent=self.app, title=self.translate('Error'), message=error_text(error, self.translate))
             return False
         else:
             self._has_answers=False
@@ -458,7 +458,7 @@ class PracticeController:
             word = self.w_old if version == 'old' else self.w_new
             self.audio.play(word.id, default)
         except (OSError, pygame.error) as error:
-            messagebox.showerror(parent=self.app, title=self.translate('Error'), message=self.translate('Something got wrong.') + ' ' + str(error))
+            messagebox.showerror(parent=self.app, title=self.translate('Error'), message=self.translate('Something got wrong.') + ' ' + error_text(error, self.translate))
 
     def Resp_change(self, *args):
         if self.w_new.word.lower().strip() == self.resp_var.get().lower().strip():

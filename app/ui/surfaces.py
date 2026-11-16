@@ -65,11 +65,14 @@ class PanelSurface:
         self._pending = self._photo = self._image = self._key = self._item = self._background = None
         self._dead = False
         self._painted_key, self._announced_revision = None, -1
+        self._painted_offset = None
         self._underlay = None
+        self._draw_dirty = True
         parent.children.add(self)
         original_draw = widget._draw
         def draw(*args, **kwargs):
             original_draw(*args, **kwargs)
+            self._draw_dirty = True
             self.request()
         widget._draw = draw
         self.canvas.bind('<Configure>', lambda event=None: self.request(), add='+')
@@ -130,6 +133,10 @@ class PanelSurface:
         if self._dead or self.widget.winfo_width() < 2 or self.widget.winfo_height() < 2:
             return
         background = self._render()
+        offset = (-self.canvas.winfo_x(), -self.canvas.winfo_y())
+        if (not self._draw_dirty and self._painted_key == self._key and self._painted_offset == offset
+                and self._announced_revision == self.revision):
+            return
         if self._painted_key != self._key:
             self._photo = ImageTk.PhotoImage(self._image if self.source is not None else background, master=self.widget)
             if self._item is None:
@@ -138,7 +145,8 @@ class PanelSurface:
                 self.canvas.itemconfigure(self._item, image=self._photo)
             self._painted_key = self._key
         # Tabview's canvas starts below its tab buttons, unlike a plain frame.
-        self.canvas.coords(self._item, -self.canvas.winfo_x(), -self.canvas.winfo_y())
+        self.canvas.coords(self._item, *offset)
+        self._painted_offset = offset
         if self.canvas.winfo_x() or self.canvas.winfo_y():
             if self._underlay is None:
                 self._underlay = tk.Canvas(self.widget, bd=0, highlightthickness=0)
@@ -152,6 +160,7 @@ class PanelSurface:
             self.canvas.itemconfigure('background_parts', state='hidden')
         else:
             self.canvas.tag_raise(self._item)
+        self._draw_dirty = False
         if self._announced_revision != self.revision:
             self._announced_revision = self.revision
             for child in list(self.children):

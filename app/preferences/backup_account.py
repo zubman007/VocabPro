@@ -1,4 +1,5 @@
 """Local-only sender configuration; saving never sends an email."""
+from app.shared.messages import error_text
 import customtkinter as cst
 import tkinter as tk
 from app.services.mail_credentials import load_credentials,save_credentials
@@ -50,7 +51,7 @@ class BackupAccountDialog(AppDialog):
             wraplength=max(100,int(event.width/body._get_widget_scaling())-32)),add='+')
 
     def show_error(self,error):
-        self.error.configure(text=self.translate(str(error)))
+        self.error.configure(text=error_text(error, self.translate))
         self.error.grid()
 
     def _resize_error(self,event):

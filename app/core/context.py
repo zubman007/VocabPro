@@ -6,6 +6,7 @@ from typing import Callable,TYPE_CHECKING
 from app.paths import ROOT_DIR
 from app.preferences.data import RuntimePreferences
 from app.shared.translations import translate
+from app.shared.languages import LanguagePair, legacy_name
 
 if TYPE_CHECKING:
     from pandas import DataFrame
@@ -32,22 +33,25 @@ class AppContext:
         return translate(message,self.preferences.app_language)
 
     def vocabulary_path(self,language):
-        return self.files_dir/f'{self.preferences.learned_by}_{language}_voc.csv'
+        return self.files_dir/f'{self.language_pair(language).legacy_stem}_voc.csv'
+
+    def language_pair(self, language):
+        return LanguagePair(self.preferences.learned_by, language)
 
     def tags_path(self,language):
-        return self.files_dir/f'{self.preferences.learned_by}_{language}_tags.csv'
+        return self.files_dir/f'{self.language_pair(language).legacy_stem}_tags.csv'
 
     def conjugation_path(self,language):
-        return self.files_dir/f'{self.preferences.learned_by}_{language}_con.csv'
+        return self.files_dir/f'{self.language_pair(language).legacy_stem}_con.csv'
 
     def grammar_path(self,language):
-        return self.files_dir/f'{language}_gra.csv'
+        return self.files_dir/f'{legacy_name(language)}_gra.csv'
 
     def theory_path(self,language):
-        return self.files_dir/f'{self.preferences.learned_by}_{language}_gra_ex.csv'
+        return self.files_dir/f'{self.language_pair(language).legacy_stem}_gra_ex.csv'
 
     def audio_folder(self,language):
-        return self.files_dir/'audio'/f'{self.preferences.learned_by}_{language}'
+        return self.files_dir/'audio'/self.language_pair(language).legacy_stem
 
     def go_home(self):
         if self.on_home is None:

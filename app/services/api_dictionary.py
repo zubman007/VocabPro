@@ -74,12 +74,14 @@ def dictionary_entry(i,df,learning_by,*,settings_path=None):
 
 def merriam_entry(i,df,lang,learning_by,*,settings_path=None):
     if lang not in ("English", "Spanish"):
-        raise ValueError(f"Dictionary provider does not support {lang}")
+        from app.shared.messages import UserMessageError
+        raise UserMessageError('Dictionary provider does not support {language}', language=lang)
     settings = load_settings(settings_path)
     key_name = "Merriam-Webster's spanish API key" if lang == "Spanish" else "Merriam-Webster's english API key"
     api_key = settings.get(key_name, "")
     if not api_key:
-        raise ValueError(f"Missing dictionary API key for {lang}")
+        from app.shared.messages import UserMessageError
+        raise UserMessageError('Missing dictionary API key for {language}', language=lang)
     a_flag = df.loc[i,'Audio']
     word = df.loc[i,lang].lower()
     if lang == 'Spanish': prefixes = ['el','los','las']

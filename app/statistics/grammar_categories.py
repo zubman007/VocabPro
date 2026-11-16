@@ -1,5 +1,7 @@
 """Read-only grammar category summaries and a compact comparison panel."""
 from dataclasses import dataclass
+from app.shared.localization_format import percent
+from app.core.context import get_context
 import customtkinter as cst
 from app.ui.theme import FONT, TEXT, SECTION_SURFACE
 from app.statistics.components import DETAIL_ROW_COLORS, detail_sort_button, detail_practise_button
@@ -181,7 +183,7 @@ class GrammarCategoriesPanel(cst.CTkFrame):
                 coverage.configure(wraplength=available)
                 for label in labels:label.configure(wraplength=max(60,available/3-16))
             row.bind('<Configure>',resize,add='+')
-            cst.CTkLabel(row, text=f'{item.accuracy:.0%}' if item.attempts else '—',
+            cst.CTkLabel(row, text=percent(item.accuracy, get_context(self).preferences.app_language) if item.attempts else '—',
                 font=(FONT, 23, 'bold'), text_color='#976042' if item.attempts and item.accuracy < .6 else '#355e59',
                 width=90).grid(row=0, column=1, padx=18, pady=(6, 0))
             bar = cst.CTkProgressBar(row, height=7, corner_radius=4,

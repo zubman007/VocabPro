@@ -1,4 +1,5 @@
 """Searchable synonym editor with explicit saving and navigation between words."""
+from app.shared.messages import error_text
 from tkinter import messagebox
 import customtkinter as cst
 from app.shared import settings as s
@@ -116,7 +117,7 @@ class SynonymsDialog(AppDialog):
             self.relations,self.revision = synonyms.load(self.course,self.words)
             if self.on_changed is not None:self.on_changed()
         except (OSError,ValueError) as error:
-            messagebox.showerror(parent=self,title=s.T('Synonyms'),message=s.T(str(error)))
+            messagebox.showerror(parent=self,title=s.T('Synonyms'),message=error_text(error, s.T))
             return False
         if close:self.destroy()
         return True

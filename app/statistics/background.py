@@ -88,13 +88,15 @@ class StatisticsBackdrop:
         provider.refresh()
         content_height = max(height, self.scroller.interior.winfo_height())
         key = (width, height, content_height, provider.revision)
+        if key == self._key:
+            return
         if key != self._key:
             self._photo = ImageTk.PhotoImage(provider._image, master=self.layer)
             self.layer.delete('all')
             for y in range(0, content_height, height):
                 self.layer.create_image(0, y, anchor='nw', image=self._photo)
             self._key = key
-        self.layer.place_configure(y=0, width=width, height=content_height)
+            self.layer.place_configure(y=0, width=width, height=content_height)
         top, bottom = viewport.winfo_rooty(), viewport.winfo_rooty()+height
         for panel in self.panels:
             widget = panel.widget

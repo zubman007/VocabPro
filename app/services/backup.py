@@ -18,9 +18,9 @@ def send_backup(files_dir, recipient, username, password, translate, app_name):
         saved=load_credentials()
         if saved and (not username or username==saved[0]):username,password=saved
     if not username or not password:
-        raise RuntimeError(translate('Configure the sending account in Settings → Backups → Sending account.'))
+        raise RuntimeError('Configure the sending account in Settings → Backups → Sending account.')
     message = EmailMessage()
-    message['Subject'] = f'{app_name} - backup'
+    message['Subject'] = app_name + ' - ' + translate('Backups')
     message['From'], message['To'] = username, recipient
     message.set_content(translate('Hello user,') + '\n' +
         translate('here is the back up vocabulary from the day ') + str(datetime.now()) + ',\n' +

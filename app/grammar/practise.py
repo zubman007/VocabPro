@@ -1,4 +1,5 @@
 """Grammar screen controller; round state and rendering are separate modules."""
+from app.shared.messages import error_text
 from app.core.context import get_context
 from pathlib import Path
 from tkinter import messagebox
@@ -35,7 +36,7 @@ class GrammarController:
             self.theory = load_theory(theory_path)
         except (OSError, UnicodeError, ValueError, csv.Error) as error:
             logging.getLogger(__name__).warning('Grammar theory could not be loaded')
-            messagebox.showerror(parent=app,title=self.translate('Error'),message=self.translate(str(error)))
+            messagebox.showerror(parent=app,title=self.translate('Error'),message=error_text(error, self.translate))
             self.theory = {}
         self._theory_window = None
         self._filter_window = None
@@ -248,7 +249,7 @@ class GrammarController:
             with update_record(self.path,self.record_candidate):
                 save_answers(self.path,self.pending_answers)
         except (OSError,ValueError) as error:
-            messagebox.showerror(parent=self.app,title=self.translate('Error'),message=self.translate(str(error)))
+            messagebox.showerror(parent=self.app,title=self.translate('Error'),message=error_text(error, self.translate))
             return False
         self.pending_answers.clear()
         play_effect('saved')
@@ -334,7 +335,7 @@ def Grammar_training(app_input,lang_input,categories=None,*,context=None,on_back
     path=context.grammar_path(lang_input)
     try:questions = Load_questions_from_csv(path)
     except (OSError,ValueError,csv.Error) as error:
-        messagebox.showerror(parent=app_input,title=context.translate('Error'),message=context.translate(str(error)))
+        messagebox.showerror(parent=app_input,title=context.translate('Error'),message=error_text(error, context.translate))
         return
     explicit_categories = categories is not None
     remember = None
@@ -357,7 +358,7 @@ def Grammar_training(app_input,lang_input,categories=None,*,context=None,on_back
         controller = GrammarController(app_input, questions, path, on_back if on_back is not None else context.go_home, config.learned_by,
             initial_categories=categories, remember_filter=remember,context=context)
     except (OSError,ValueError) as error:
-        messagebox.showerror(parent=app_input,title=context.translate('Error'),message=context.translate(str(error)))
+        messagebox.showerror(parent=app_input,title=context.translate('Error'),message=error_text(error, context.translate))
         return
     if remember is not None and explicit_categories:
         controller._remember_filter()

@@ -1,4 +1,5 @@
 """Preferences UI; validation is in preferences.data, persistence in repositories."""
+from app.shared.messages import error_text
 from app.ui.theme import FONT, PAGE, SECTION_SURFACE as CARD
 from tkinter import messagebox
 import customtkinter as cst
@@ -233,7 +234,7 @@ class PreferencesDialog(AppDialog):
             self.fields[error.field].focus_set()
             return
         except (OSError, ValueError) as error:
-            self._show_error(self.translate(str(error)))
+            self._show_error(error_text(error, self.translate))
             return
         self.saved=True
         self.destroy()
@@ -247,7 +248,7 @@ def open_preferences(app,*,context=None):
     try:
         dialog=PreferencesDialog(app,context.translate,context.files_dir/'settings.csv')
     except (OSError, ValueError) as error:
-        messagebox.showerror(parent=app, title=settings.T("Error"), message=settings.T(str(error)))
+        messagebox.showerror(parent=app, title=settings.T("Error"), message=error_text(error, settings.T))
         return
     app.wait_window(dialog)
     if dialog.saved:
