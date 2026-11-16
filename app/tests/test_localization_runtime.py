@@ -22,6 +22,10 @@ class LocalizationRuntimeTests(TestCase):
         self.messages = []
         self.popup = patch('tkinter.messagebox.showerror', side_effect=lambda *args, **kwargs: self.messages.append(kwargs))
         self.popup.start()
+        # These are text/interaction tests. Surface pixels have their own tests;
+        # avoid compositing decorative backgrounds for every settings/About tab.
+        self.surface_paint = patch('app.ui.surfaces.PanelSurface.paint')
+        self.surface_paint.start()
         self.root.report_callback_exception = lambda *args: self.errors.append(args)
         self.files = Path(self.folder.name)
         settings = sample_preferences()
@@ -44,6 +48,7 @@ class LocalizationRuntimeTests(TestCase):
         for job in self.root.tk.call('after', 'info'): self.root.tk.call('after', 'cancel', job)
         self.root.destroy(); self.folder.cleanup()
         self.popup.stop()
+        self.surface_paint.stop()
         self.assertEqual(self.errors, [])
         self.assertEqual(self.messages, [])
 
@@ -101,11 +106,15 @@ class LocalizationRuntimeTests(TestCase):
         before = {path: path.read_bytes() for path in self.files.glob('*_voc.csv')}
         before[self.context.conjugation_path('Spanish')] = self.context.conjugation_path('Spanish').read_bytes()
         # This test checks live message lookup and widget labels. Raster pixels
-        # and a mapped statistics window are covered by test_chart_rendering and
-        # test_statistics_improvements. Build statistics withdrawn here so that
-        # the regular suite does not repaint six full desktop-sized windows.
+        # and visible statistics are covered by test_chart_rendering and
+        # test_statistics_improvements. Give the content explicit geometry so
+        # a withdrawn 1px toplevel does not collapse the layout; keep it hidden
+        # to avoid repainting six desktop-sized windows in this lookup test.
+        def begin(window, builder):
+            window.content.place_configure(relwidth=0, relheight=0, width=1400, height=850)
+            window.load(builder)
         with patch.object(self.context, 'translate', side_effect=checked), \
-                patch.object(StatisticsWindow, 'begin', lambda window, builder: window.load(builder)), \
+                patch.object(StatisticsWindow, 'begin', begin), \
                 patch('app.statistics.charts.FigureCanvasTkAgg.draw_idle'):
             for language in LANGUAGES:
                 with self.subTest(language=language):
@@ -130,7 +139,8 @@ class LocalizationRuntimeTests(TestCase):
                     try:
                         while window.winfo_exists() and not window.ready and perf_counter() < deadline: self.root.update()
                         self.assertTrue(window.ready, repr(self.messages))
-                        self.assertIn(translate('Practised conjugation rounds', language), window.controller.conjugation_progress.cget('text'))
+                        self.assertEqual(window.controller.conjugation_progress.labels['practised'].cget('text'),
+                                         translate('Practised conjugation rounds', language))
                         canvas = window.controller.chart_con_frm._chart_canvas
                         self.assertEqual(canvas.figure.axes[0].get_ylabel(), translate('Number of verbs', language))
                         for section in ('Vocabulary', 'Grammar', 'Conjugation'):

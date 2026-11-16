@@ -140,7 +140,7 @@ class RetainedStatisticsTests(TestCase):
                 self.assertTrue(window.ready)
                 self.assertEqual(window.statistics_tabs.selected, 'Conjugation')
                 controller = window.controller
-                self.assertIn('1', controller.conjugation_progress.cget('text'))
+                self.assertEqual(controller.conjugation_progress.values['practised'].cget('text'), '1')
                 self.assertEqual(len(controller.conjugation_table.frame), 1)
                 self.assertEqual(controller.conjugation_table.frame.iloc[0, -1], 50)
             finally:

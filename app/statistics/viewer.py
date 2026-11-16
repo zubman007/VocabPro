@@ -4,6 +4,7 @@ from app.statistics.difficult_words import DifficultWordsPanel
 from app.statistics.grammar_categories import GrammarCategoriesPanel
 from app.statistics.vocabulary_tags import VocabularyTagsPanel
 from app.statistics.parts_of_speech import PartsOfSpeechPanel
+from app.statistics.conjugation_panel import ConjugationProgressPanel
 from app.statistics.components import summary_cards, style_summary_cards, SuccessRing, arrange_success_ring, summary_metrics
 from app.statistics.charts import Generate_chart, _release_chart
 from app.statistics.background import StatisticsBackdrop
@@ -124,10 +125,10 @@ class StatisticsController:
             lambda part_of_speech: _practise_part_of_speech(window, part_of_speech))
         self.chart_PoS_frm.grid(row=2, column=0, columnspan=2, sticky='ew', padx=20, pady=12)
         self.chart_con_frm = cst.CTkFrame(conjugation_body)
-        self.conjugation_progress = cst.CTkLabel(conjugation_body, text='', font=(FONT, 17), text_color=TEXT,
-                                               justify='left', anchor='w', wraplength=850)
-        self.conjugation_progress.grid(row=2, column=0, columnspan=2, sticky='ew', padx=24, pady=12)
-        self.conjugation_table = StatisticsTable(conjugation_body, self.translate)
+        self.conjugation_progress = ConjugationProgressPanel(conjugation_body, self.translate)
+        self.conjugation_progress.grid(row=2, column=0, columnspan=2, sticky='ew', padx=20, pady=12)
+        self.conjugation_table = StatisticsTable(conjugation_body, self.translate,
+            sort_columns=('Recorded answers', 'Incorrect answers', 'Review accuracy'))
         self.conjugation_table.title_label.configure(text=self.translate('Difficult conjugation rounds'))
         self.conjugation_table.grid(row=3, column=0, columnspan=2, sticky='ew', padx=20, pady=12)
         self.chart_voc_trail_frm = cst.CTkFrame(vocabulary_body)
@@ -182,6 +183,7 @@ class StatisticsController:
             canvas_background.add_panel(panel)
         sheet_lbl.configure(bg_color=SURFACE, fg_color='transparent', corner_radius=0)
         canvas_background.add_panel(self.conjugation_table)
+        canvas_background.add_panel(self.conjugation_progress)
         content.update_idletasks()
         return self.load()
 
@@ -246,12 +248,8 @@ class StatisticsController:
         if available:
             from app.statistics.conjugation import progress_table
             progress = conjugation.get('progress')
+            self.conjugation_progress.set_data(progress)
             if progress is not None:
-                lines = [f'{self.translate(key)}: {progress[field]}' for key, field in (
-                    ('Practised conjugation rounds', 'practised'), ('Unpractised conjugation rounds', 'unpractised'),
-                    ('Forms in practised rounds', 'covered_forms'))]
-                lines.append(self.translate('Conjugation statistics explanation'))
-                self.conjugation_progress.configure(text='\n'.join(lines))
                 self.conjugation_table.set_data(progress_table(progress))
             charts.append((conjugation['trailing'], self.chart_con_frm, 'Conjugation trailing successes', 0))
             if conjugation['trailing'].empty:
