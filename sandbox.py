@@ -1,9 +1,8 @@
 """
 
+--Cojugation - nějak zobecnit, dát tam edit a nastavení, které bude odpovídat specifikům jednotlivých jazyků. Dále upravit conjugation dle toho, jak je upravená grammar.. Tedy přidat do nastavení jedlitlivých jazyků příznak zda tento modul enabluju či ne, vytvoření automatického souboru pro conjugation atd..
 
-Přidej nějakou novou zajímavou statistiku na grammar. Něco s nějakým grafem třeba. Přidej ji dolů, ne nahoru.
-
-Synonyma projít extra hard
+--Synonyma projít extra hard
 
 Co s tím mailem?
 

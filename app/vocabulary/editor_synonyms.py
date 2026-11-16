@@ -1,6 +1,6 @@
 """Searchable synonym editor with explicit saving and navigation between words."""
 from app.shared.messages import error_text
-from tkinter import messagebox
+from app.ui import messagebox
 import customtkinter as cst
 from app.shared import settings as s
 from app.ui import learning_layout as ui

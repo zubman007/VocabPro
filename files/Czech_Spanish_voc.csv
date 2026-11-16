@@ -1514,7 +1514,7 @@ ID;Spanish;Czech;Audio;Description;Example;Part of Speech;Created;Repetition;Nex
 1513;apropiar;přizpůsobit;Automatic - 11Labs;No found;Intentaron apropiar los fondos públicos.;Verb;2026-03-24;SFSSSSFSFFSFSSFSSSSSSFSSSSSSSS;2026-12-13 11:41:28;26, 10, 27, 48
 1514;hacer foco en algo;zaměřit pozornost na něco;Automatic - 11Labs;No found;El informe hace foco en la inflación.;Other;2026-03-24;SFSSSSSSSFSFSSSSSSSSS;2027-03-30 15:51:51;51
 1515;priorizar;upřednostnit, preferovat;Automatic - 11Labs;No found;El gobierno decidió priorizar la salud.;Verb;2026-03-24;SSSSSSSSSSSSS;2027-03-18 23:01:06;11, 50
-1516;de lesa humanidad;proti lidskosti;Automatic - 11Labs;No found;Fue acusado de crímenes de lesa humanidad.;Other;2026-03-24;SSFSSSSSSSFSSSSSSSS;2026-11-16 14:33:28;26, 27
+1516;de lesa humanidad;proti lidskosti;Automatic - 11Labs;No found;Fue acusado de crímenes de lesa humanidad.;Other;2026-03-24;SSFSSSSSSSFSSSSSSSSFS;2026-11-17 14:43:02;26, 27
 1517;el delito;trestný čin, zločin;Automatic - Merriam_Webster;No found;El delito fue investigado por la policía.;Noun;2026-03-24;SSFSSSSSSSSSSS;2027-03-18 22:54:50;27, 26
 1518;perezoso;líný, zahálčivý, pohodlný;Automatic - Merriam_Webster;No found;Es demasiado perezoso para levantarse temprano.;Adjective;2026-03-24;SSSSSSSFSSSSSFSSSSSSSS;2026-11-19 07:56:52;19
 1519;leso;uražený, dotčený, poškozený;Automatic - 11Labs;No found;Fue condenado por un crimen leso contra la humanidad.;Adjective;2026-03-24;SSSSSSSSSSSSS;2027-03-18 22:47:36;26, 18
@@ -2089,7 +2089,7 @@ ID;Spanish;Czech;Audio;Description;Example;Part of Speech;Created;Repetition;Nex
 2088;enteramente;úplně, zcela, naprosto;Automatic - 11Labs;No found;Estoy enteramente de acuerdo contigo.;Adverb;2026-04-26;SFFSSSSSSSSFSSSSSSSS;2026-12-17 09:14:32;42
 2089;la telaraňa;pavučina;Automatic - 11Labs;No found;Había una telaraña en la esquina del techo.;Noun;2026-04-26;SFSSSSSSSSSSSS;2027-04-13 21:03:16;7
 2090;brotar;vytrysknout (voda, krev) / vyrašit (rostliny) / objevit se, vzniknout;Automatic - Merriam_Webster;No found;Las flores empezaron a brotar en primavera.;Verb;2026-04-26;SSSSSSSSSSSSS;2027-04-13 21:06:26;4, 7, 16, 49
-2091;en ese instante;v tom okamžiku, v tu chvíli;Automatic - 11Labs;No found;En ese instante sonó el teléfono.;Other;2026-04-26;SSSSSSSSSSSS;2026-11-16 14:32:57;41
+2091;en ese instante;v tom okamžiku, v tu chvíli;Automatic - 11Labs;No found;En ese instante sonó el teléfono.;Other;2026-04-26;SSSSSSSSSSSSS;2027-04-15 14:43:42;41
 2092;echar un vistazo;hodit pohled, mrknout;Automatic - 11Labs;No found;Voy a echar un vistazo al informe.;Other;2026-04-26;SSSSSFSSSSSSFSSSSSSSS;2027-01-22 17:02:43;51
 2093;echar la culpa;svalit vinu;Automatic - 11Labs;No found;No le eches la culpa a otros.;Other;2026-04-26;SSSSSSSSSSSSS;2027-04-13 23:40:10;51, 20, 45
 2094;hasta no hace tanto;ještě donedávna, ještě ne tak dávno, až donedávna;Automatic - 11Labs;No found;Hasta no hace tanto vivía aquí.;Other;2026-04-26;SSSSSSSSSSSS;2026-11-17 11:07:46;41, 51
@@ -2097,13 +2097,13 @@ ID;Spanish;Czech;Audio;Description;Example;Part of Speech;Created;Repetition;Nex
 2096;la gran manzana;New York;Automatic - 11Labs;No found;Sueña con vivir en la Gran Manzana.;Other;2026-04-26;SSSSSSSSSFSSSSSSSS;2026-12-17 09:14:48;51, 6
 2097;acechar;číhat, slídit, stalkovat, čekat v úkrytu na kořist;Automatic - Merriam_Webster;No found;El peligro acecha en la oscuridad.;Verb;2026-04-26;SFFSSSSFSSFSSSSSFSSSSSSSS;2026-12-19 09:45:25;7, 20, 27
 2098;frotarse;otírat se/si, utírat se/si, třít si, mnout si;Automatic - 11Labs;No found;Se frotó las manos por el frío.;Verb;2026-04-26;SSSSSSSSSFSSSSSSSS;2026-12-17 09:14:53;16, 38, 49
-2099;mágicamente;magicky, kouzelně, jako zázrakem;Automatic - 11Labs;No found;La solución apareció mágicamente.;Adverb;2026-04-26;SSSSSSSSSSSS;2026-11-16 14:35:07;29, 48
+2099;mágicamente;magicky, kouzelně, jako zázrakem;Automatic - 11Labs;No found;La solución apareció mágicamente.;Adverb;2026-04-26;SSSSSSSSSSSSS;2027-04-15 14:43:47;29, 48
 2100;allanar;odstranit překážky, usnadnit / vyrovnat, uhladit;Own;No found;La policía allanó la casa.;Verb;2026-04-26;SSSSSFSSSSFSSSSSFSFSSSSSFSSSSSSSS;2027-02-05 14:22:10;43, 26, 27, 44, 48
 2101;expandir;(roz)šířit, rozpínat, roztahovat, roztahovat se;Automatic - Merriam_Webster;No found;La empresa quiere expandir sus operaciones.;Verb;2026-04-26;SSSSSSSSSSSFSSSSSSS;2026-11-26 18:35:26;49
 2102;surgir;objevit se, vzniknout, vynořit se;Automatic - Merriam_Webster;No found;Surgieron nuevos problemas.;Verb;2026-04-26;SSSSSSSSSSSSF;2026-11-17 11:07:14;41, 48, 49
 2103;inesperadamente;nečekaně, neočekávaně;Automatic - 11Labs;No found;El tren llegó inesperadamente temprano.;Adverb;2026-04-26;SSSSSSFSSSFSSSSSSSS;2026-11-27 21:05:28;18, 41
 2104;potencialmente;potenciálně;Automatic - 11Labs;No found;Es una situación potencialmente peligrosa.;Adverb;2026-04-26;SSSSSSSSSSSSS;2027-04-14 14:05:33;48
-2105;la conversación reservada;důvěrný rozhovor, soukromý rozhovor;Automatic - 11Labs;No found;Tuvieron una conversación reservada.;Other;2026-04-26;SSSSSSSSSSSS;2026-11-16 14:33:59;21, 45
+2105;la conversación reservada;důvěrný rozhovor, soukromý rozhovor;Automatic - 11Labs;No found;Tuvieron una conversación reservada.;Other;2026-04-26;SSSSSSSSSSSSS;2027-04-15 14:43:58;21, 45
 2106;la nimiedad;nepodstatnost, bezvýznamnost, nicotnost;Automatic - 11Labs;No found;Se enfadó por una nimiedad.;Noun;2026-04-26;SSSSSSSSSFSSSSFSSSSSSSFSSSSSS;2026-11-21 11:17:03;48
 2107;favorablemente;příznivě, kladně, pozitivně;Automatic - 11Labs;No found;El público reaccionó favorablemente.;Adverb;2026-04-26;SSSSSSSSSSSS;2026-11-17 11:10:34;48
 2108;arrojar;mrštit, hodit, vrhnout / vyhodit, vyrazit, vykopnout;Automatic - Merriam_Webster;No found;Arrojó la piedra al río.;Verb;2026-04-26;SFSSSSSSFSSSFSSSSSSFSSSSSSSS;2027-01-27 22:50:21;49
@@ -2777,7 +2777,7 @@ ID;Spanish;Czech;Audio;Description;Example;Part of Speech;Created;Repetition;Nex
 2776;asentir;souhlasit;Automatic - 11Labs;No found;Asintió con la cabeza sin decir nada.;Verb;2026-09-07;SSSSSSSSSSS;2026-12-28 19:45:47;45, 50
 2777;sujetar;držet, přidržovat, upevnit / zadržet / zkrotit;Automatic - Merriam_Webster;No found;Sujetá bien la cuerda.;Verb;2026-09-10;SSSSSSSSSSS;2026-12-28 19:49:12;49, 44
 2778;cada vez más;čím dál víc;Automatic - 11Labs;No found;Cada vez más gente trabaja desde casa.;Other;2026-09-10;SSSSSSSSSSS;2026-12-28 19:38:22;41, 42
-2779;qué hay de cierto en que;Co je pravdy na tom, že   (…?);Automatic - 11Labs;No found;¿Qué hay de cierto en que van a cerrar la empresa?;Other;2026-09-10;SSSSSFSFFFSSSSSSFSFSFSS;2026-11-16 14:21:02;45, 50, 51
+2779;qué hay de cierto en que;Co je pravdy na tom, že   (…?);Automatic - 11Labs;No found;¿Qué hay de cierto en que van a cerrar la empresa?;Other;2026-09-10;SSSSSFSFFFSSSSSSFSFSFSSS;2026-11-20 14:42:35;45, 50, 51
 2780;bostezar;zívat;Automatic - Merriam_Webster;No found;Empezó a bostezar durante la película.;Verb;2026-09-10;SSSSSSSSSS;2026-11-22 15:22:53;16, 40
 2781;pedalear;šlapat na kole, šlapat do pedálů, jet na kole šlapáním;Automatic - 11Labs;No found;Me gusta pedalear por la ciudad.;Verb;2026-09-10;SFSSSSSSSFFSSSSSS;2026-11-25 15:49:55;49, 2, 36
 2782;el gobernante;vládnoucí, řídící;Automatic - Merriam_Webster;No found;El gobernante anunció nuevas medidas.;Noun;2026-09-10;SSSSSSSSSSFSSSS;2026-11-22 00:06:21;24

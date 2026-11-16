@@ -1,7 +1,7 @@
 """Preferences UI; validation is in preferences.data, persistence in repositories."""
 from app.shared.messages import error_text
 from app.ui.theme import FONT, PAGE, SECTION_SURFACE as CARD
-from tkinter import messagebox
+from app.ui import messagebox
 import customtkinter as cst
 import pywinstyles
 from app.preferences.data import (PREFERENCES_FILE, PreferenceError, options_for, section_for,

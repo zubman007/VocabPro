@@ -5,7 +5,7 @@ import sys
 from dataclasses import replace
 from pathlib import Path
 from functools import partial
-from tkinter import messagebox
+from app.ui import messagebox
 from app.core.context import get_context
 from app.home.layout import build_home, build_navigation
 from app.home.data import course_overview

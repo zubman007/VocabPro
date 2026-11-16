@@ -1,6 +1,6 @@
 """Searchable multiple selection of a word's tags from the saved catalog."""
 from app.shared.messages import error_text
-from tkinter import messagebox
+from app.ui import messagebox
 import customtkinter as cst
 
 from app.repositories.tags import load_catalog

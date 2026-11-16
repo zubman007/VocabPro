@@ -1,7 +1,7 @@
 """Screen lifetime only: bindings, scheduled work, resources and leave decisions."""
 import logging
 import tkinter as tk
-from tkinter import messagebox
+from app.ui import messagebox
 from app.core.context import get_context
 from app.ui.bindings import ScreenBindings
 

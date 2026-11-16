@@ -21,7 +21,7 @@ class LocalizationRuntimeTests(TestCase):
         self.root = cst.CTk(); self.root.geometry('1400x900')
         self.errors = []
         self.messages = []
-        self.popup = patch('tkinter.messagebox.showerror', side_effect=lambda *args, **kwargs: self.messages.append(kwargs))
+        self.popup = patch('app.ui.messagebox.showerror', side_effect=lambda *args, **kwargs: self.messages.append(kwargs))
         self.popup.start()
         # These are text/interaction tests. Surface pixels have their own tests;
         # avoid compositing decorative backgrounds for every settings/About tab.

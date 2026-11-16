@@ -14,7 +14,7 @@ from app.shared.diagnostics import report_error
 from app.shared.learning_data import Set_datatypes
 import customtkinter as cst
 from tkinter import *
-from tkinter import messagebox
+from app.ui import messagebox
 from functools import partial
 import pygame
 import random

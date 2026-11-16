@@ -5,7 +5,7 @@ from pathlib import Path
 import queue
 import threading
 import time
-from tkinter import messagebox
+from app.ui import messagebox
 import customtkinter as cst
 import pygame
 from app.shared import settings as s

@@ -19,7 +19,7 @@ from dataclasses import replace
 import pandas as pd
 import customtkinter as cst
 from tkinter import *
-from tkinter import messagebox
+from app.ui import messagebox
 import tksheet
 from functools import partial
 from app.ui.components.module_header import ModuleHeader
@@ -181,7 +181,7 @@ class EditorController:
                 self.filt_df.loc[self.filt_df['ID'] == int(val), 'Audio'] = 'No audio'
                 self.edit_tbl.set_cell_data(row, self.headers.index('Audio'), 'No audio')
         except Exception as e:
-            messagebox.showerror(title=self.translate('Error'), message=error_text(e, self.translate))
+            messagebox.showerror(parent=self.app, title=self.translate('Error'), message=error_text(e, self.translate))
         finally:
             pygame.mixer.init()
 

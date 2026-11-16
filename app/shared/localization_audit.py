@@ -20,27 +20,35 @@ SINKS = {'text', 'placeholder_text', 'title', 'message', 'label'}
 POSITIONAL_SINKS = {'title', 'set_xlabel', 'set_ylabel', 'set_title', 'set_label', 'set_tooltip', 'set_content'}
 POSITIONAL_UI_SINKS = {'text': 1, 'ModuleHeader': 1, 'add_heading': 0,
                        'popup_menu_add_command': 0, '_show_error': 0}
+MESSAGEBOX_SINKS = {'showerror', 'showwarning', 'showinfo', 'askyesno', 'askyesnocancel'}
 TRANSLATED_UI_ARGUMENTS = {'action': 1, 'shell': 1, 'ReviewDialog': 1}
 # Technical identifiers/symbols, not English prose. Keep this list explicit.
 UI_LITERALS = {'ID', 'VocabPro'}
 MESSAGE_WRAPPERS = {'can_leave', 'read_document', 'commit_document'}
 
 
-def format_contract(text):
+class _SpecValues(dict):
+    def __missing__(self, key):
+        return 7
+
+
+def format_contract(text, _depth=0):
     """Compare fields, conversions and format specs; allow translator reordering."""
     fields = Counter()
     for _, field, spec, conversion in Formatter().parse(text):
         if field is not None:
+            if _depth > 1:
+                raise ValueError('Format fields may only be nested one level deep')
             if not re.fullmatch(r'[A-Za-z_][A-Za-z_0-9]*', field) or conversion not in (None, 's', 'r', 'a'):
                 raise ValueError('Use named fields and supported conversions')
-            if '{' not in spec:
-                sample = 7 if field in ('count', 'row', 'word_id') or spec.endswith(('d', 'f', '%')) else 'sample'
-                if conversion:
-                    sample = Formatter().convert_field(sample, conversion)
-                format(sample, spec)
-            fields[(field, conversion, spec)] += 1
             if spec:
-                fields.update(format_contract(spec))
+                fields.update(format_contract(spec, _depth + 1))
+            resolved_spec = Formatter().vformat(spec, (), _SpecValues())
+            sample = 7 if field in ('count', 'row', 'word_id', 'width', 'precision') or resolved_spec.endswith(tuple('bcdoxXneEfFgG%')) else 'sample'
+            if conversion:
+                sample = Formatter().convert_field(sample, conversion)
+            format(sample, resolved_spec)
+            fields[(field, conversion, spec)] += 1
     return fields
 
 
@@ -94,6 +102,11 @@ def source_findings(source, filename, keys):
     missing, hardcoded, errors = [], [], []
     literals = set()
     for node in ast.walk(tree):
+        if (isinstance(node, ast.ImportFrom) and (node.module == 'tkinter.messagebox'
+                or node.module == 'tkinter' and any(item.name == 'messagebox' for item in node.names))
+                or isinstance(node, ast.Import) and any(item.name == 'tkinter.messagebox' for item in node.names)):
+            hardcoded.append(dict(file=filename, line=node.lineno,
+                text='<native messagebox; use app.ui.messagebox for localized buttons>'))
         if isinstance(node, ast.Constant) and isinstance(node.value, str):
             literals.add(node.value)
         if isinstance(node, ast.Assign) and any(isinstance(target, ast.Subscript)
@@ -120,6 +133,8 @@ def source_findings(source, filename, keys):
             elif isinstance(value, (ast.JoinedStr, ast.BinOp)):
                 missing.append(dict(file=filename, line=node.lineno, key='<format after translation, not before>'))
         values = [option.value for option in node.keywords if option.arg in SINKS]
+        if name in MESSAGEBOX_SINKS:
+            values.extend(node.args[:2])
         if name in POSITIONAL_SINKS and node.args:
             values.append(node.args[0])
         position = POSITIONAL_UI_SINKS.get(name)

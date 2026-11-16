@@ -4,7 +4,7 @@ from app.core.context import get_context
 from app.shared.diagnostics import report_error
 from pathlib import Path
 from os.path import exists
-from tkinter import messagebox
+from app.ui import messagebox
 import customtkinter as cst
 from app.shared.audio_effects import play_effect
 from app.conjugation.data import PERSONS_MAP, select_verbs, build_verbs

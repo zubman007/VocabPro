@@ -1,7 +1,7 @@
 """Grammar question editor controller; changes reach CSV only on explicit save."""
 from app.shared.messages import error_text
 from app.core.context import get_context
-from tkinter import messagebox
+from app.ui import messagebox
 import customtkinter as cst
 from app.shared import settings as s
 from app.grammar.editor_data import GrammarDocument, QuestionValidationError

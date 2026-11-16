@@ -21,7 +21,7 @@ from app.ui.widgets import VerticalScrolledFrame_class
 import customtkinter as cst
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox
+from app.ui import messagebox
 from app.ui.brand import set_window_icon
 import pywinstyles
 from app.core.context import get_context

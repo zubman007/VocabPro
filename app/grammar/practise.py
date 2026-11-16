@@ -2,7 +2,7 @@
 from app.shared.messages import error_text
 from app.core.context import get_context
 from pathlib import Path
-from tkinter import messagebox
+from app.ui import messagebox
 from app.shared.audio_effects import play_effect
 from app.repositories.grammar import Load_questions_from_csv, save_answers
 from app.repositories.grammar_records import load_record, update_record

@@ -1,7 +1,7 @@
 """Statistics window lifecycle: present loading first, reveal prepared content."""
 from app.shared.messages import error_text
 import logging
-from tkinter import messagebox
+from app.ui import messagebox
 import customtkinter as cst
 from app.shared import settings as s
 from app.ui.theme import PAGE, SECTION_SURFACE as SURFACE, TEXT, FONT

@@ -1,6 +1,6 @@
 """Table-based tag catalog editor; catalog changes never rewrite vocabulary."""
 from app.shared.messages import error_text
-from tkinter import messagebox
+from app.ui import messagebox
 
 import customtkinter as cst
 import pandas as pd
