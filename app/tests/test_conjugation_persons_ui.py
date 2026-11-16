@@ -25,7 +25,9 @@ LOCALES=('en','cs','sk','de','es','fr')
 class ConjugationPersonsUiTests(TestCase):
     def setUp(self):
         self.folder=TemporaryDirectory();self.files=Path(self.folder.name)
-        self.settings=self.files/'settings.csv';sample_preferences().to_csv(self.settings,sep=';',index=False)
+        self.settings=self.files/'settings.csv';settings=sample_preferences()
+        settings.loc[len(settings)]=['Random repeat batch - Conjugation','Int','10']
+        settings.to_csv(self.settings,sep=';',index=False)
         self.courses=(StudyCourse('es',conjugation_enabled=True),StudyCourse('en',conjugation_enabled=True))
         saved=save_preferences(load_preferences(self.settings),{COURSE_FIELD:encode_courses('cs',self.courses)},self.settings)
         self.root=cst.CTk();self.root.geometry('1280x850')
@@ -212,7 +214,7 @@ class ConjugationPersonsUiTests(TestCase):
                 self.assertEqual(messages,[]);self.assertTrue(window.ready)
             try:
                 ready();panel=window.controller.conjugation_persons
-                self.assertIn('66.7%',panel.labels[0].cget('text'))
+                self.assertIn('67%',panel.labels[0].cget('text'))
                 self.assertGreater(panel.grid_info()['row'],window.controller.conjugation_table.grid_info()['row'])
                 window.controller.lang_var.set('English');window.load(window.controller.load);ready()
                 self.assertEqual(len(panel._snapshot[0]),5)
