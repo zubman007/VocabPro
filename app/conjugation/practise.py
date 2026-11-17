@@ -20,16 +20,18 @@ from app.shared import settings as s
 
 
 class ConjugationController:
-    def __init__(self, app, source, selection, verbs, persons, path, on_back, *, context=None):
+    def __init__(self, app, source, selection, verbs, persons, path, on_back, *, context=None,category_labels=None):
         self.context=get_context(app,context)
         self.translate=self.context.translate
         self.app, self.source = app, source
         self.path, self.on_back = Path(path), on_back
+        self.category_labels=category_labels or {}
         self.session = ConjugationSession(selection, verbs, persons)
         self.records=load_records(self.path) if self.context.preferences.show_personal_records else PracticeRecords()
         self._initial_selection=self.session.selection.copy(deep=True)
         s.Clear_frames(app)
         self.view = build_layout(app, persons, self.confirm, self.skip, self.save, self.exit_app, self.back)
+        self.view.count.configure(text=self.translate('Completed verbs: {count}').format(count=0))
         self.lifecycle = ScreenController(app,self.view.root,{
             '<Return>': self.confirm,
             '<Escape>':self.back,
@@ -50,7 +52,11 @@ class ConjugationController:
             self.save()
             return
         self.view.verb.configure(text=f'{verb.targ_lng} / {verb.base_lng}')
-        self.view.description.configure(text=verb.desc)
+        category=self.category_labels.get(str(verb.id),'')
+        description=verb.desc
+        if category and description.split(',',1)[0].strip().casefold()!=category.casefold():
+            description=category+('\n'+description if description.strip() else '')
+        self.view.description.configure(text=description)
         first_entry = None
         for key, _ in self.session.persons:
             self.view.variables[key].set('')
@@ -78,7 +84,7 @@ class ConjugationController:
         if correct:
             if not previously_revealed:
                 play_effect('success.FLAC')
-            self.view.count.configure(text=str(self.session.completed))
+            self.view.count.configure(text=self.translate('Completed verbs: {count}').format(count=self.session.completed))
             self.next_verb()
         else:
             play_effect('wrong.wav')
@@ -99,15 +105,8 @@ class ConjugationController:
 
     def _refresh_records(self):
         if not self.context.preferences.show_personal_records:
-            self.view.records.grid_remove();return
-        streak=self.records.best_streak;correct=self.records.best_correct
-        if self.context.preferences.track_personal_records:
-            streak=max(streak,self.session.best_streak)
-            if self.session.correct:correct=max(correct or 0,self.session.correct)
-        self.view.records.configure(text=self.translate('Session: {correct} correct · streak {streak}').format(
-            correct=self.session.correct,streak=self.session.streak)+'\n'+
-            self.translate('All-time best streak: {count}').format(count=streak)+' · '+
-            self.translate('Most correct in one session: {count}').format(count=correct if correct is not None else '—'))
+            self.view.records_panel.grid_remove();return
+        self.view.records_panel.set_state(self.session,self.records,self.context.preferences.track_personal_records)
 
     def review(self, event=None):
         if self.bindings.closed or self.session.previous is None:
@@ -154,7 +153,7 @@ class ConjugationController:
         if dialog is not None and dialog.winfo_exists():dialog.destroy()
 
 
-def Conjugation(app_input,lang_input,*,context=None):
+def Conjugation(app_input,lang_input,*,context=None,categories=None,on_back=None):
     """Load a lesson before replacing the current screen, as before."""
     context=get_context(app_input,context)
     config=context.preferences
@@ -170,7 +169,11 @@ def Conjugation(app_input,lang_input,*,context=None):
         people,_=load_configuration(context.files_dir,lang_input,path)
         source=load_source(path,lang_input,config.learned_by,people)
         source.attrs['person_ids']=tuple(key for key,_ in people.practice)
-        selection = select_verbs(eligible_verbs(source,people.practice),config.conjugation_batch)
+        from app.conjugation.categories import load_catalog, filter_categories, category_names
+        catalog,_=load_catalog(path,source)
+        labels=dict(zip(source.ID.astype(str),category_names(source,catalog)))
+        available=filter_categories(source,catalog,categories)
+        selection = select_verbs(eligible_verbs(available,people.practice),config.conjugation_batch)
         verbs = build_verbs(selection,lang_input,config.learned_by,people.practice)
     except (OSError,ValueError,KeyError) as error:
         messagebox.showerror(parent=app_input,title=context.translate('Error'),message=error_text(error, context.translate))
@@ -179,7 +182,7 @@ def Conjugation(app_input,lang_input,*,context=None):
         return None
     try:
         return ConjugationController(app_input, source, selection, verbs,
-            people.practice,path,context.go_home,context=context)
+            people.practice,path,on_back if on_back is not None else context.go_home,context=context,category_labels=labels)
     except (OSError,ValueError) as error:
         messagebox.showerror(parent=app_input,title=context.translate('Error'),message=error_text(error,context.translate))
         return None

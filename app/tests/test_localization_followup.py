@@ -3,6 +3,7 @@ from dataclasses import replace
 from unittest import TestCase
 from unittest.mock import patch
 import re
+from time import perf_counter
 import customtkinter as cst
 from app.core.context import AppContext
 from app.preferences.data import RuntimePreferences
@@ -79,9 +80,20 @@ class LocalizedMessageTests(TestCase):
 
     def answer(self, action, owner=None):
         owner = owner or self.root
+        deadline=perf_counter()+10
         def perform():
-            dialog = next(child for child in owner.winfo_children() if isinstance(child, messagebox.MessageDialog))
-            action(dialog)
+            dialog=next((child for child in owner.winfo_children() if isinstance(child,messagebox.MessageDialog)),None)
+            # CTk construction/presentation may exceed an arbitrary 30 ms under
+            # load. Invoke only once the fully constructed modal owns its grab.
+            if dialog is None or not dialog.winfo_ismapped() or dialog.grab_current() is not dialog:
+                if perf_counter()<deadline:
+                    self.root.after(10,perform);return
+                if dialog is not None:dialog.destroy()
+                raise AssertionError('Message dialog did not become ready')
+            try:action(dialog)
+            except BaseException:
+                if dialog.winfo_exists():dialog.destroy()
+                raise
         self.root.after(30, perform)
 
     def test_real_modal_helpers_keep_all_result_contracts_and_native_defaults(self):

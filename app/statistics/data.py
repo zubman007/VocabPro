@@ -96,15 +96,26 @@ def vocabulary_statistics(path, language, learned_by, horizon, gaps, default_wai
 def training_statistics(path, kind, language=None):
     path=Path(path)
     config=None
+    category_revision=None
     if kind=='conjugation' and language is not None:
         from app.repositories.conjugation_persons import load_configuration
         config,_=load_configuration(path.parent,language,path)
-    def calculate(source):
+        from app.conjugation.categories import catalog_path
+        from app.shared.storage import file_revision
+        category_path=catalog_path(path)
+        category_revision=file_revision(category_path) if category_path.exists() else None
+    def calculate_snapshot(source):
         frame = read_csv(source)
         result = dict(summary=_summary(frame, frame['R']),
             categories=grammar_categories(frame) if kind == 'grammar' else [],
             trailing=_trailing(frame['R']) if kind == 'conjugation' else None)
         if kind == 'conjugation' and language is not None:
+            from app.conjugation.categories import load_catalog, category_names
+            catalog,_=load_catalog(source,frame)
+            grouped=frame.copy();grouped['Category']=category_names(frame,catalog)
+            result['categories']=grammar_categories(grouped)
+            from app.conjugation.data import eligible_verbs
+            result['category_available']=frozenset(category_names(eligible_verbs(frame,config.practice),catalog))
             from app.statistics.conjugation import conjugation_progress
             result['progress'] = conjugation_progress(frame,language,config)
             from app.statistics.conjugation import person_statistics
@@ -112,7 +123,13 @@ def training_statistics(path, kind, language=None):
         if kind == 'grammar':
             result['question_progress'] = grammar_question_progress(frame)
         return result
-    result=cache.get(path,kind,(language,config),calculate)
+    def calculate(source):
+        if kind=='conjugation' and language is not None:
+            from app.conjugation.categories import catalog_path
+            from app.shared.storage import destination_lock
+            with destination_lock(catalog_path(source)):return calculate_snapshot(source)
+        return calculate_snapshot(source)
+    result=cache.get(path,kind,(language,config,category_revision),calculate)
     if kind in ('grammar','conjugation'):
         from app.repositories.practice_records import load_records
         records=load_records(path)

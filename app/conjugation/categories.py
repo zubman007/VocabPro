@@ -35,16 +35,25 @@ def load_catalog(course,source):
     frame,revision=read_document(catalog_path(course),optional=True,columns=COLUMNS)
     validate_catalog(frame)
     if CATEGORY_COLUMN not in source:
-        known=set(frame.Name.map(category_key))
+        known=dict(zip(frame.Name.map(category_key),frame.ID))
+        known_ids=set(frame.ID)
+        legacy_ids={}
         additions=[]
         for description in source.get('Description',[]):
             name=str(description).split(',',1)[0].strip()
             key=category_key(name)
-            if key and key not in known:
+            identifier=uuid5(NAMESPACE_URL,f'vocabpro:{Path(course).stem}:{key}').hex
+            if key and identifier in known_ids:
+                # Recover a renamed definition even if the source schema has
+                # not been saved yet (including an interrupted first migration).
+                legacy_ids[key]=identifier
+            elif key and key in known:legacy_ids[key]=known[key]
+            elif key:
                 row=dict.fromkeys(frame.columns,'')
-                row.update(ID=uuid5(NAMESPACE_URL,f'vocabpro:{Path(course).stem}:{key}').hex,Name=name)
-                additions.append(row);known.add(key)
+                row.update(ID=identifier,Name=name)
+                additions.append(row);known[key]=identifier;known_ids.add(identifier);legacy_ids[key]=identifier
         if additions:frame=pd.concat([frame,pd.DataFrame(additions)],ignore_index=True)
+        frame.attrs['legacy_category_ids']=legacy_ids
     return validate_catalog(frame),revision
 
 
@@ -53,7 +62,7 @@ def category_ids(source,catalog):
         ids=source[CATEGORY_COLUMN].fillna('').astype(str)
         if set(ids)-set(catalog.ID)-{''}:raise UserMessageError('Invalid conjugation categories.')
         return ids.copy()
-    names=dict(zip(catalog.Name.map(category_key),catalog.ID))
+    names={**dict(zip(catalog.Name.map(category_key),catalog.ID)),**catalog.attrs.get('legacy_category_ids',{})}
     return source.Description.map(lambda value:names.get(category_key(str(value).split(',',1)[0]),''))
 
 
@@ -180,6 +189,13 @@ class ConjugationTables:
         self.aliases.update(dict(zip(catalog.Name.map(category_key),catalog.ID)))
 
     def save(self):
-        with save_catalog_with_answers(self.document.path,self.catalog,self.revision):self.document.save()
+        with save_catalog_with_answers(self.document.path,self.catalog,self.revision):
+            if CATEGORY_COLUMN not in self.document.source_columns:
+                original=self.document.path.read_bytes()
+                if sha256(original).digest()!=self.document.revision:
+                    raise FileChangedError('The course file changed. Reopen the editor before saving.')
+                from app.repositories.conjugation import backup_legacy
+                backup_legacy(self.document.path,original,suffix='.pre-categories.bak')
+            self.document.save()
         self.revision=file_revision(catalog_path(self.document.path))
         self.initial_catalog=self.catalog.copy(deep=True)

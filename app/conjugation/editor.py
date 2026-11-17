@@ -1,4 +1,4 @@
-﻿"""Conjugation spreadsheets: bulk verb forms and a course category catalog."""
+"""Conjugation spreadsheets: bulk verb forms and a course category catalog."""
 import customtkinter as cst
 import pandas as pd
 import tksheet
@@ -32,7 +32,7 @@ class ConjugationEditor:
         self.tables=ConjugationTables(self.document)
         self.applied_query='';self.visible_ids=set()
         self._build(app)
-        self.lifecycle=ScreenController(app,self.view.root,{'<Control-s>':self.save,'<Control-S>':self.save,
+        self.lifecycle=ScreenController(app,self.view.root,{'<Control-s>':self.save_shortcut,'<Control-S>':self.save_shortcut,
             '<Escape>':self.back},context=self.context,on_window_close=self.exit_app)
         self.refresh()
 
@@ -42,10 +42,11 @@ class ConjugationEditor:
         view=shell(app,'Edit conjugation','conjugation_background_v1.png',
                    [('save',self.save),('close',self.back),('exit',self.exit_app)])
         self.view=view
-        view.header.title_label.configure(text=self.translate('Edit conjugation')+' / '+self.translate(self.language))
+        view.header.title_label.configure(text=self.translate('Edit conjugation')+' · '+self.translate(self.language))
         view.body.grid_rowconfigure(1,weight=1)
         view.filters=SearchFilterPanel(view.body,self.translate,placeholder='Search',on_apply=self.filter)
         view.filters.grid(row=0,sticky='ew',pady=(0,8));view.query=view.filters.query
+        surface(view.filters,view.layer)
         view.tabs=SectionTabs(view.body);view.tabs.grid(row=1,sticky='nsew')
         labels={self.language:self.translate('Verb'),self.document.learned_by:self.translate('Translation'),
                 CATEGORY_COLUMN:self.translate('Category'),'Description':self.translate('Description'),
@@ -61,11 +62,16 @@ class ConjugationEditor:
             sheet.enable_bindings(('single_select','drag_select','select_all','column_select','row_select',
                 'column_width_resize','row_height_resize','double_click_column_resize','arrowkeys',
                 'copy','cut','paste','delete','undo','edit_cell'))
-            sheet.readonly_columns(columns=[0]);sheet.hide_columns([0])
+            sheet.readonly_columns(columns=[0])
             sheet.set_all_column_widths(width=170)
+            if key=='categories':
+                sheet.column_width(1,320);sheet.column_width(2,560)
+            else:
+                sheet.column_width(3,240);sheet.column_width(4,240)
+            sheet.hide_columns([0],data_indexes=True)
             sheet.popup_menu_add_command(self.translate('Delete selected rows'),self.delete,
                                         index_menu=True,header_menu=False)
-            sheet.bind('<Control-s>',self.save);sheet.bind('<Control-S>',self.save)
+            sheet.bind('<Control-s>',self.save_shortcut);sheet.bind('<Control-S>',self.save_shortcut)
             view.sheets[key]=sheet
         view.sheet=view.sheets['verbs'];view.category_sheet=view.sheets['categories']
         view.tools=EditorToolbar(view.body,'Conjugation editors',self.translate,action_columns=3)
@@ -73,7 +79,10 @@ class ConjugationEditor:
         view.tools.set_help(self.translate('Conjugation spreadsheet help'))
         for key,caption,command in (('add','Add row',self.add),('delete','Delete selected rows',self.delete),('apply','Apply',self.apply)):
             view.tools.add_action(key,caption,command)
-        surface(view.tabs,view.layer)
+        tabs_surface=surface(view.tabs,view.layer)
+        selector_surface=surface(view.tabs._segmented_button,tabs_surface)
+        for button in view.tabs._segmented_button.winfo_children():
+            if isinstance(button,cst.CTkButton):surface(button,selector_surface)
 
     def refresh(self):
         rows=self.tables.verb_rows(self.applied_query)
@@ -82,12 +91,12 @@ class ConjugationEditor:
         self.view.category_sheet.set_sheet_data(self.tables.catalog[['ID','Name','Description']].values.tolist(),
                                                 reset_col_positions=False,reset_row_positions=True)
         self.view.sheet.readonly_columns(columns=[0]);self.view.category_sheet.readonly_columns(columns=[0])
-        self.view.sheet.hide_columns([0]);self.view.category_sheet.hide_columns([0])
+        self.view.sheet.hide_columns([0],data_indexes=True);self.view.category_sheet.hide_columns([0],data_indexes=True)
         self.view.sheet.dropdown_column(self.tables.fields.index(CATEGORY_COLUMN)+1,
-            values=['',*self.tables.catalog.Name.tolist()],validate_input=False)
-        self._displayed_verbs=self.view.sheet.get_sheet_data(return_copy=True)
-        self._displayed_categories=self.view.category_sheet.get_sheet_data(return_copy=True)
-        self.view.tools.count.configure(text=f'{len(rows)} / {len(self.document.frame)} - '+self.translate('Number of verbs'))
+            values=['',*self.tables.catalog.Name.tolist()],validate_input=False,edit_data=False)
+        self._displayed_verbs=self.view.sheet.get_sheet_data()
+        self._displayed_categories=self.view.category_sheet.get_sheet_data()
+        self.view.tools.count.configure(text=f'{len(rows)} / {len(self.document.frame)} · '+self.translate('Number of verbs'))
 
     def _end_editing(self):
         for sheet in self.view.sheets.values():
@@ -96,8 +105,8 @@ class ConjugationEditor:
     def apply(self,event=None):
         self._end_editing()
         try:
-            self.tables.apply(self.view.sheet.get_sheet_data(return_copy=True),self.visible_ids,
-                              self.view.category_sheet.get_sheet_data(return_copy=True))
+            self.tables.apply(self.view.sheet.get_sheet_data(),self.visible_ids,
+                              self.view.category_sheet.get_sheet_data())
         except (ValueError,KeyError) as error:self.error(error);return False
         self.refresh();return True
 
@@ -112,8 +121,8 @@ class ConjugationEditor:
 
     def add(self):
         sheet=self._active_sheet()
-        row=sheet.get_total_rows();sheet.insert_row(row=['']*len(sheet.headers()),idx='end')
-        sheet.select_cell(row,1);sheet.see(row,1)
+        row=sheet.get_total_rows();sheet.insert_row(row=['']*len(sheet.headers()),idx=row)
+        sheet.select_cell(row,0);sheet.see(row,0)
 
     def delete(self):
         sheet=self._active_sheet()
@@ -131,11 +140,15 @@ class ConjugationEditor:
         if close:self.lifecycle.finish(self.context.go_home)
         return True
 
+    def save_shortcut(self,event=None):
+        self.save(event)
+        return 'break'
+
     def _can_leave(self):
         if self.lifecycle.closed:return False
         self._end_editing()
-        dirty=(self.tables.dirty or self.view.sheet.get_sheet_data(return_copy=True)!=self._displayed_verbs
-               or self.view.category_sheet.get_sheet_data(return_copy=True)!=self._displayed_categories)
+        dirty=(self.tables.dirty or self.view.sheet.get_sheet_data()!=self._displayed_verbs
+               or self.view.category_sheet.get_sheet_data()!=self._displayed_categories)
         return self.lifecycle.can_leave(dirty,lambda:self.save(close=False))
 
     def back(self,event=None):

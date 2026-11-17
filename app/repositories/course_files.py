@@ -16,6 +16,7 @@ from dataclasses import replace
 from app.conjugation.persons import default_configuration
 from app.repositories.conjugation import conjugation_columns
 from app.repositories.conjugation_persons import configuration_path, load_configuration, save_configuration
+from app.conjugation.categories import COLUMNS as CONJUGATION_CATEGORY_COLUMNS
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +50,7 @@ def course_assets(files, source, target):
         'theory': (files/f'{stem}_gra_ex.csv', THEORY_FIELDS, {'category'}),
         'records': (files/f'{target}_gra_records.csv', RECORD_COLUMNS, set(RECORD_COLUMNS)),
         'conjugation': (files/f'{stem}_con.csv', conjugation_columns(target,source,default_configuration(target)), {'ID', 'R'}),
+        'conjugation_categories': (files/f'{stem}_con_categories.csv',CONJUGATION_CATEGORY_COLUMNS,{'ID','Name'}),
         'audio': files/'audio'/stem,
     }
 
@@ -108,6 +110,7 @@ def prepared_course_files(files, source, courses):
                         configurations.append((config_path,saved))
                 assets['conjugation']=(con_path,conjugation_columns(course.language,legacy_name(source),config),{'ID','R'})
                 kinds.append('conjugation')
+                kinds.append('conjugation_categories')
             for kind in kinds:
                 path, columns, required = assets[kind]
                 with destination_lock(path):
@@ -150,7 +153,7 @@ def retire_course_files(files, old_source, old_courses, source, courses):
             except (ValueError, KeyError):continue  # Inactive invalid legacy slots own no valid pair.
             same_source = legacy_name(origin) == legacy_name(source)
             retained = same_source and course.target in active
-            kinds = [] if retained else ['vocabulary', 'tags', 'synonyms', 'conjugation', 'audio']
+            kinds = [] if retained else ['vocabulary', 'tags', 'synonyms', 'conjugation', 'conjugation_categories', 'audio']
             if not retained or course.target not in grammar:kinds.append('theory')
             # Questions/records use the historical target-only filename. Another
             # active pair can still need it after changing the own language.

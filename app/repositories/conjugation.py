@@ -33,9 +33,9 @@ def load_source(path,language,learned_by,config=None):
     return source
 
 
-def backup_legacy(path, original=None):
+def backup_legacy(path, original=None,*,suffix='.pre-persons.bak'):
     path=Path(path)
-    backup=path.with_name(path.name+'.pre-persons.bak')
+    backup=path.with_name(path.name+suffix)
     if backup.exists():return
     try:save_bytes(backup,path.read_bytes() if original is None else original,expect_missing=True)
     except FileChangedError:

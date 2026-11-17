@@ -58,16 +58,21 @@ def grammar_categories(frame):
 
 
 class GrammarCategoriesPanel(cst.CTkFrame):
-    def __init__(self, parent, translate, on_practise=None):
+    def __init__(self, parent, translate, on_practise=None,*,title_key='Grammar by category',
+                 description='Grammar category statistics description',count_label='Number of questions',
+                 coverage_label='Practised questions',empty_label='No grammar categories available.'):
         super().__init__(parent, fg_color=SECTION_SURFACE, corner_radius=24)
         self.translate = translate
         self.on_practise = on_practise
+        self.sort_options=(('questions',count_label),('practised',coverage_label),('accuracy','Review accuracy'))
+        self.coverage_label,self.empty_label=coverage_label,empty_label
         self.sort_key, self.descending = None, False
         self.items, self.visible, self._category_rows = (), [], []
+        self.available_categories=None
         self.grid_columnconfigure(0, weight=1)
-        cst.CTkLabel(self, text=translate('Grammar by category'), font=(FONT, 24, 'bold'),
+        cst.CTkLabel(self, text=translate(title_key), font=(FONT, 24, 'bold'),
                      text_color=TEXT, anchor='w').grid(row=0, sticky='ew', padx=24, pady=(16, 4))
-        self.description=cst.CTkLabel(self,text=translate('Grammar category statistics description'),font=(FONT,14),
+        self.description=cst.CTkLabel(self,text=translate(description),font=(FONT,14),
                      text_color='#665d48',anchor='w',justify='left',wraplength=850)
         self.description.grid(row=1,sticky='ew',padx=24,pady=(0,8))
         self.category_count=cst.CTkLabel(self,text='',font=(FONT,13),text_color='#665d48',anchor='w',justify='left',height=0)
@@ -94,7 +99,7 @@ class GrammarCategoriesPanel(cst.CTkFrame):
         toolbar.grid(row=4,sticky='ew',padx=16,pady=(0,6))
         toolbar.grid_columnconfigure((0,1,2),weight=1,uniform='sort')
         self.sort_buttons={}
-        for column,(key,caption) in enumerate(SORT_OPTIONS):
+        for column,(key,caption) in enumerate(self.sort_options):
             button=detail_sort_button(cst.CTkButton(toolbar,text=translate(caption)+' ↕',
                 command=lambda key=key:self.sort(key)))
             button.grid(row=0,column=column,sticky='ew',padx=4)
@@ -119,7 +124,7 @@ class GrammarCategoriesPanel(cst.CTkFrame):
             row.grid_configure(row=index)
             color=DETAIL_ROW_COLORS[index%2]
             if row.cget('fg_color')!=color:row.configure(fg_color=color)
-        for key,caption in SORT_OPTIONS:
+        for key,caption in self.sort_options:
             active=key==self.sort_key
             arrow=('↓' if self.descending else '↑') if active else '↕'
             self.sort_buttons[key].configure(text=self.translate(caption)+' '+arrow,
@@ -140,10 +145,12 @@ class GrammarCategoriesPanel(cst.CTkFrame):
         summary=(len(frame),int(history.str.count('S').sum()),int(history.str.count('F').sum())) if history is not None else (len(frame),0,0)
         self.set_items(grammar_categories(frame),summary=summary)
 
-    def set_items(self,items,*,summary=None):
+    def set_items(self,items,*,summary=None,available=None):
         items=tuple(items)
+        available=frozenset(available) if available is not None else None
         self.category_count.configure(text=self.translate('Total categories: {count}').format(count=len(items)))
-        unchanged=items==self.items and bool(self.rows.winfo_children())
+        unchanged=items==self.items and available==self.available_categories and bool(self.rows.winfo_children())
+        self.available_categories=available
         if not unchanged:
             self.items=items
         if summary is None:summary=(sum(item.questions for item in items),sum(item.successes for item in items),sum(item.failures for item in items))
@@ -156,7 +163,7 @@ class GrammarCategoriesPanel(cst.CTkFrame):
             child.destroy()
         self._category_rows=[]
         if not items:
-            cst.CTkLabel(self.rows, text=self.translate('No grammar categories available.'),
+            cst.CTkLabel(self.rows, text=self.translate(self.empty_label),
                          font=(FONT, 18), text_color=TEXT).grid(padx=12, pady=16, sticky='w')
         for index, item in enumerate(items):
             row = cst.CTkFrame(self.rows, fg_color=DETAIL_ROW_COLORS[index%2], corner_radius=16)
@@ -166,7 +173,7 @@ class GrammarCategoriesPanel(cst.CTkFrame):
             name = cst.CTkLabel(row, text=item.name or self.translate('Uncategorised'),
                 font=(FONT, 18, 'bold'), text_color=TEXT, anchor='w', justify='left', wraplength=650, height=24)
             name.grid(row=0, column=0, sticky='ew', padx=18, pady=(5, 0))
-            text=f'{item.practised} / {item.questions}  {self.translate("Practised questions")}'
+            text=f'{item.practised} / {item.questions}  {self.translate(self.coverage_label)}'
             coverage=cst.CTkLabel(row,text=text,font=(FONT,14),text_color='#5e6655',anchor='w',justify='left',height=20)
             coverage.grid(row=1,column=0,columnspan=2,sticky='ew',padx=18,pady=(0,2))
             results=cst.CTkFrame(row,fg_color='transparent',corner_radius=0)
@@ -196,6 +203,7 @@ class GrammarCategoriesPanel(cst.CTkFrame):
             bar.set(item.accuracy if item.attempts else 0)
             if self.on_practise is not None:
                 detail_practise_button(cst.CTkButton(row, text=self.translate('Practise category'),
-                    command=lambda name=item.name: self.on_practise(name))).grid(
+                    command=lambda name=item.name: self.on_practise(name),
+                    state='normal' if available is None or item.name in available else 'disabled')).grid(
                         row=0, column=2, rowspan=4, padx=(0, 16), pady=8)
         self._order_rows()

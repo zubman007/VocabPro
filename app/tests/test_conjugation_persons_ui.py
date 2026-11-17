@@ -108,9 +108,9 @@ class ConjugationPersonsUiTests(TestCase):
             with self.subTest(locale=locale):
                 self.context.preferences=replace(self.context.preferences,app_language=locale)
                 editor=Edit_conjugation(self.root,'Spanish',context=self.context);self.root.update()
-                self.assertEqual(len(editor.view.fields),15);self.assertNotIn('s2',editor.view.fields)
-                for widget in editor.view.fields.values():self.assertGreater(widget.winfo_width(),120)
-                editor.view.fields['Description'].delete(0,'end');editor.view.fields['Description'].insert(0,'edited '+locale)
+                self.assertEqual(len(editor.tables.fields),16);self.assertNotIn('s2',editor.tables.fields)
+                self.assertGreater(editor.view.sheet.winfo_width(),800)
+                editor.view.sheet.set_cell_data(0,editor.tables.fields.index('Description')+1,'edited '+locale)
                 self.assertTrue(editor.save(close=False))
                 for button in editor.view.tools.buttons.values():
                     self.assertLessEqual(button._text_label.winfo_reqwidth(),button.winfo_width()-8)
@@ -121,7 +121,7 @@ class ConjugationPersonsUiTests(TestCase):
     def test_editor_cancel_save_failure_and_new_verb_keep_screen_and_stable_identity(self):
         from app.conjugation.editor import Edit_conjugation
         editor=Edit_conjugation(self.root,'es',context=self.context);self.root.update()
-        editor.view.fields['Spanish'].delete(0,'end');editor.view.fields['Spanish'].insert(0,'enseñar cambiado')
+        editor.view.sheet.set_cell_data(0,1,'enseñar cambiado')
         with patch('app.ui.messagebox.askyesnocancel',return_value=None):editor.back()
         self.assertFalse(editor.lifecycle.closed)
         before=self.path.read_bytes()
@@ -129,9 +129,10 @@ class ConjugationPersonsUiTests(TestCase):
                 patch('app.ui.messagebox.showerror') as error:
             self.assertFalse(editor.save());error.assert_called_once()
         self.assertEqual(self.path.read_bytes(),before);self.assertFalse(editor.lifecycle.closed)
-        editor.add();identifier=editor.current
-        editor.view.fields['Spanish'].insert(0,'ir');editor.view.fields['s1'].insert(0,'voy')
-        self.assertTrue(editor.save(close=False));self.assertNotEqual(identifier,'001')
+        editor.add();row=editor.view.sheet.get_total_rows()-1
+        editor.view.sheet.set_cell_data(row,1,'ir')
+        editor.view.sheet.set_cell_data(row,editor.tables.fields.index('s1')+1,'voy')
+        self.assertTrue(editor.save(close=False));identifier=editor.document.frame.ID.iloc[-1];self.assertNotEqual(identifier,'001')
         self.assertEqual(editor.document.frame.ID.tolist(),['001',identifier])
         self.assertEqual(editor.document.verb('001')['R'],'S?FSS')
 

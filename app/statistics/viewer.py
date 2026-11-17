@@ -137,6 +137,11 @@ class StatisticsController:
         self.chart_con_frm = cst.CTkFrame(conjugation_body)
         self.conjugation_record_panel=GrammarRecordPanel(conjugation_body,self.translate,description='Conjugation records explanation')
         self.conjugation_record_panel.grid(row=5,column=0,columnspan=2,sticky='ew',padx=20,pady=12)
+        self.conjugation_categories_panel=GrammarCategoriesPanel(conjugation_body,self.translate,
+            lambda category:_practise_conjugation_category(window,category),title_key='Conjugation by category',
+            description='Conjugation category statistics description',count_label='Number of verbs',
+            coverage_label='Practised conjugation rounds',empty_label='No conjugation categories available.')
+        self.conjugation_categories_panel.grid(row=6,column=0,columnspan=2,sticky='ew',padx=20,pady=(12,20))
         self.conjugation_progress = ConjugationProgressPanel(conjugation_body, self.translate)
         self.conjugation_progress.grid(row=2, column=0, columnspan=2, sticky='ew', padx=20, pady=12)
         self.conjugation_table = StatisticsTable(conjugation_body, self.translate,
@@ -203,6 +208,7 @@ class StatisticsController:
         canvas_background.add_panel(self.conjugation_progress)
         canvas_background.add_panel(self.conjugation_persons)
         canvas_background.add_panel(self.conjugation_record_panel)
+        canvas_background.add_panel(self.conjugation_categories_panel)
         content.update_idletasks()
         return self.load()
 
@@ -271,6 +277,8 @@ class StatisticsController:
         _set_conjugation_available(self.window, available,
             grammar_available=self.context.preferences.grammar_enabled(self.lang_var.get()))
         if available:
+            self.conjugation_categories_panel.set_items(conjugation.get('categories',()),summary=conjugation['summary'],
+                available=conjugation.get('category_available'))
             self.conjugation_record_panel.set_record(conjugation.get('best_streak',0),conjugation.get('best_correct'))
             from app.statistics.conjugation import progress_table
             progress = conjugation.get('progress')
@@ -287,6 +295,7 @@ class StatisticsController:
         else:
             _release_chart(self.chart_con_frm)
             self.conjugation_record_panel.set_record(0)
+            self.conjugation_categories_panel.set_items(())
             self.conjugation_persons.set_data(None)
             self.chart_con_frm.grid_remove()
             self.window.conjugation_empty.grid_remove()
@@ -369,6 +378,20 @@ def _practise_category(window, category):
         if controller is not None:window.destroy()
     finally:
         window._opening_practice = False
+
+
+def _practise_conjugation_category(window,category):
+    if not window.winfo_exists() or getattr(window,'_opening_practice',False) or getattr(window,'_building',False):return
+    window._opening_practice=True
+    context=get_context(window)
+    try:
+        from app.conjugation.practise import Conjugation
+        controller=Conjugation(window.master,window._statistics_language.get(),categories=[category],
+            context=context,on_back=_practice_return(window,'Conjugation'))
+        if controller is not None:window.destroy()
+    except (OSError,ValueError) as error:
+        messagebox.showerror(parent=window,title=context.translate('Statistics'),message=error_text(error,context.translate))
+    finally:window._opening_practice=False
 
 
 def _practise_tag(window,tag_id):
