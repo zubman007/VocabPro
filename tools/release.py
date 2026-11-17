@@ -127,7 +127,17 @@ def probe(executable,work,*,python=False):
     import psutil
     peak=0
     with (work/'stdout.log').open('w',encoding='utf-8') as stdout,(work/'stderr.log').open('w',encoding='utf-8') as stderr:
-        process=subprocess.Popen(command,cwd=work,env=env,stdout=stdout,stderr=stderr)
+        try:
+            process=subprocess.Popen(command,cwd=work,env=env,stdout=stdout,stderr=stderr)
+        except OSError as error:
+            if getattr(error,'winerror',None)==4551:
+                raise RuntimeError(
+                    'Windows App Control blocked this executable (WinError 4551). '
+                    'The new release was not validated. Keep the previous release and '
+                    'arrange trusted code signing or an approved administrator review. '
+                    'Do not disable Windows protection. Executable: '+str(executable)
+                ) from error
+            raise
         while process.poll() is None:
             try:
                 owner=psutil.Process(process.pid)
@@ -196,7 +206,6 @@ def main():
             '--include-package=pandas.plotting._matplotlib',
             '--noinclude-custom-mode=pandas:bytecode','--noinclude-custom-mode=matplotlib:bytecode',
             '--noinclude-custom-mode=tksheet:bytecode','--noinclude-custom-mode=pyparsing:bytecode',
-            '--noinclude-custom-mode=numpy:bytecode',
             '--assume-yes-for-downloads','--windows-console-mode=disable','--include-package=app','--nofollow-import-to=app.tests',
             '--include-package-data=customtkinter','--include-data-dir='+str(snapshot/'images')+'=images',
             '--include-data-dir='+str(snapshot/'locales')+'=locales',

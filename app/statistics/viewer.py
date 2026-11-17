@@ -136,12 +136,12 @@ class StatisticsController:
         self.chart_PoS_frm.grid(row=2, column=0, columnspan=2, sticky='ew', padx=20, pady=12)
         self.chart_con_frm = cst.CTkFrame(conjugation_body)
         self.conjugation_record_panel=GrammarRecordPanel(conjugation_body,self.translate,description='Conjugation records explanation')
-        self.conjugation_record_panel.grid(row=5,column=0,columnspan=2,sticky='ew',padx=20,pady=12)
+        self.conjugation_record_panel.grid(row=0,column=0,columnspan=2,sticky='ew',padx=20,pady=12)
         self.conjugation_categories_panel=GrammarCategoriesPanel(conjugation_body,self.translate,
             lambda category:_practise_conjugation_category(window,category),title_key='Conjugation by category',
             description='Conjugation category statistics description',count_label='Number of verbs',
             coverage_label='Practised conjugation rounds',empty_label='No conjugation categories available.')
-        self.conjugation_categories_panel.grid(row=6,column=0,columnspan=2,sticky='ew',padx=20,pady=(12,20))
+        self.conjugation_categories_panel.grid(row=1,column=0,columnspan=2,sticky='ew',padx=20,pady=12)
         self.conjugation_progress = ConjugationProgressPanel(conjugation_body, self.translate)
         self.conjugation_progress.grid(row=2, column=0, columnspan=2, sticky='ew', padx=20, pady=12)
         self.conjugation_table = StatisticsTable(conjugation_body, self.translate,
@@ -286,7 +286,7 @@ class StatisticsController:
             self.conjugation_persons.set_data(conjugation.get('persons'))
             if progress is not None:
                 self.conjugation_table.set_data(progress_table(progress))
-            charts.append((conjugation['trailing'], self.chart_con_frm, 'Conjugation trailing successes', 0))
+            charts.append((conjugation['trailing'], self.chart_con_frm, 'Conjugation trailing successes', 5))
             if conjugation['trailing'].empty:
                 self.window.conjugation_empty.grid(row=1, column=0, columnspan=2, padx=24, pady=32)
             else:

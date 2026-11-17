@@ -2,21 +2,31 @@
 
 
 
-V setting u learning u grammar a conjugation přehod u jednoho z nich to nastavení, ať je to jednotně.. Nejdříve batch a pak remember filter.
-
-
-
 
 cjvv xzih pfrc dqmw
 hovnival007!
-
+hovnival007!
 
 sjednotit stats conjugation a grammar designově troškinku.. I obsahově... Uvaž sám.
 
 
 
+Když dělám poslední slovo v voc repeat, udělá to pouze úspěšný zvuk.. Mělo by to taktéž přehrát dané slovo jako u všech pokusů.
 
 
+
+synonyma při opakování by měla respektovat způsob konkrétního opakování.. V review word je zobraz celá. Ale třeba když mám pouze audio, nemělo by tam být zobrazen čeký překlad u synonym.. Pak to "prozradí" správnou odpověď.. U kontextového opakování taktéž-- U opakování typu české slovo a já mám napsat cizí název, to tam můžeš napsat všechno.
+
+
+Email se pořád neposílá pro seznam.cz.. Dávám tam dobré heslo na mail i adresu, ale pořád nic.. Taky když tam to heslo dám a uložím, nic se tam nezobrzauje..Pokud pošlu zkušební mail a ten nedojde, má se zkušební mail odeslat na mail, kde chci posílat maily. Pokud ale tam je chyba.. Proč mi to nehodí chybovou hlašku?
+
+
+Ty fily na conjugation person dej všechny do jednoho filu.. Všechny jazyky.
+
+U data integrity u chyby vypiš konkrétní řádek... Trošku jiným písmem aby to bylo oddělitelné.
+Ten cancel tlačítko z data integrity zruš..
+ 
+ 
 
 
 sjednotit design track record conjugation a grammar v session

@@ -22,7 +22,7 @@ App sound volume;Int;100
 Autoplay pronunciation;Bool;1
 Remember grammar categories;Bool;1
 Saved grammar category filters;JSON;{}
-Automatically show synonyms in repeat;Bool;0
+Automatically show synonyms in repeat;Bool;1
 Letter hints;Options[Automatic,On request,Disabled];Automatic
 Enable tags;Bool;1
 Show tags during practice;Bool;0

@@ -3,6 +3,7 @@ import customtkinter as cst
 from app.core.context import get_context
 from app.shared.localization_format import percent
 from app.ui.theme import FONT,TEXT,SECTION_SURFACE
+from app.statistics.components import DETAIL_ROW_COLORS
 
 
 class ConjugationPersonsPanel(cst.CTkFrame):
@@ -42,8 +43,10 @@ class ConjugationPersonsPanel(cst.CTkFrame):
             rate=percent(item.successes/attempts,language) if attempts else '—'
             text=(name+' · '+rate+' · '+self.translate('Recorded answers')+f': {attempts} · '+
                   self.translate('Correct answers')+f': {item.successes} · '+self.translate('Incorrect answers')+f': {item.failures}')
-            label=cst.CTkLabel(self.body,text=text,font=(FONT,15),text_color=TEXT,anchor='w',justify='left',height=0,wraplength=700)
-            label.grid(row=index*2,sticky='ew',pady=(6,5));self.labels.append(label)
-            bar=cst.CTkProgressBar(self.body,height=8,corner_radius=4,fg_color='#b5ad97',progress_color='#417766')
-            bar.grid(row=index*2+1,sticky='ew',pady=(0,10));bar.set(item.successes/attempts if attempts else 0)
+            row=cst.CTkFrame(self.body,fg_color=DETAIL_ROW_COLORS[index%2],corner_radius=16)
+            row.grid(row=index,sticky='ew',pady=2);row.grid_columnconfigure(0,weight=1)
+            label=cst.CTkLabel(row,text=text,font=(FONT,14),text_color=TEXT,anchor='w',justify='left',height=0,wraplength=700)
+            label.grid(row=0,sticky='ew',padx=18,pady=(8,5));self.labels.append(label)
+            bar=cst.CTkProgressBar(row,height=6,corner_radius=3,fg_color='#b5ad97',progress_color='#417766')
+            bar.grid(row=1,sticky='ew',padx=18,pady=(0,8));bar.set(item.successes/attempts if attempts else 0)
         self._snapshot=snapshot

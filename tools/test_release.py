@@ -127,6 +127,16 @@ class ReleaseTests(unittest.TestCase):
         with release_lock(self.root/'update.lock'):
             with self.assertRaises(RuntimeError),release_lock(self.root/'update.lock'):pass
 
+    def test_windows_app_control_block_is_reported_without_changing_release(self):
+        from tools.release import probe
+        error=OSError('Windows App Control blocked executable')
+        error.winerror=4551
+        with patch('tools.release.fixture'),patch('tools.release.subprocess.Popen',side_effect=error):
+            with self.assertRaisesRegex(RuntimeError,'WinError 4551'):
+                probe(self.new/'VocabPro.exe',self.root/'blocked-probe')
+        self.assertEqual((self.old/'VocabPro.exe').read_bytes(),b'old')
+        self.assertEqual((self.data/'words.csv').read_bytes(),b'user data')
+
     def test_snapshot_excludes_settings_dictionaries_tests_and_credentials(self):
         target=self.root/'snapshot';digest=source_snapshot(target)
         self.assertEqual(len(digest),64)
