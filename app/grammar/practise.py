@@ -26,7 +26,7 @@ class GrammarController:
         self.context=get_context(app,context)
         self.translate=self.context.translate
         self.app, self.path, self.on_back = app, Path(path), on_back
-        use_records=self.context.preferences.track_personal_records or self.context.preferences.show_personal_records
+        use_records=self.context.preferences.track_personal_records
         records=load_records(self.path) if use_records else PracticeRecords()
         self.record_at_start=records.best_streak
         self.record_candidate=self.record_at_start
@@ -54,7 +54,8 @@ class GrammarController:
         if initial_categories is not None and not self.selected_categories:
             raise ValueError('No questions match the selected category.')
         self.session = GrammarSession([question for question in self.all_questions
-            if category_key(question.get('category', '')) in self.selected_categories], progress=self.question_progress)
+            if category_key(question.get('category', '')) in self.selected_categories], progress=self.question_progress,
+            batch_size=self.context.preferences.grammar_batch)
         s.Clear_frames(app)
         self.view = build_layout(app, self.choose, self.reveal, self.next_question,
                                  self.back, self.exit_app, self.show_theory, self.open_filter,
@@ -109,7 +110,8 @@ class GrammarController:
             return True
         self.selected_categories = selected
         self.session = GrammarSession([question for question in self.all_questions
-            if category_key(question.get('category', '')) in selected], progress=self.question_progress)
+            if category_key(question.get('category', '')) in selected], progress=self.question_progress,
+            batch_size=self.context.preferences.grammar_batch)
         self.view.next.configure(command=self.next_question)
         self._refresh_filter_status()
         self.next_question()
@@ -291,13 +293,13 @@ class GrammarController:
             self.record_candidate=max(self.record_candidate,state.best_streak)
             if state.correct:self.record_correct_candidate=max(self.record_correct_candidate or 0,state.correct)
         record_text=self.translate('New record: {count}') if self.record_candidate>self.record_at_start else self.translate('All-time best streak: {count}')
-        self.view.counter.configure(text=f'{state.correct + state.incorrect} / {len(state.questions)}')
+        self.view.counter.configure(text=f'{state.correct + state.incorrect} / {state.round_size}')
         self.view.score.configure(text=f"{self.translate('Correct answers')}: {state.correct}\n{self.translate('Incorrect answers')}: {state.incorrect}\n"
                                        f"{self.translate('Streak')}: {state.streak}\n{self.translate('Best streak')}: {state.best_streak}\n"
                                        +(record_text.format(count=self.record_candidate)+'\n'+self.translate('Most correct in one session: {count}').format(
                                            count=self.record_correct_candidate if self.record_correct_candidate is not None else '—')
-                                         if self.context.preferences.show_personal_records else ''),
-                                  text_color='#815632' if self.context.preferences.show_personal_records and self.record_candidate>self.record_at_start else ui.MUTED)
+                                         if self.context.preferences.records_visible else ''),
+                                  text_color='#815632' if self.context.preferences.records_visible and self.record_candidate>self.record_at_start else ui.MUTED)
         recent=tuple(state.recent_results)
         if recent:
             self.view.recent_caption.configure(text=self.translate('Last {count} answers: {accuracy}%').format(

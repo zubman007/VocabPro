@@ -71,6 +71,13 @@ def category_names(source,catalog):
     return category_ids(source,catalog).map(dict(zip(catalog.ID,catalog.Name))).fillna('')
 
 
+def category_options(source, catalog):
+    counts = category_ids(source, catalog).value_counts()
+    names = dict(zip(catalog.ID, catalog.Name))
+    return sorted(((identifier, names.get(identifier, ''), int(count)) for identifier, count in counts.items()),
+                  key=lambda item: (item[1].casefold(), item[0]))
+
+
 def filter_categories(source,catalog,selected):
     if selected is None:return source.copy()
     wanted={category_key(value) for value in selected}

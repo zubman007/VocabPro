@@ -8,10 +8,9 @@ from app.ui.theme import FONT, TEXT, SECTION_CONTROL
 
 
 class CourseEditor(cst.CTkFrame):
-    def __init__(self, parent, translate, source, courses, on_persons=None):
+    def __init__(self, parent, translate, source, courses):
         super().__init__(parent, fg_color='transparent', corner_radius=0)
         self.translate, self.source = translate, source
-        self.on_persons=on_persons
         self.rows = []
         self.archived = {course.target: course for course in courses if not course.enabled}
         self.known = {course.target: course for course in courses}
@@ -35,7 +34,7 @@ class CourseEditor(cst.CTkFrame):
             available = self._available_languages()
             if not available:
                 return
-            course = replace(self.archived.get(available[0], StudyCourse(available[0])), enabled=True)
+            course = replace(self.archived.get(available[0], StudyCourse(available[0], conjugation_enabled=True)), enabled=True)
         card = cst.CTkFrame(self.list, fg_color='#eee4d0', corner_radius=16)
         card.grid(row=len(self.rows), sticky='ew', pady=5)
         card.grid_columnconfigure((0, 1), weight=1, uniform='course')
@@ -71,12 +70,6 @@ class CourseEditor(cst.CTkFrame):
             onvalue='1',offvalue='0',text_color=TEXT,font=(FONT,16),fg_color='#ad694e')
         con_toggle.grid(row=2,column=1,sticky='w',padx=14,pady=(0,12))
         fields.append(con_toggle)
-        if self.on_persons is not None:
-            button=cst.CTkButton(card,text=self.translate('Grammatical persons'),font=(FONT,15),
-                fg_color=SECTION_CONTROL,hover_color='#315347',
-                command=lambda:self.on_persons(self.names[target.get()]))
-            button.grid(row=3,column=1,sticky='ew',padx=14,pady=(0,12))
-            fields.append(button)
         row = dict(target=target, enabled=enabled, context=context, audio=audio, grammar=grammar, conjugation=conjugation,
                    fields=fields, toggle=toggle, chooser=chooser, card=card, last_target=course.target)
         self.rows.append(row)
@@ -111,7 +104,7 @@ class CourseEditor(cst.CTkFrame):
             self.refresh_add_button()
             return
         row['last_target'] = target
-        saved = self.known.get(target, StudyCourse(target))
+        saved = self.known.get(target, StudyCourse(target, conjugation_enabled=True))
         row['context'].set(str(saved.context_percent))
         row['audio'].set(str(saved.audio_percent))
         row['grammar'].set('1' if saved.grammar_enabled else '0')

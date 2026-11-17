@@ -2,6 +2,33 @@
 import customtkinter as cst
 from app.ui.theme import FONT,TEXT,RADIUS
 from app.ui.theme import SECTION_SURFACE
+from app.ui.surfaces import surface
+
+
+class EditorTabs(cst.CTkSegmentedButton):
+    """Header tabs with optional body pages and composited rounded backgrounds."""
+    def __init__(self, parent, values, command=None):
+        self.pages = {}
+        super().__init__(parent, values=values, command=command, font=(FONT, 18), height=38,
+            corner_radius=12, fg_color='#d2c39f', selected_color='#a77732',
+            selected_hover_color='#8b683c', unselected_color='#d2c39f',
+            unselected_hover_color='#c4b18a', text_color=TEXT)
+
+    def add_page(self, name, panel):
+        self.pages[name] = panel
+        self.set(self.get() or name)
+
+    def set(self, value, **kwargs):
+        super().set(value, **kwargs)
+        for name, panel in self.pages.items():
+            if name == value:panel.grid()
+            else:panel.grid_remove()
+
+    def attach_background(self, provider):
+        layer = surface(self, provider, rasterize_frame=True)
+        for button in self._buttons_dict.values():
+            surface(button, layer)
+        return layer
 
 
 class SectionTabs(cst.CTkTabview):

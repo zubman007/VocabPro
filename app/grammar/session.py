@@ -6,8 +6,11 @@ from app.shared.learning_data import Count_trailing_s
 
 
 class GrammarSession:
-    def __init__(self, questions, *, progress=None):
+    def __init__(self, questions, *, progress=None, batch_size=None):
+        if batch_size is not None and (type(batch_size) is not int or batch_size < 1):
+            raise ValueError('Batch size must be at least 1.')
         self.questions = tuple(questions)
+        self.batch_size = batch_size
         # Shared by a controller's filtered rounds, separate from source records
         # and the pending persistence deltas. No answer is written here.
         self.progress = progress if progress is not None else {}
@@ -16,7 +19,9 @@ class GrammarSession:
     def restart(self):
         records = [dict(question, **self.progress.get(question['id'], {}))
                    for question in self.questions]
-        self.remaining = deque(Shuffle_copy(records, 1))
+        ordered = Shuffle_copy(records, 1)
+        self.remaining = deque(ordered[:self.batch_size] if self.batch_size is not None else ordered)
+        self.round_size = len(self.remaining)
         self.current = None
         self.previous = None
         self.options = ()

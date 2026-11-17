@@ -31,7 +31,7 @@ def _save_preferences(frame, values, path):
         latest = load_preferences(path)
         if not latest.equals(frame):
             # Background backup may have changed only the scheduling metadata.
-            metadata = ['Next backup','Saved grammar category filters']
+            metadata = ['Next backup','Saved grammar category filters','Saved conjugation category filters']
             stable = lambda data: data.loc[~data.Name.isin(metadata)].reset_index(drop=True)
             if not stable(latest).equals(stable(frame)):
                 raise ValueError('Settings changed on disk. Reopen settings before saving.')

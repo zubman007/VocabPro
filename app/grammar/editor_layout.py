@@ -7,6 +7,7 @@ from app.ui.training_layout import shell, action, text
 from app.ui.surfaces import surface
 from app.ui.components.editor_toolbar import EditorToolbar
 from app.ui.components.search_filter_panel import SearchFilterPanel
+from app.ui.sections import EditorTabs
 
 
 def build(app, language, callbacks, theory=False):
@@ -20,12 +21,10 @@ def build(app, language, callbacks, theory=False):
         if label != selected_tab:
             view.tabs.set(selected_tab)
             callbacks['related']()
-    view.tabs = cst.CTkSegmentedButton(view.header, values=tab_labels, command=switch_tab,
-        font=(ui.FONT, 18), height=38, fg_color='#d2c39f', selected_color='#a77732',
-        selected_hover_color='#8b683c', unselected_color='#d2c39f', unselected_hover_color='#c4b18a',
-        text_color=ui.TEXT)
+    view.tabs = EditorTabs(view.header, values=tab_labels, command=switch_tab)
     view.tabs.set(selected_tab)
     view.header.place_extension(view.tabs,sticky='w')
+    view.tabs.attach_background(view.header._surface)
     view.body.grid_columnconfigure(0, weight=2)
     view.body.grid_columnconfigure(1, weight=3)
     view.body.grid_rowconfigure(0, weight=0)

@@ -272,7 +272,7 @@ class StatisticsController:
             charts.append((values, frame, title, row))
         available = conjugation is not None
         for panel in (self.grammar_record_panel,self.conjugation_record_panel):
-            if self.context.preferences.show_personal_records:panel.grid()
+            if self.context.preferences.records_visible:panel.grid()
             else:panel.grid_remove()
         _set_conjugation_available(self.window, available,
             grammar_available=self.context.preferences.grammar_enabled(self.lang_var.get()))

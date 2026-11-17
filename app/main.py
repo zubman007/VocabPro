@@ -136,14 +136,10 @@ def _build_main_window(app,stats,context):
     def edit_conjugation(language):
         from app.conjugation.editor import Edit_conjugation
         return Edit_conjugation(app,language,context=context)
-    def conjugation_persons(language):
-        from app.conjugation.persons_dialog import open_persons
-        if open_persons(app,language,files=context.files_dir,source=config.learned_by,translate=context.translate):
-            context.go_home()
     return build_home(app,stats,languages,dict(practice=lambda language:practice(language,'rep_words'),
         learn=lambda language:practice(language,'lrn_words'),edit=edit,conjugation=conjugation,
         grammar=grammar,edit_grammar=edit_grammar,edit_conjugation=edit_conjugation,
-        conjugation_persons=conjugation_persons,refresh=context.go_home,
+        refresh=context.go_home,
         available=lambda language,kind:(context.conjugation_enabled(language) if kind=='conjugation'
             else config.grammar_enabled(language))), initial_language=selected,
         on_select=lambda language: setattr(context, 'selected_course', context.language_pair(language)))

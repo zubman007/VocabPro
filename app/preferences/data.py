@@ -8,7 +8,7 @@ from app.preferences.courses import (COURSE_FIELD, StudyCourse, CourseConfigurat
 
 PREFERENCES_FILE = ROOT_DIR / "files" / "settings.csv"
 LANGUAGE_FIELDS = ("Learned by", "First learning language", "Second learning language")
-BATCH_FIELDS = {"Random repeat batch - Vocabulary", "Random repeat batch - Conjugation", "Learn batch"}
+BATCH_FIELDS = {"Random repeat batch - Vocabulary", "Random repeat batch - Conjugation", "Random repeat batch - Grammar", "Learn batch"}
 TAG_DEPENDENT_FIELDS = ('Show tags during practice', 'Tag display language', 'Maximum tags per word')
 
 
@@ -19,9 +19,9 @@ def group_for(name):
         return 'Tags'
     if name in ('App sounds enabled', 'App sound volume'):
         return 'Settings sounds'
-    if name == 'Remember grammar categories':
+    if name in ('Remember grammar categories', 'Random repeat batch - Grammar'):
         return 'Grammar'
-    if name == 'Random repeat batch - Conjugation':
+    if name in ('Random repeat batch - Conjugation', 'Remember conjugation categories'):
         return 'Conjugation'
     if name in ('Random repeat batch - Vocabulary', 'Learn batch', 'Autoplay pronunciation',
                 'Automatically show synonyms in repeat', 'Letter hints') or name.startswith('Percentage'):
@@ -39,7 +39,10 @@ def with_defaults(frame):
                              ('Enable tags','Bool','1'),('Show tags during practice','Bool','1'),
                              ('Tag display language','Options[Student language,Learning language]','Learning language'),
                              ('Maximum tags per word','Int','10'),
-                             ('Track personal records','Bool','1'),('Show personal records','Bool','1')):
+                             ('Track personal records','Bool','1'),('Show personal records','Bool','1'),
+                             ('Remember conjugation categories','Bool','1'),
+                             ('Random repeat batch - Grammar','Int','10'),
+                             ('Random repeat batch - Conjugation','Int','10')):
         if name not in set(result['Name']):
             row = dict.fromkeys(result.columns, '')
             row.update(Name=name, Type=kind, Value=value)
@@ -75,6 +78,12 @@ class RuntimePreferences:
     courses: tuple[StudyCourse, ...] | None = None
     track_personal_records: bool = True
     show_personal_records: bool = True
+    remember_conjugation_categories: bool = True
+    grammar_batch: int = 10
+
+    @property
+    def records_visible(self):
+        return self.track_personal_records and self.show_personal_records
 
     @property
     def study_courses(self):
@@ -128,7 +137,7 @@ class RuntimePreferences:
                          for order in (1, 2))
         return cls(values.get('Backup mail', ''), int(values.get('Backup period (days)', 0)),
             values.get('Next backup', '')[:19], int(values.get('Random repeat batch - Vocabulary', 0)),
-            int(values.get('Random repeat batch - Conjugation', 0)), int(values.get('Learn batch', 0)),
+            int(values.get('Random repeat batch - Conjugation', 10)), int(values.get('Learn batch', 0)),
             values.get('Learned by', ''), active[0].language if active else values.get('First learning language', ''),
             active[1].language if len(active) > 1 else values.get('Second learning language', ''), values.get('App language', ''),
             probabilities(2, 'description and use in a sentence'), probabilities(3, 'audio and options'),
@@ -139,7 +148,8 @@ class RuntimePreferences:
             values.get('Show tags during practice','1')=='1',values.get('Tag display language','Learning language'),
             int(values.get('Maximum tags per word','10')),
             len(active) > 1 if configured is not None else values.get('Enable second learning language','1')=='1', configured,
-            values.get('Track personal records','1')=='1',values.get('Show personal records','1')=='1')
+            values.get('Track personal records','1')=='1',values.get('Show personal records','1')=='1',
+            values.get('Remember conjugation categories','1')=='1',int(values.get('Random repeat batch - Grammar','10')))
 
 
 class PreferenceError(ValueError):
@@ -179,7 +189,7 @@ def validate_preferences(frame, values):
     if merged.get('Letter hints','On request') not in ('Automatic','On request','Disabled'):
         raise PreferenceError('Letter hints', 'Choose a valid option.')
     for field in ('App sounds enabled', 'Autoplay pronunciation', 'Remember grammar categories','Enable second learning language',
-                  'Track personal records','Show personal records'):
+                  'Track personal records','Show personal records','Remember conjugation categories'):
         if has_courses and is_legacy_course_field(field):
             continue
         if merged.get(field, '1') not in ('0', '1'):
