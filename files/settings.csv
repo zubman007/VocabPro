@@ -5,7 +5,7 @@ First learning language;Options[English,Spanish,Czech,German,French];Spanish
 Second learning language;Options[English,Spanish,Czech,German,French];English
 Backup mail;Str;zubson4@gmail.com
 Backup period (days);Int;10
-Next backup;Str;2026-11-25 17:03:29
+Next backup;Str;2026-11-27 11:37:59
 11Labs token;Str;sk_b275a45d701ec2f387daec822ac86938739417d7af903d86
 Merriam-Webster's spanish API key;Str;2aa443da-a112-44ad-923b-2b916b0cb9fc
 Merriam-Webster's french API key;Str;a2f809f3-8def-43cb-b48c-3255fc8cbda3

@@ -7,165 +7,9 @@ V setting u learning u grammar a conjugation přehod u jednoho z nich to nastave
 
 
 
-# VocabPro – Kompletní systém kontroly integrity dat
-Analyzuj celý projekt VocabPro a implementuj profesionální, centralizovaný systém kontroly integrity uživatelských dat.
-**Hlavní cíl:** Zajistit, aby aplikace dokázala automaticky odhalovat poškozená, neplatná, neúplná nebo vzájemně nekonzistentní data, předcházet vzniku nových chyb a umožňovala uživateli provést kompletní audit.
-Systém musí být bezpečný, výkonný, rozšiřitelný a plně kompatibilní se současnou aplikací.
-## 1. Analýza datové architektury
-Nejprve důkladně analyzuj:
-- Všechny datové soubory, databáze a používané formáty.
-- Struktury slovníků, překladů, jazyků, tematických kategorií a synonym.
-- Data modulů Grammar a Conjugation.
-- Statistiky učení, rekordy a historii odpovědí.
-- Uživatelská nastavení a konfigurace.
-- Mechanismy načítání, ukládání, importu, exportu a zálohování.
-- Vazby mezi jednotlivými datovými strukturami.
-- Současné validační mechanismy a jejich případné duplicity.
-Na základě skutečného kódu definuj pravidla integrity. **Nevymýšlej povinná pole, omezení ani vztahy, které neodpovídají existující architektuře.**
-Rozlišuj skutečné chyby od legitimních volitelných, historických nebo prázdných hodnot.
-## 2. Rychlá kontrola při spuštění aplikace
-Implementuj automatickou kontrolu integrity při každém spuštění VocabPro.
-Kontroluj zejména:
-- Existenci a čitelnost nezbytných datových souborů.
-- Základní správnost jejich struktury.
-- Podporované verze datových formátů.
-- Přítomnost skutečně povinných údajů.
-- Zjevné poškození nebo neplatné hodnoty.
-- Základní konzistenci důležitých datových vazeb.
-**Požadavky:**
-- Kontrola musí být maximálně rychlá a nesmí výrazně prodlužovat start aplikace.
-- Neprováděj při každém spuštění zbytečný kompletní průchod všemi daty.
-- Využij existující načítací mechanismy a pokud možno nekontroluj stejná data opakovaně.
-- Pokud to architektura umožňuje, odděl rychlé kritické kontroly od méně důležitých kontrol prováděných na pozadí.
-- Nepřistupuj ke GUI z pracovního vlákna způsobem, který není bezpečný pro použitý framework.
-- Při nalezení nekritického problému umožni pokračovat v používání aplikace.
-- Pokud jsou data nebezpečná pro další zápis, zabraň jejich přepsání nebo dalšímu poškození a nabídni bezpečný postup.
-Nikdy automaticky nepřepisuj poškozená data výchozími hodnotami pouze proto, že se nepodařilo načtení.
-## 3. Validace při ukládání dat
-Zaveď jednotný validační mechanismus pro vytváření a úpravy dat.
-Před uložením ověřuj podle konkrétního typu záznamu:
-- Povinná pole a jejich datové typy.
-- Platnost hodnot a povolených rozsahů.
-- Unikátnost identifikátorů tam, kde je vyžadována.
-- Existenci referencovaných záznamů.
-- Konzistenci vztahů mezi daty.
-- Správnost relevantních statistických hodnot.
-- Kompatibilitu se současným datovým formátem.
-Validace musí být implementována **v datové vrstvě**, nikoliv pouze v grafickém rozhraní, aby platila také pro importy, obnovu záloh a další způsoby zápisu.
-Využívej společné validační komponenty a nepřidávej duplicitní logiku do jednotlivých modulů.
-Při chybě:
-1. Zabraň uložení neplatné změny.
-2. Zachovej původní data.
-3. Zobraz uživateli srozumitelnou informaci.
-4. Zaznamenej technické podrobnosti pro diagnostiku.
-Zápisy prováděj bezpečně a atomicky, pokud to použitá technologie umožňuje.
-## 4. Kompletní audit integrity dat
-Do **Nastavení VocabPro** přidej samostatnou funkci pro kompletní kontrolu integrity.
-Například sekci:
-**Nastavení → Integrita dat**
-Uživatel zde musí mít možnost spustit důkladný audit všech relevantních uživatelských dat.
-Audit má kontrolovat:
-- Slovníky, slovíčka, překlady a jejich vazby.
-- Jazyky, kategorie a přiřazené štítky.
-- Synonyma a jejich reference.
-- Grammar a Conjugation.
-- Statistiky, rekordy a historii učení.
-- Uživatelská nastavení.
-- Konzistenci identifikátorů a vzájemných odkazů.
-- Duplicitní nebo osiřelé záznamy, pokud jsou podle datového modelu neplatné.
-- Strukturální poškození a nepodporované formáty.
-Rozlišuj tři závažnosti nálezů:
-- **Critical:** Poškození nebo nekonzistence ohrožující bezpečné načítání či ukládání.
-- **Warning:** Podezřelé nebo neúplné údaje, které nemusí znamenat skutečnou chybu.
-- **Info:** Informativní upozornění a doporučení.
-Kontrola nesmí automaticky měnit žádná uživatelská data.
-## 5. Grafické rozhraní auditu
-Vytvoř přehledné rozhraní respektující současný design VocabPro.
-Mělo by obsahovat:
-- Tlačítko pro spuštění kompletní kontroly.
-- Průběh kontroly a aktuálně kontrolovanou oblast.
-- Počet zkontrolovaných záznamů.
-- Počet nalezených kritických chyb, varování a informací.
-- Výsledky rozdělené podle modulů.
-- Konkrétní popis nalezených problémů.
-- Identifikaci dotčeného souboru nebo záznamu, pokud je bezpečné ji zobrazit.
-- Doporučený postup řešení.
-- Možnost exportovat diagnostický report.
-Při větším objemu dat nesmí kontrola blokovat nebo zamrazovat GUI.
-Zajisti bezpečné ukončení nebo zrušení auditu a správné uvolnění prostředků.
-Pokud to odpovídá existující architektuře, zobraz také datum posledního úspěšně dokončeného auditu.
-## 6. Bezpečnost uživatelských dat
-**Toto je absolutní priorita implementace.**
-Dodrž následující pravidla:
-- Nikdy automaticky nemaž slovíčka, statistiky ani jiné uživatelské záznamy.
-- Nikdy neopravuj data bez výslovného souhlasu uživatele.
-- Samotný audit musí být pouze pro čtení.
-- Při chybě načítání nepřepisuj existující soubor prázdným nebo výchozím obsahem.
-- Neprováděj neověřené migrace dat.
-- Zachovej všechny existující zálohy.
-- Nezasahuj do uživatelských souborů během automatických testů.
-- Diagnostické reporty nesmí obsahovat hesla, tokeny ani jiné citlivé údaje.
-- Zachovej kompatibilitu se staršími platnými daty.
-Pokud implementuješ možnost opravy některých problémů, musí být oddělená od auditu, předem vytvořit bezpečnou zálohu, přesně vysvětlit plánované změny a vyžadovat potvrzení uživatele.
-**Nepřidávej automatické opravy, pokud nejsou skutečně bezpečné a potřebné.**
-## 7. Architektura a výkon
-Navrhni centralizovaný, modulární systém integrity.
-- Jednotlivé datové oblasti mohou mít vlastní validační pravidla.
-- Společná infrastruktura musí sjednocovat výsledky, závažnosti a diagnostiku.
-- Využívej existující datové modely a validační funkce.
-- Nevytvářej paralelní datovou vrstvu ani zbytečně složitou architekturu.
-- Zachovej možnost přidávat nové moduly a pravidla.
-- Minimalizuj dopad na rychlost spouštění a ukládání.
-- Neprováděj opakované kompletní skenování bez důvodu.
-- Ošetři souběžné operace, aby audit nevyhodnocoval nekonzistentní stav během zápisu.
-## 8. Automatické testy
-Vytvoř nové automatické testy pokrývající zejména:
-- Správná a úplná data.
-- Chybějící povinné hodnoty.
-- Neplatné datové typy.
-- Poškozené soubory.
-- Neexistující reference.
-- Neplatné duplicity.
-- Nekonzistentní statistiky.
-- Starší, ale stále podporované datové formáty.
-- Selhání ukládání.
-- Přerušení auditu.
-- Ochranu původních dat při chybě.
-- Výkon rychlé kontroly při spuštění.
-Testuj také integraci s grafickým rozhraním a ověř, že uživateli správně zobrazuje výsledky.
-**Všechny testy musí používat izolovaná testovací data.**
-## 9. Integrace s existujícím systémem kvality
-Pokud už v projektu existuje `check_quality.ps1`, integruj do něj testy integrity dat.
-Pokud zatím neexistuje, připrav testy tak, aby je bylo možné později snadno začlenit.
-Kontrola kvality by měla zahrnovat:
-- Výsledky automatických testů integrity.
-- Pokrytí validačních pravidel testy.
-- Zjištěné chyby na testovacích datech.
-- Výkon rychlé a kompletní kontroly.
-Nespouštěj kompletní audit skutečných uživatelských dat automaticky při každém vývojovém testování.
-## 10. Realizace a omezení
-Nezůstávej pouze u návrhu. Proveď analýzu, implementaci a testování.
-Dodrž:
-- Zachování všech současných funkcí VocabPro.
-- Zachování současného vzhledu a lokalizačního systému.
-- Doplnění všech potřebných překladů do podporovaných jazyků.
-- Kompatibilitu Python i Nuitka EXE verze.
-- Žádné zbytečné změny nesouvisejících modulů.
-- Žádné mazání nebo úpravy skutečných uživatelských dat.
-- Zachování necommitnutých změn.
-- Žádné zásahy do sandboxu nebo existující dokumentace.
-Na závěr uveď:
-1. Které datové oblasti a pravidla integrity byly implementovány.
-2. Jak funguje rychlá kontrola při spuštění.
-3. Jak funguje validace při ukládání.
-4. Jak spustit kompletní audit v nastavení.
-5. Výsledky automatických testů.
-6. Naměřený dopad na výkon.
-7. Případná omezení a oblasti, které zatím nelze spolehlivě kontrolovat.
-**Výsledný stav:** VocabPro automaticky chrání konzistenci dat při spuštění a ukládání, umožňuje kompletní audit v nastavení a dokáže bezpečně upozornit na problémy, aniž by riskoval ztrátu uživatelských dat.
-
-
-
+Moc nerozumím nastavení tomu mailu.. Mám tam dávat heslo od toho emailu (v případě seznamu)? Když ho tam dám a uložím to a znovu zobrazím, nic se nezobrazuje. Tak kde to jde nastavit na stejné heslo jako na mail nastav to stejně.. Tam kde to nejde a je potřeba něco jiného.. Popiš to..
+cjvv xzih pfrc dqmw
+Ten test data integrity.. Kontroluje to i voc? Nevidím to v modulech.. Jinak myslím, že to last test tam nemusíš dávat... Dále kontroluj i názvy sloupců..
 
 
 
@@ -351,7 +195,7 @@ sjednotit setting remember category pořadí.. Je to u learning.. U modulů je t
 
 
 
-Moc nerozumím nastavení tomu mailu.. Mám tam dávat heslo od toho emailu (v případě seznamu)? Když ho tam dám a uložím to a znovu zobrazím, nic se nezobrazuje.
+
 
 
 

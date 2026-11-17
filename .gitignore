@@ -3,3 +3,6 @@ __pycache__/
 *.tmp
 .venv/
 .refactoring-recovery/
+.quality-venv/
+reports/quality/
+.ruff_cache/

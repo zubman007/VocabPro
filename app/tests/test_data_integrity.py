@@ -3,6 +3,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from threading import Event
 from time import perf_counter
+from statistics import median
 from unittest import TestCase
 from unittest.mock import patch
 import json
@@ -260,11 +261,13 @@ class IntegrityTests(TestCase):
         self.assertTrue(quick.completed and full.completed)
         # Measure the actual write-boundary cost against the same atomic writer.
         frame=words(1000)
-        start=perf_counter()
-        with patch('app.shared.integrity.validate_write'):
-            save_csv(frame,path,sep=';',index=False)
-        baseline=perf_counter()-start
-        start=perf_counter();save_csv(frame,path,sep=';',index=False);validated=perf_counter()-start
+        save_csv(frame,path,sep=';',index=False)
+        before,after=[],[]
+        for _ in range(5):
+            with patch('app.shared.integrity.validate_write'):
+                start=perf_counter();save_csv(frame,path,sep=';',index=False);before.append(perf_counter()-start)
+            start=perf_counter();save_csv(frame,path,sep=';',index=False);after.append(perf_counter()-start)
+        baseline,validated=median(before),median(after)
         print(f'PERF integrity 10000 rows: quick {quick_time*1000:.2f} ms; full {full_time*1000:.2f} ms; atomic save 1000 rows: baseline {baseline*1000:.2f} ms / validated {validated*1000:.2f} ms')
 
 
