@@ -63,7 +63,8 @@ class ExtendedScenarioTests(unittest.TestCase):
             # Still compare the entire mapping so unrelated values cannot reset.
             expected=dict(initial,**{'Letter hints':'On request','Enable tags':'1',
                 'Show tags during practice':'1','Tag display language':'Learning language',
-                'Maximum tags per word':'10','Enable second learning language':'1'})
+                'Maximum tags per word':'10','Enable second learning language':'1',
+                'Track personal records':'1','Show personal records':'1'})
             for number in (1,20,1000,2,9999,10):
                 frame=load_preferences(path)
                 save_preferences(frame,{'Learn batch':str(number)},path)

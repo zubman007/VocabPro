@@ -13,6 +13,13 @@ globálně seřadit napříč otázkami a historický rekord z ní není dopoč�
 Rekord načítá `app/repositories/grammar_records.py` také při použití cache,
 aby po uložení session nebyla hodnota zastaralá.
 
+Osobní rekordy nyní zahrnují také maximum správných odpovědí v jednom kole
+a stejná karta je dole v Conjugation. Sdílená `practice_records` repository
+zachovává původní Grammar maximum; nový údaj je bez nových dat neznámý (`—`).
+Settings → Learning řídí sledování a zobrazení nezávisle. V Conjugation se
+počítá celé sloveso na první pokus, nikoli každá osoba zvlášť. Podrobnosti:
+[Osobní rekordy](../practice-records.md).
+
 Nahoře v přehledu kategorií je drobný údaj o jejich celkovém počtu. Zahrnuje
 i skupinu „Bez kategorie“, pokud existují nezařazené otázky. Řádky mají mírně
 menší písmo a svislé mezery; delší texty se nadále zalamují. Při nezměněných

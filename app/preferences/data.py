@@ -14,6 +14,7 @@ TAG_DEPENDENT_FIELDS = ('Show tags during practice', 'Tag display language', 'Ma
 
 def group_for(name):
     """Presentation groups within a tab; persisted preference names stay stable."""
+    if name in ('Track personal records','Show personal records'):return 'Practice records'
     if name == 'Enable tags' or name in TAG_DEPENDENT_FIELDS:
         return 'Tags'
     if name in ('App sounds enabled', 'App sound volume'):
@@ -37,7 +38,8 @@ def with_defaults(frame):
                              ('Letter hints', 'Options[Automatic,On request,Disabled]', 'On request'),
                              ('Enable tags','Bool','1'),('Show tags during practice','Bool','1'),
                              ('Tag display language','Options[Student language,Learning language]','Learning language'),
-                             ('Maximum tags per word','Int','10')):
+                             ('Maximum tags per word','Int','10'),
+                             ('Track personal records','Bool','1'),('Show personal records','Bool','1')):
         if name not in set(result['Name']):
             row = dict.fromkeys(result.columns, '')
             row.update(Name=name, Type=kind, Value=value)
@@ -71,6 +73,8 @@ class RuntimePreferences:
     maximum_tags: int = 10
     second_language_enabled: bool = True
     courses: tuple[StudyCourse, ...] | None = None
+    track_personal_records: bool = True
+    show_personal_records: bool = True
 
     @property
     def study_courses(self):
@@ -134,7 +138,8 @@ class RuntimePreferences:
             values.get('Letter hints','On request'),values.get('Enable tags','1')=='1',
             values.get('Show tags during practice','1')=='1',values.get('Tag display language','Learning language'),
             int(values.get('Maximum tags per word','10')),
-            len(active) > 1 if configured is not None else values.get('Enable second learning language','1')=='1', configured)
+            len(active) > 1 if configured is not None else values.get('Enable second learning language','1')=='1', configured,
+            values.get('Track personal records','1')=='1',values.get('Show personal records','1')=='1')
 
 
 class PreferenceError(ValueError):
@@ -173,7 +178,8 @@ def validate_preferences(frame, values):
     has_courses = COURSE_FIELD in merged
     if merged.get('Letter hints','On request') not in ('Automatic','On request','Disabled'):
         raise PreferenceError('Letter hints', 'Choose a valid option.')
-    for field in ('App sounds enabled', 'Autoplay pronunciation', 'Remember grammar categories','Enable second learning language'):
+    for field in ('App sounds enabled', 'Autoplay pronunciation', 'Remember grammar categories','Enable second learning language',
+                  'Track personal records','Show personal records'):
         if has_courses and is_legacy_course_field(field):
             continue
         if merged.get(field, '1') not in ('0', '1'):

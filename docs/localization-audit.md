@@ -10,7 +10,8 @@ a příznak gramatiky doplnily dva klíče. Graf aktuálních sérií otázek,
 samostatná karta rekordu a počet kategorií přidaly deset dalších;
 po této změně měl inventář **513 klíčů**. Zobecnění Conjugation přidalo
 dalších 20 klíčů pro editor, konfiguraci a výsledky osob;
-aktuálně má každý ze šesti katalogů **533 klíčů**.
+po této fázi měl každý katalog **533 klíčů**. Sdílená nastavení a rekordy
+Grammar/Conjugation přidaly osm dalších; aktuálně je to **541 klíčů**.
 Audit nehlásí chybějící překlady,
 prázdné či duplicitní klíče, chyby parametrů ani kontrolované pevné UI texty.
 

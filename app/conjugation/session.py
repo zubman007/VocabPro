@@ -12,9 +12,11 @@ class ConjugationSession:
         self.current = self.previous = None
         self.revealed = False
         self.completed = 0
+        self.correct=self.incorrect=self.streak=self.best_streak=0
 
     def advance(self, skip=False):
         if skip and self.current in self.remaining:
+            self.streak=0
             self.remaining.remove(self.current)
         self.current = random.choice(self.remaining) if self.remaining else None
         self.revealed = False
@@ -27,6 +29,11 @@ class ConjugationSession:
         if not results:return None
         if not self.revealed:
             record_person_results(self.selection, self.current.id, results)
+            if all(results.values()):
+                self.correct+=1;self.streak+=1
+                self.best_streak=max(self.best_streak,self.streak)
+            else:
+                self.incorrect+=1;self.streak=0
         if not all(results.values()):
             if not self.revealed:record_result(self.selection, self.current.id, 'F')
             self.revealed = True

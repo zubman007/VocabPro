@@ -113,7 +113,9 @@ def training_statistics(path, kind, language=None):
             result['question_progress'] = grammar_question_progress(frame)
         return result
     result=cache.get(path,kind,(language,config),calculate)
-    if kind=='grammar':
-        from app.repositories.grammar_records import load_record
-        result['best_streak']=load_record(path)
+    if kind in ('grammar','conjugation'):
+        from app.repositories.practice_records import load_records
+        records=load_records(path)
+        result['best_streak']=records.best_streak
+        result['best_correct']=records.best_correct
     return result

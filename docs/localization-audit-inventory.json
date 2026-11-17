@@ -1,6 +1,6 @@
 {
   "languages": 6,
-  "keys": 533,
+  "keys": 541,
   "duplicate_values": {
     "en": {
       "Correct": [
@@ -334,12 +334,12 @@
     }
   },
   "catalog_sizes": {
-    "en": 533,
-    "cs": 533,
-    "sk": 533,
-    "es": 533,
-    "fr": 533,
-    "de": 533
+    "en": 541,
+    "cs": 541,
+    "sk": 541,
+    "es": 541,
+    "fr": 541,
+    "de": 541
   },
   "catalog_issues": [],
   "missing_source_keys": [],
@@ -427,6 +427,7 @@
     "Guide storage",
     "Hint",
     "Incorrect",
+    "Invalid grammar record file.",
     "Irregular Verbs",
     "Last 10 recorded attempts per word; all vocabulary",
     "Menu",

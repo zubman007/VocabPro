@@ -25,7 +25,7 @@ def build(app, persons, confirm, next_verb, save, exit_app, back):
     fields=card
     offset=2
     if len(persons)>6:
-        fields=cst.CTkScrollableFrame(card,fg_color='transparent',corner_radius=0)
+        fields=cst.CTkScrollableFrame(card,fg_color=QUESTION,corner_radius=0)
         fields.grid(row=2,column=0,columnspan=3,sticky='nsew',padx=16,pady=(0,12))
         card.grid_rowconfigure(2,weight=1)
         fields.grid_columnconfigure(0,weight=1);fields.grid_columnconfigure(1,weight=3)
@@ -51,6 +51,8 @@ def build(app, persons, confirm, next_verb, save, exit_app, back):
         primary_action(button,column)
         surface(button, layer)
     surface(card, view.layer)
+    view.records=text(view.body,size=14,color=ui.MUTED)
+    view.records.grid(row=2,sticky='ew',padx=16,pady=(6,0))
     from app.ui.components.shortcut_hint import ShortcutHint
     from app.shared import settings as s
     view.shortcuts=ShortcutHint(footer,'Conjugation',s.T,rounded=True)
@@ -62,5 +64,6 @@ def build(app, persons, confirm, next_verb, save, exit_app, back):
             width = max(240, event.width / view.root._get_widget_scaling() - 160)
             view.verb.configure(wraplength=width - 100)
             view.description.configure(wraplength=width)
+            view.records.configure(wraplength=width)
     view.root.bind('<Configure>', resize, add='+')
     return view

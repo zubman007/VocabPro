@@ -6,6 +6,7 @@ from app.ui import messagebox
 from app.shared.audio_effects import play_effect
 from app.repositories.grammar import Load_questions_from_csv, save_answers
 from app.repositories.grammar_records import load_record, update_record
+from app.repositories.practice_records import load_records, PracticeRecords
 from datetime import datetime
 from app.grammar.layout import build as build_layout, reset_option
 from app.grammar.session import GrammarSession
@@ -25,8 +26,11 @@ class GrammarController:
         self.context=get_context(app,context)
         self.translate=self.context.translate
         self.app, self.path, self.on_back = app, Path(path), on_back
-        self.record_at_start=load_record(self.path)
+        use_records=self.context.preferences.track_personal_records or self.context.preferences.show_personal_records
+        records=load_records(self.path) if use_records else PracticeRecords()
+        self.record_at_start=records.best_streak
         self.record_candidate=self.record_at_start
+        self.record_correct_candidate=records.best_correct
         self.remember_filter = remember_filter
         self.pending_answers=[]
         if learned_by is None:
@@ -246,7 +250,8 @@ class GrammarController:
             if close:self.back()
             return True
         try:
-            with update_record(self.path,self.record_candidate):
+            with update_record(self.path,self.record_candidate,self.record_correct_candidate,
+                               enabled=self.context.preferences.track_personal_records):
                 save_answers(self.path,self.pending_answers)
         except (OSError,ValueError) as error:
             messagebox.showerror(parent=self.app,title=self.translate('Error'),message=error_text(error, self.translate))
@@ -282,13 +287,17 @@ class GrammarController:
 
     def _refresh_score(self):
         state = self.session
-        self.record_candidate=max(self.record_candidate,state.best_streak)
+        if self.context.preferences.track_personal_records:
+            self.record_candidate=max(self.record_candidate,state.best_streak)
+            if state.correct:self.record_correct_candidate=max(self.record_correct_candidate or 0,state.correct)
         record_text=self.translate('New record: {count}') if self.record_candidate>self.record_at_start else self.translate('All-time best streak: {count}')
         self.view.counter.configure(text=f'{state.correct + state.incorrect} / {len(state.questions)}')
         self.view.score.configure(text=f"{self.translate('Correct answers')}: {state.correct}\n{self.translate('Incorrect answers')}: {state.incorrect}\n"
                                        f"{self.translate('Streak')}: {state.streak}\n{self.translate('Best streak')}: {state.best_streak}\n"
-                                       +record_text.format(count=self.record_candidate),
-                                  text_color='#815632' if self.record_candidate>self.record_at_start else ui.MUTED)
+                                       +(record_text.format(count=self.record_candidate)+'\n'+self.translate('Most correct in one session: {count}').format(
+                                           count=self.record_correct_candidate if self.record_correct_candidate is not None else '—')
+                                         if self.context.preferences.show_personal_records else ''),
+                                  text_color='#815632' if self.context.preferences.show_personal_records and self.record_candidate>self.record_at_start else ui.MUTED)
         recent=tuple(state.recent_results)
         if recent:
             self.view.recent_caption.configure(text=self.translate('Last {count} answers: {accuracy}%').format(

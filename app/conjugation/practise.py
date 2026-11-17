@@ -12,6 +12,7 @@ from app.repositories.conjugation_persons import load_configuration
 from app.repositories.conjugation import save_results,load_source
 from app.conjugation.layout import build as build_layout
 from app.conjugation.session import ConjugationSession
+from app.repositories.practice_records import load_records, update_records, PracticeRecords
 from app.ui.learning_review import open_verb_review
 from app.core.screen_controller import ScreenController
 from app.ui import learning_layout as ui
@@ -25,6 +26,7 @@ class ConjugationController:
         self.app, self.source = app, source
         self.path, self.on_back = Path(path), on_back
         self.session = ConjugationSession(selection, verbs, persons)
+        self.records=load_records(self.path) if self.context.preferences.show_personal_records else PracticeRecords()
         self._initial_selection=self.session.selection.copy(deep=True)
         s.Clear_frames(app)
         self.view = build_layout(app, persons, self.confirm, self.skip, self.save, self.exit_app, self.back)
@@ -43,6 +45,7 @@ class ConjugationController:
         if self.bindings.closed:
             return
         verb = self.session.advance(skip)
+        self._refresh_records()
         if verb is None:
             self.save()
             return
@@ -69,6 +72,7 @@ class ConjugationController:
         answers = {key: variable.get() for key, variable in self.view.variables.items()}
         previously_revealed = self.session.revealed
         correct = self.session.confirm(answers)
+        self._refresh_records()
         if correct is None:
             return
         if correct:
@@ -93,6 +97,18 @@ class ConjugationController:
             self.view.variables[key].set(value)
             self.view.entries[key].configure(state='disabled', fg_color=color)
 
+    def _refresh_records(self):
+        if not self.context.preferences.show_personal_records:
+            self.view.records.grid_remove();return
+        streak=self.records.best_streak;correct=self.records.best_correct
+        if self.context.preferences.track_personal_records:
+            streak=max(streak,self.session.best_streak)
+            if self.session.correct:correct=max(correct or 0,self.session.correct)
+        self.view.records.configure(text=self.translate('Session: {correct} correct · streak {streak}').format(
+            correct=self.session.correct,streak=self.session.streak)+'\n'+
+            self.translate('All-time best streak: {count}').format(count=streak)+' · '+
+            self.translate('Most correct in one session: {count}').format(count=correct if correct is not None else '—'))
+
     def review(self, event=None):
         if self.bindings.closed or self.session.previous is None:
             return
@@ -107,7 +123,10 @@ class ConjugationController:
         if self.bindings.closed:
             return
         try:
-            updated = save_results(self.source, self.session.selection, self.path)
+            with update_records(self.path,self.session.best_streak,
+                                self.session.correct if self.session.correct else None,
+                                enabled=self.context.preferences.track_personal_records):
+                updated = save_results(self.source, self.session.selection, self.path)
         except Exception as error:
             report_error(error, operation='conjugation screen')
             messagebox.showerror(parent=self.app, title=self.translate('Error'), message=error_text(error, self.translate))
@@ -158,5 +177,9 @@ def Conjugation(app_input,lang_input,*,context=None):
         return None
     if not verbs:
         return None
-    return ConjugationController(app_input, source, selection, verbs,
-        people.practice,path,context.go_home,context=context)
+    try:
+        return ConjugationController(app_input, source, selection, verbs,
+            people.practice,path,context.go_home,context=context)
+    except (OSError,ValueError) as error:
+        messagebox.showerror(parent=app_input,title=context.translate('Error'),message=error_text(error,context.translate))
+        return None

@@ -181,3 +181,11 @@ uloženému rekordu a kontrolu revize. Při selhání zápisu odpovědí vrátí
 rekordu. Dva soubory nejsou jednou transakcí odolnou proti výpadku napájení:
 pád procesu mezi zápisy může ponechat rekord před uložením historie.
 Neprázdný soubor je automaticky zahrnut do obecné CSV zálohy.
+
+Rozšíření osobních rekordů přidává volitelný `best_correct` do stejného řádku.
+Původní jednosloupcové CSV zůstává čitelné a rozšíří se až při novém maximu.
+Chybějící best_correct je neznámá historická hodnota, nikoli dopočítaný údaj
+z R. Conjugation používá stejný mechanismus v `<Source>_<Target>_con_records.csv`.
+Oba moduly jsou oddělené. `practice_records.update_records` při běžném selhání
+uložení odpovědí obnoví přesné původní byty; vypnuté sledování záznamy nemění.
+Více: [Osobní rekordy](../practice-records.md).

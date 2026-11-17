@@ -135,6 +135,8 @@ class StatisticsController:
             lambda part_of_speech: _practise_part_of_speech(window, part_of_speech))
         self.chart_PoS_frm.grid(row=2, column=0, columnspan=2, sticky='ew', padx=20, pady=12)
         self.chart_con_frm = cst.CTkFrame(conjugation_body)
+        self.conjugation_record_panel=GrammarRecordPanel(conjugation_body,self.translate,description='Conjugation records explanation')
+        self.conjugation_record_panel.grid(row=5,column=0,columnspan=2,sticky='ew',padx=20,pady=12)
         self.conjugation_progress = ConjugationProgressPanel(conjugation_body, self.translate)
         self.conjugation_progress.grid(row=2, column=0, columnspan=2, sticky='ew', padx=20, pady=12)
         self.conjugation_table = StatisticsTable(conjugation_body, self.translate,
@@ -200,6 +202,7 @@ class StatisticsController:
         canvas_background.add_panel(self.conjugation_table)
         canvas_background.add_panel(self.conjugation_progress)
         canvas_background.add_panel(self.conjugation_persons)
+        canvas_background.add_panel(self.conjugation_record_panel)
         content.update_idletasks()
         return self.load()
 
@@ -262,9 +265,13 @@ class StatisticsController:
         for values, frame, title, row in ((data['forecast'], self.chart_rep_frm, 'Number of words to review next days', 0), (data['growth'], self.chart_cr_frm, 'Growth of the vocabulary', 1), (data['trailing'], self.chart_voc_trail_frm, 'Vocabulary trailing successes', 3)):
             charts.append((values, frame, title, row))
         available = conjugation is not None
+        for panel in (self.grammar_record_panel,self.conjugation_record_panel):
+            if self.context.preferences.show_personal_records:panel.grid()
+            else:panel.grid_remove()
         _set_conjugation_available(self.window, available,
             grammar_available=self.context.preferences.grammar_enabled(self.lang_var.get()))
         if available:
+            self.conjugation_record_panel.set_record(conjugation.get('best_streak',0),conjugation.get('best_correct'))
             from app.statistics.conjugation import progress_table
             progress = conjugation.get('progress')
             self.conjugation_progress.set_data(progress)
@@ -279,12 +286,13 @@ class StatisticsController:
             _show_summary(conjugation['summary'], self.tot_verbs_res_con_lbl, self.tot_res_con_lbl, self.succ_res_con_lbl, self.fail_res_con_lbl, self.rate_res_con_lbl)
         else:
             _release_chart(self.chart_con_frm)
+            self.conjugation_record_panel.set_record(0)
             self.conjugation_persons.set_data(None)
             self.chart_con_frm.grid_remove()
             self.window.conjugation_empty.grid_remove()
         if grammar is not None:
             self.grammar_categories_panel.set_items(grammar['categories'], summary=grammar['summary'])
-            self.grammar_record_panel.set_record(grammar.get('best_streak',0))
+            self.grammar_record_panel.set_record(grammar.get('best_streak',0),grammar.get('best_correct'))
             self.grammar_progress_panel.set_data(grammar.get('question_progress'))
             _show_summary(grammar['summary'], self.tot_verbs_res_gra_lbl, self.tot_res_gra_lbl, self.succ_res_gra_lbl, self.fail_res_gra_lbl, self.rate_res_gra_lbl)
         else:

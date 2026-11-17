@@ -120,9 +120,13 @@ class ConjugationModelTests(TestCase):
         self.assertNotIn(HISTORY_COLUMN,source)
 
     def test_skip_records_neither_round_nor_person_result(self):
+        before=self.path.read_bytes()
         source,state=self.lesson();state.advance();self.assertIsNone(state.advance(skip=True))
         self.assertNotIn(HISTORY_COLUMN,state.selection)
         self.assertEqual(state.selection.R.tolist(),source.R.tolist())
+        with patch('app.repositories.conjugation.save_csv') as write:
+            save_results(source,state.selection,self.path);write.assert_not_called()
+        self.assertEqual(self.path.read_bytes(),before)
 
     def test_uppercase_spanish_n_and_czech_keyboard_variant_use_same_normalization(self):
         for answer in ('ENSEÑO','ENSEŇO',' ENSENO '):
@@ -134,7 +138,8 @@ class ConjugationModelTests(TestCase):
         state.confirm({'s1':'enseño','s2':'enseñas'})
         updated=save_results(source,state.selection,self.path)
         self.assertEqual(self.path.with_name(self.path.name+'.pre-persons.bak').read_bytes(),before)
-        save_results(updated,state.selection,self.path)
+        with patch('app.repositories.conjugation.save_csv') as write:
+            save_results(updated,state.selection,self.path);write.assert_not_called()
         saved=pd.read_csv(self.path,sep=';',dtype=str,keep_default_na=False)
         self.assertEqual(saved.R.tolist(),['S?FSSS'])
         self.assertEqual(saved.ID.tolist(),['001'])

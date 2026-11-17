@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "language": "es",
+  "persons": [
+    {
+      "id": "s1",
+      "label": "yo",
+      "enabled": true
+    },
+    {
+      "id": "s2",
+      "label": "tú",
+      "enabled": true
+    },
+    {
+      "id": "s3",
+      "label": "él / ella / usted",
+      "enabled": true
+    },
+    {
+      "id": "m1",
+      "label": "nosotros / nosotras",
+      "enabled": true
+    },
+    {
+      "id": "m2",
+      "label": "vosotros / vosotras",
+      "enabled": false
+    },
+    {
+      "id": "m3",
+      "label": "ellos / ellas / ustedes",
+      "enabled": true
+    }
+  ],
+  "practice_person_ids": [
+    "s1",
+    "s2",
+    "s3",
+    "m1",
+    "m3"
+  ]
+}

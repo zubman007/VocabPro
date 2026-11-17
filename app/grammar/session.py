@@ -25,6 +25,7 @@ class GrammarSession:
         self.recent_results = deque(maxlen=10)
 
     def advance(self):
+        if self.current is not None and not self.revealed:self.streak=0
         if self.current is not None:
             self.previous = self.current
         self.current = self.remaining.popleft() if self.remaining else None

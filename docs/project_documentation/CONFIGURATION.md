@@ -38,6 +38,12 @@ prázdné CSV a zcela prázdný audio adresář; každý neprázdný datový ř�
 nahrávka zůstanou zachované. Vypnutí gramatiky čistí jen její prázdné soubory
 a skryje její nabídku, statistiky i vstupy do editorů/procvičování.
 
+V oddílu **Osobní rekordy** jsou společné přepínače **Sledovat osobní rekordy**
+a **Zobrazovat osobní rekordy** pro Grammar i Conjugation ve všech jazycích.
+Výchozí hodnoty jsou zapnuté. Vypnutí sledování zachová existující rekordy;
+zobrazení lze skrýt samostatně při pokračujícím sběru. Podrobnosti ukládání,
+definice kola a kompatibility jsou v [Osobní rekordy](../practice-records.md).
+
 V Nastavení → Učení jsou také preference štítků:
 
 - `Enable tags`: skryje/ukáže štítky v editoru, procvičování a statistikách; nemění uložená přiřazení.

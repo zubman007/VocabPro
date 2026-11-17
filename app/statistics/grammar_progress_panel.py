@@ -7,30 +7,35 @@ from app.ui.theme import FONT, TEXT, SECTION_SURFACE
 
 
 class GrammarRecordPanel(cst.CTkFrame):
-    def __init__(self, parent, translate):
+    def __init__(self, parent, translate, *, description='Grammar best streak explanation'):
         super().__init__(parent, fg_color=SECTION_SURFACE, corner_radius=24)
         self.translate = translate
         self.grid_columnconfigure(0, weight=1)
         self.record = cst.CTkLabel(self, text='', font=(FONT, 21, 'bold'),
             text_color='#815632', anchor='w', justify='left', height=0)
         self.record.grid(row=0, sticky='ew', padx=24, pady=(14, 4))
-        self.description = cst.CTkLabel(self, text=translate('Grammar best streak explanation'),
+        self.correct = cst.CTkLabel(self,text='',font=(FONT,21,'bold'),text_color='#815632',
+            anchor='w',justify='left',height=0)
+        self.correct.grid(row=1,sticky='ew',padx=24,pady=(0,6))
+        self.description = cst.CTkLabel(self, text=translate(description),
             font=(FONT, 13), text_color='#665d48', anchor='w', justify='left', height=0)
-        self.description.grid(row=1, sticky='ew', padx=24, pady=(0, 14))
+        self.description.grid(row=2, sticky='ew', padx=24, pady=(0, 14))
         self.bind('<Configure>', self._resize, add='+')
         self.set_record(0)
 
     def _resize(self, event):
         if event.widget is self._canvas:
             width = max(80, int(event.width / self._get_widget_scaling()) - 48)
-            for label in (self.record, self.description):
+            for label in (self.record, self.correct, self.description):
                 if label.cget('wraplength') != width:
                     label.configure(wraplength=width)
 
-    def set_record(self, count):
+    def set_record(self, count, best_correct=None):
         text = self.translate('All-time best streak: {count}').format(count=count)
         if self.record.cget('text') != text:
             self.record.configure(text=text)
+        correct=self.translate('Most correct in one session: {count}').format(count=best_correct if best_correct is not None else '—')
+        if self.correct.cget('text')!=correct:self.correct.configure(text=correct)
 
 
 class GrammarProgressPanel(cst.CTkFrame):

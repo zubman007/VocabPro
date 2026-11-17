@@ -2,10 +2,13 @@
 
 
 
+--conjugation
+
+--nové prvky do nastavení
+
+--Šlo by ještě nějaký prvek, design, příznak sjednotit napříč celou aplikací aby byla jednotnost jistější?
 
 Co s tím mailem?
-
-Šlo by ještě nějaký prvek, design, příznak sjednotit napříč celou aplikací aby byla jednotnost jistější?
 
 Pořádek ve scriptech (sandbox zanech) a souborech - třeba refactoring nebo requiements.lock.. Je to tam potřeba? Stejně tak smaž nepoužívané lokalizace, obrázky a dokumenty.. Staré refaktorizační soubory atd.. Taky duplicitní testy, zbytečné testy, staré testy. Nech tedy pouze používané fily, dokumentaci, používané lokalizace, užitečné testy. Projdi taky kód a nepoužívané/obsolte procedury smaž. Zevrubně zkontroluj funkčnost po revizi.
 

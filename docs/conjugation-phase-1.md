@@ -118,6 +118,28 @@ Služby používají izolované náhrady a data dočasné složky; testy neposí
 e-mail a nemění produkční slovníky. Samostatné čtení původního španělského CSV
 ověřilo 365 záznamů a šest osob při stejné kontrolní sumě souboru.
 
+Nová sada prošla **40/40**: model 21, lifecycle 10, UI 9. Ověřuje mimo jiné
+14 definic v datovém modelu, editor se 13 osobami, procvičování s deseti
+poli, všech šest lokalizací, minimum šířky dialogu osob 740 px a statistický
+panel při šířce 600 px. Skutečný statistický výpočet běžel mimo ID hlavního
+UI vlákna a přepnutí ze španělštiny do angličtiny odstranilo staré výsledky.
+1 000 nezměněných aktualizací panelu osob trvalo při posledním běhu **1,69 ms**
+a nezměnilo identitu widgetů; jde o čas obsluhy snapshotu, nikoliv měření FPS.
+Kontrolní součty všech **5 560** souborů v datové složce byly shodné:
+žádné přidání, odstranění ani změna uživatelských souborů během ověřování.
+Lokalizační audit prošel pro šest katalogů po **533 klíčích**, bez chyb
+katalogů, chybějících zdrojových klíčů a kontrolovaných pevných UI textů.
+
+Spuštěna byla také celá původní sada **569 testů v 87 modulech**. První běh
+odhalil regrese v šesti modulech: původní veřejný import PERSONS_MAP,
+minimální nastavení bez Learned by, bootstrap kontext nápovědy a očekávání
+staré verze nastavení. Tyto chyby a návazná selhání importů/auditu byly
+opraveny; všech šest modulů znovu prošlo. Samostatně byly po posledních
+úpravách zopakovány Home a datové/session testy procvičování. Závěrečný
+regresní běh těchto devíti modulů prošel **89/89**. Celkem bylo ověřeno
+**609 různých testů**, včetně 40 nových; nejde o tvrzení o jediném společném
+zeleném běhu všech 90 modulů. `git diff --check` nehlásí chyby whitespace.
+
 ## Další fáze a meze
 
 Časy, způsoby, rody a další strukturované kategorie zůstávají pro samostatné

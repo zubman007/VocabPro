@@ -84,7 +84,7 @@ class PreferencesDialog(AppDialog):
         grouped = {}
         for item in items:
             grouped.setdefault((section_for(item.Name), group_for(item.Name)), []).append(item)
-        group_order = ('Settings general', 'Vocabulary', 'Grammar', 'Conjugation', 'Tags', 'Settings sounds')
+        group_order = ('Settings general', 'Vocabulary', 'Grammar', 'Conjugation', 'Practice records', 'Tags', 'Settings sounds')
         groups = sorted(grouped, key=lambda key:(tuple(sections).index(key[0]), group_order.index(key[1])))
         previous_group = None
         for item in (entry for group in groups for entry in grouped[group]):
@@ -103,6 +103,11 @@ class PreferencesDialog(AppDialog):
                 self.group_headers.append(title)
                 row += 1
                 previous_group = group
+                if group[1]=='Practice records':
+                    cst.CTkLabel(body,text=translate('Practice records help'),text_color='#657671',
+                        font=(FONT,14),wraplength=650,justify='left',anchor='w').grid(
+                            row=row,column=0,columnspan=2,sticky='ew',padx=12,pady=(0,8))
+                    row+=1
             rows[section] = row + 1
             self.field_sections[name] = translate(section)
             label = cst.CTkLabel(body, text=translate(name), text_color=TEXT, fg_color='transparent',
