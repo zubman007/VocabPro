@@ -148,15 +148,16 @@ class ConjugationSpreadsheetUiTests(TestCase):
         with update_records(self.path,3,1):pass
         controller=Conjugation(self.root,'es',context=self.context);self.root.update()
         panel=controller.view.records_panel
-        self.assertEqual(panel.grid_info()['row'],0);self.assertFalse(panel.new_record)
+        self.assertIs(panel.master,controller.view.session_panel);self.assertFalse(panel.new_record)
         for expected in (False,True):
             controller.view.variables['s1'].set('enseño');controller.view.variables['s2'].set('enseñas')
             controller.confirm();self.root.update();self.assertEqual(panel.new_record,expected)
         self.assertEqual(panel.cget('fg_color'),'#f1dfad')
         self.root.geometry('900x800');self.root.update()
-        self.assertEqual(panel.grid_info()['row'],2)
+        self.assertGreaterEqual(panel.winfo_rooty(),controller.view.score.winfo_rooty()+controller.view.score.winfo_height())
         self.assertLessEqual(panel.report._label.winfo_reqwidth(),panel.report.winfo_width()+2)
-        self.assertGreaterEqual(controller.view.entries['s1'].winfo_rooty(),panel.winfo_rooty()+panel.winfo_height())
+        self.assertLessEqual(controller.view.entries['s1'].winfo_rootx()+controller.view.entries['s1'].winfo_width(),
+                             controller.view.session_frame.winfo_rootx())
         self.context.preferences=replace(self.context.preferences,show_personal_records=False)
         controller._refresh_records();self.root.geometry('1000x800');self.root.update()
         self.assertFalse(panel.winfo_ismapped());self.assertTrue(controller.view.count.winfo_ismapped())

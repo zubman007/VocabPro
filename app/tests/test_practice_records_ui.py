@@ -37,7 +37,7 @@ class PersonalRecordsUiTests(TestCase):
         with patch('app.grammar.practise.save_answers') as save:
             self.assertTrue(controller.save(close=False));save.assert_called_once()
         self.assertEqual(record_path(path).read_bytes(),before)
-        self.assertIn('4',controller.view.score.cget('text'))
+        self.assertNotIn(self.context.translate('Most correct in one session: {count}').format(count=4),controller.view.score.cget('text'))
 
     def test_display_off_keeps_tracking_and_hides_record_text(self):
         self.context.preferences=replace(self.context.preferences,show_personal_records=False)

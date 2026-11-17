@@ -22,17 +22,17 @@ def category_options(questions):
 
 
 class CategoryFilterDialog(AppDialog):
-    def __init__(self, owner, options, selected, apply, *, title='Question categories', count_caption='Number of questions'):
+    def __init__(self, owner, options, selected, apply, *, title_key='Question categories', count_caption='Number of questions'):
         super().__init__(owner, fg_color='#eee9df')
         self.withdraw()
-        self.title(s.T(title))
+        self.title(s.T(title_key))
         self.count_caption=count_caption
         self.geometry('620x670')
         self.minsize(480, 450)
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(3, weight=1)
         self.options, self.apply_callback = options, apply
-        caption=self.add_heading(s.T(title),s.T('Category filter starts a new round.'),rowspan=2)
+        caption=self.add_heading(s.T(title_key),s.T('Category filter starts a new round.'),rowspan=2)
         self.header,self.heading,self.description=caption.frame,caption.title,caption.description
         self.search_text=cst.StringVar(master=self)
         self.search_panel=SearchFilterPanel(self,s.T,placeholder='Search categories',

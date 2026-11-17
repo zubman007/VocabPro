@@ -93,6 +93,8 @@ class ConjugationEditor:
         return ['ID',*(labels[field] for field in self.tables.fields)]
 
     def refresh(self,*,reset_columns=False):
+        if self.applied_category is not None and self.applied_category not in set(self.tables.catalog.Name):
+            self.applied_category=None
         rows=self.tables.verb_rows(self.applied_query)
         if self.applied_category is not None:
             column=self.tables.fields.index(CATEGORY_COLUMN)+1
@@ -130,9 +132,10 @@ class ConjugationEditor:
         self.refresh();return True
 
     def filter(self):
+        selected=self.view.category_filter.get()
+        query=self.view.query.get().strip()
         if self.apply():
-            self.applied_query=self.view.query.get().strip()
-            selected=self.view.category_filter.get()
+            self.applied_query=query
             self.applied_category=None if selected==self.translate('All categories') else selected
             self.refresh()
         else:

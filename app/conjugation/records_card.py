@@ -34,8 +34,6 @@ class ConjugationRecordsCard(cst.CTkFrame):
                        border_width=2 if new else 1)
         self.heading.configure(text=self.translate('New personal record') if new else self.translate('Practice records'),
                                text_color='#86551f' if new else '#355e59')
-        self.report.configure(text=self.translate('Session: {correct} correct · streak {streak}').format(
-            correct=session.correct,streak=session.streak)+'\n'+
-            self.translate('All-time best streak: {count}').format(count=streak)+'\n'+
+        self.report.configure(text=self.translate('All-time best streak: {count}').format(count=streak)+'\n'+
             self.translate('Most correct in one session: {count}').format(count=correct if correct is not None else '—'))
         self._snapshot=snapshot

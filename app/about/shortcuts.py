@@ -14,7 +14,7 @@ def shortcut_sections(show_synonyms=True, tags_enabled=True, grammar_enabled=Tru
         ('Repeat',repeat),
         ('Grammar',[('1–4','Choose answer (options only)'),('Enter','Next after feedback'),('Ctrl+S','Save'),('Space','Reveal or next question'),
             ('Alt+→','Next question'),('Ctrl+Z','Previous question'),('Ctrl+T','Show question theory'),('Ctrl+F','Filter question categories'),('Esc','Close')]),
-        ('Conjugation',[('Enter','OK'),('Ctrl+S','Save'),('Ctrl+R','Review of the previous verb'),('Esc','Close')]),
+        ('Conjugation',[('Enter','OK'),('Ctrl+S','Save'),('Ctrl+R','Review of the previous verb'),('Ctrl+F','Verb categories'),('Esc','Close')]),
         ('Grammar editors',[('Ctrl+S','Save'),('Enter','Apply filter'),('Esc','Close')]),
         ('Conjugation editors',[('Ctrl+S','Save'),('Esc','Close')]),
         ('Setting',[('Ctrl+S','Save'),('Esc','Close')]),
