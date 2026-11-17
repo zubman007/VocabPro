@@ -3,7 +3,7 @@ from contextvars import ContextVar
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable,TYPE_CHECKING
-from app.paths import ROOT_DIR
+from app.paths import ROOT_DIR, FILES_DIR
 from app.preferences.data import RuntimePreferences
 from app.shared.translations import translate
 from app.shared.languages import LanguagePair, legacy_name
@@ -28,7 +28,8 @@ class AppContext:
 
     def __post_init__(self):
         self.root_dir=Path(self.root_dir)
-        self.files_dir=Path(self.files_dir) if self.files_dir is not None else self.root_dir/'files'
+        self.files_dir=Path(self.files_dir) if self.files_dir is not None else (
+            FILES_DIR if self.root_dir==ROOT_DIR else self.root_dir/'files')
 
     def translate(self,message):
         return translate(message,self.preferences.app_language)

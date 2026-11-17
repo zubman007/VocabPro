@@ -1,12 +1,12 @@
 """User-preference schema and validation, independent of the dialog."""
-from app.paths import ROOT_DIR
+from app.paths import FILES_DIR
 from datetime import datetime
 from dataclasses import dataclass
 import pandas as pd
 from app.preferences.courses import (COURSE_FIELD, StudyCourse, CourseConfigurationError,
                                     decode_courses, legacy_courses, is_legacy_course_field)
 
-PREFERENCES_FILE = ROOT_DIR / "files" / "settings.csv"
+PREFERENCES_FILE = FILES_DIR / "settings.csv"
 LANGUAGE_FIELDS = ("Learned by", "First learning language", "Second learning language")
 BATCH_FIELDS = {"Random repeat batch - Vocabulary", "Random repeat batch - Conjugation", "Random repeat batch - Grammar", "Learn batch"}
 TAG_DEPENDENT_FIELDS = ('Show tags during practice', 'Tag display language', 'Maximum tags per word')

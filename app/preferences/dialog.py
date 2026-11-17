@@ -90,6 +90,9 @@ class PreferencesDialog(AppDialog):
         grouped = {}
         for item in items:
             grouped.setdefault((section_for(item.Name), group_for(item.Name)), []).append(item)
+        for module in ('Grammar', 'Conjugation'):
+            grouped.get(('Learning', module), []).sort(
+                key=lambda item: item.Name != f'Random repeat batch - {module}')
         group_order = ('Settings general', 'Vocabulary', 'Grammar', 'Conjugation', 'Practice records', 'Tags', 'Settings sounds')
         groups = sorted(grouped, key=lambda key:(tuple(sections).index(key[0]), group_order.index(key[1])))
         previous_group = None

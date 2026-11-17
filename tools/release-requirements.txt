@@ -1,0 +1,5 @@
+Nuitka==4.3.5
+pip==26.3
+ordered-set==4.1.0
+zstandard==0.25.0
+psutil==7.2.2

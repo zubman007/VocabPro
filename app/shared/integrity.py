@@ -64,6 +64,7 @@ class Report:
     finished: str = ''
     mode: str = 'full'
     elapsed: float = 0
+    modules: list = field(default_factory=list)
 
     def export(self, translate=None):
         # Codes, basenames and row numbers only: never values, paths or exception text.
@@ -94,10 +95,17 @@ def kind(path):
 
 def columns_required(path):
     area=kind(path)
-    return {'Settings':{'Name','Type','Value'},'Vocabulary':{'ID','Repetition','Next repetition'},
+    required={'Settings':{'Name','Type','Value'},'Vocabulary':{'ID','Repetition','Next repetition','Audio','Description','Example'},
         'Grammar':{'question_id','prompt','anchor',*(f'option_{i}' for i in range(1,5))},
         'Conjugation':{'ID','R','LR'},'Tags':{'ID'},'Synonyms':{'ID 1','ID 2','Date'},
         'Records':{'best_streak'},'Theory':{'category'},'Categories':{'ID','Name','Description'}}.get(area,set())
+    suffix={'Vocabulary':'_voc','Conjugation':'_con','Tags':'_tags'}.get(area)
+    if suffix:
+        languages=Path(path).stem.removesuffix(suffix).split('_')
+        if len(languages)==2:required.update(languages)
+        if area=='Tags':required.add('Note')
+        if area=='Conjugation':required.add('Description')
+    return required
 
 
 def frame_findings(frame,path, *, references=None,complete=True):
@@ -106,7 +114,8 @@ def frame_findings(frame,path, *, references=None,complete=True):
         issues.append(Finding(severity,area,path.name,code,row))
     if area=='Theory':
         frame=frame.rename(columns=lambda value:str(value).strip().casefold())
-    if not frame.columns.is_unique or not columns_required(path)<=set(frame.columns):
+    if (not frame.columns.is_unique or any(not str(column).strip() for column in frame.columns)
+            or not columns_required(path)<=set(frame.columns)):
         issue('Integrity structure');return issues
     values=frame.fillna('').astype(str)
     if complete and area in ('Vocabulary','Conjugation'):
@@ -288,6 +297,7 @@ def audit(folder, *, quick=False, cancelled=None, progress=None):
     for offset,path in enumerate(paths):
         if cancelled is not None and cancelled.is_set():return report
         area=kind(path)
+        if area not in report.modules:report.modules.append(area)
         if progress:progress((offset,area,report.records),len(paths))
         if area=='Other':
             report.findings.append(Finding('Info',area,path.name,'Integrity unknown'))
@@ -307,7 +317,7 @@ def audit(folder, *, quick=False, cancelled=None, progress=None):
                         if quick:
                             header=next(csv.reader(io.StringIO(stream.read(65536)),delimiter=';',strict=True),[])
                             checked=[cell.strip().casefold() for cell in header] if area=='Theory' else header
-                            if not header or len(set(checked))!=len(checked) or not columns_required(path)<=set(checked):
+                            if not header or any(not cell.strip() for cell in checked) or len(set(checked))!=len(checked) or not columns_required(path)<=set(checked):
                                 report.findings.append(Finding('Critical',area,path.name,'Integrity structure'))
                             if area not in ('Settings','Records'):
                                 report.files+=1;continue
@@ -317,7 +327,7 @@ def audit(folder, *, quick=False, cancelled=None, progress=None):
                             stream.seek(0)
                         reader=csv.reader(stream,delimiter=';',strict=True)
                         header=next(reader,[])
-                        if not header or len(header)!=len(set(header)):raise ValueError
+                        if not header or any(not cell.strip() for cell in header) or len(header)!=len(set(header)):raise ValueError
                         rows=[]
                         for row in reader:
                             if cancelled is not None and cancelled.is_set():return report
@@ -372,7 +382,7 @@ def validate_write(frame,path):
             logging.getLogger('vocabpro.integrity').warning('Unreadable %s header',kind(path))
             raise UserMessageError('Integrity write rejected') from None
         checked=[cell.strip().casefold() for cell in header] if kind(path)=='Theory' else header
-        if not checked or len(checked)!=len(set(checked)) or not columns_required(path)<=set(checked):
+        if not checked or any(not cell.strip() for cell in checked) or len(checked)!=len(set(checked)) or not columns_required(path)<=set(checked):
             raise UserMessageError('Integrity write rejected')
     dependent=None
     if kind(path)=='Synonyms':dependent=path.with_name(path.stem.removesuffix('_synonyms')+'_voc.csv')

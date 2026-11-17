@@ -176,6 +176,7 @@ def tool_check(name,cli,root,run,env,success_codes=(0,1),timeout=180):
     if name=='bandit':
         for finding in data.get('results',[]):finding.pop('code',None)
     if name=='outdated' and data:status='warning'
+    if name=='powershell' and data:status='failed'
     if name=='pip-audit' and any('skip_reason' in item for item in data.get('dependencies',[])):status='warning'
     return {'status':status,'data':data,'seconds':result['seconds']}
 
@@ -226,9 +227,9 @@ def main():
         requirements=run/'audited-requirements.txt'
         atomic(requirements,'\n'.join(name+'=='+version for name,version in sorted(inventory.items()))+'\n')
         stage(report,'Ruff',lambda:tool_check('ruff',[args.tools_python,'-m','ruff','check','--no-cache','--output-format','json',
-            '--config',root/'tools/quality/ruff.toml',root/'app',root/'start.py',root/'tools/quality'],root,run,env))
-        ps_env=dict(env,QUALITY_SCRIPT=str(root/'check_quality.ps1'))
-        ps_parser="$qt=$null; $qe=$null; [System.Management.Automation.Language.Parser]::ParseFile($env:QUALITY_SCRIPT,[ref]$qt,[ref]$qe) | Out-Null; ConvertTo-Json -InputObject @($qe | ForEach-Object { @{Line=$_.Extent.StartLineNumber; Message=$_.Message} }) -Compress"
+            '--config',root/'tools/quality/ruff.toml',root/'app',root/'start.py',root/'tools'],root,run,env))
+        ps_env=dict(env,QUALITY_SCRIPT_ROOT=str(root))
+        ps_parser="ConvertTo-Json -InputObject @(Get-ChildItem -LiteralPath $env:QUALITY_SCRIPT_ROOT -Filter '*.ps1' -File | ForEach-Object { $qf=$_; $qt=$null; $qe=$null; [System.Management.Automation.Language.Parser]::ParseFile($qf.FullName,[ref]$qt,[ref]$qe) | Out-Null; $qe | ForEach-Object { @{File=$qf.Name; Line=$_.Extent.StartLineNumber; Message=$_.Message} } }) -Compress"
         stage(report,'PowerShell syntax',lambda:tool_check('powershell',[shutil.which('powershell') or 'powershell','-NoProfile','-Command',ps_parser],root,run,ps_env,success_codes=(0,)))
         if args.mode=='Full':
             stage(report,'Bandit',lambda:tool_check('bandit',[args.tools_python,'-m','bandit','-r',root/'app',root/'start.py','-x',str(root/'app/tests'),'-f','json','-q'],root,run,env))
@@ -289,7 +290,8 @@ def main():
         if 'files' in analysis:
             report['summary']['high_complexity_functions']=sum(c['complexity']>10 for f in analysis['files'] for c in f.get('complexity',[]))
             report['summary']['duplicate_groups']=len(analysis.get('duplicates',[]))+len(analysis.get('block_duplicates',[]))
-        report['source_fingerprint']=hashlib.sha256(json.dumps({k:v for k,v in baseline.items() if k.startswith('app/') or k=='start.py'},sort_keys=True).encode()).hexdigest()
+        normalized_inputs={k.replace('\\','/'):v for k,v in baseline.items()}
+        report['source_fingerprint']=hashlib.sha256(json.dumps({k:v for k,v in normalized_inputs.items() if k.startswith('app/') or k=='start.py'},sort_keys=True).encode()).hexdigest()
         history_path=quality/'history.json'
         history_writable=True
         try:

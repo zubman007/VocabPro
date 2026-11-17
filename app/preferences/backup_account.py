@@ -5,7 +5,7 @@ import webbrowser
 from app.shared.messages import error_text
 from app.shared.background_task import BackgroundTask
 from app.services.mail_credentials import load_credentials,save_credentials
-from app.services.mail_providers import detect_provider,sender_address,SMTPConfig
+from app.services.mail_providers import detect_provider,sender_address,SMTPConfig,APP_HELP
 from app.services.mail_transport import account,decode_secret,encode_secret,send_test
 from app.ui.components.app_dialog import AppDialog
 from app.ui.theme import FONT,TEXT
@@ -53,7 +53,7 @@ class BackupAccountDialog(AppDialog):
         self.security=cst.CTkOptionMenu(self.manual,values=['TLS','STARTTLS'],font=(FONT,16))
         self.security.grid(row=5,sticky='ew',padx=16,pady=(0,12));self.security.set('TLS')
         self.manual.grid_remove()
-        label(body,'SMTP password',5)
+        self.password_label=label(body,'SMTP password',5)
         self.password=entry(body,6,show='•')
         self.message=cst.CTkLabel(body,text=self.translate('Leave the password blank to keep it for the same sender. Saved in Windows Credential Manager.'),
             font=(FONT,14),text_color='#657671',wraplength=560,justify='left',anchor='w')
@@ -97,6 +97,15 @@ class BackupAccountDialog(AppDialog):
         try:provider=detect_provider(self.username.get());valid=True
         except ValueError:provider=None;valid=False
         self.provider=provider
+        app_password=provider is not None and provider.help_key==APP_HELP
+        self.password_label.configure(text=self.translate('App password' if app_password else 'Mailbox password'))
+        try:username=sender_address(self.username.get())
+        except ValueError:username=''
+        try:saved=bool(self._stored and self._stored[0]==username and decode_secret(self._stored[1])[0])
+        except ValueError:saved=False
+        self.message.configure(text=(self.translate('Password saved')+'\n' if saved else '')+self.translate(
+            'The saved password is hidden. Leave this field blank to keep it, or enter a new password to replace it.'
+            if saved else 'No password saved for this sender. Enter it and choose Save.'))
         if provider:
             self.provider_label.configure(text=self.translate('Email provider: {name}').format(name=provider.name))
             self.provider_help.configure(text=self.translate(provider.help_key))

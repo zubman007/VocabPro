@@ -7,6 +7,17 @@ import json
 
 
 class HarnessTests(TestCase):
+    def test_powershell_parse_errors_fail_the_quality_gate_even_with_exit_zero(self):
+        from unittest.mock import patch
+        from tools.quality.run import tool_check
+        with tempfile.TemporaryDirectory() as directory:
+            folder=Path(directory)
+            evidence={'returncode':0,'stdout':'[{"File":"update_exe.ps1","Line":1,"Message":"syntax"}]',
+                      'stderr':'','seconds':.01,'timeout':False}
+            with patch('tools.quality.run.command',return_value=evidence):
+                result=tool_check('powershell',[],folder,folder,{})
+            self.assertEqual(result['status'],'failed')
+
     def test_reports_are_atomic_valid_json_and_leave_no_temporary_files(self):
         with tempfile.TemporaryDirectory() as folder:
             path=Path(folder)/'history.json'

@@ -40,8 +40,8 @@ def redact(text):
 
 def sources(root):
     root=Path(root)
-    paths=[root/'start.py',root/'check_quality.ps1']
-    for folder in ('app','tools/quality','locales'):
+    paths=[root/'start.py',*root.glob('*.ps1')]
+    for folder in ('app','tools','locales'):
         paths.extend(p for p in (root/folder).rglob('*')
             if p.suffix.lower() in ('.py','.ps1','.json','.toml') and '__pycache__' not in p.parts and not p.is_symlink())
     return sorted(p for p in paths if p.is_file())

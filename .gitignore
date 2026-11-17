@@ -6,3 +6,6 @@ __pycache__/
 .quality-venv/
 reports/quality/
 .ruff_cache/
+.build-tools/
+.build-venv/
+.release-build/

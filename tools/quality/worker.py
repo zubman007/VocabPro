@@ -2,6 +2,7 @@
 import argparse
 import io
 import os
+import platform
 from pathlib import Path
 import sys
 import time
@@ -143,6 +144,10 @@ def main():
     os.chdir(shadow)
     output.mkdir(parents=True,exist_ok=True)
     from tools.quality.common import write_json
+    # Windows version discovery may fall back from WMI to the standard read-only
+    # `ver` command. Populate its cache before blocking all test subprocesses.
+    # The tests themselves never receive a subprocess allow-list.
+    platform.uname()
     coverage=None
     if args.coverage:
         from coverage import Coverage

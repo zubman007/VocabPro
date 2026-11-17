@@ -23,6 +23,38 @@ def words(count=2):
 
 
 class IntegrityTests(TestCase):
+    def test_vocabulary_is_reported_even_when_it_has_no_findings(self):
+        words().rename(columns={'Spanish':'English'}).to_csv(
+            self.folder/'Czech_English_voc.csv',sep=';',index=False)
+        report=audit(self.folder)
+        self.assertIn('Vocabulary',report.modules)
+        self.assertFalse([f for f in report.findings if f.module=='Vocabulary'])
+        self.assertIn('Vocabulary',json.loads(report.export())['modules'])
+
+    def test_vocabulary_column_names_are_checked_in_both_audit_modes(self):
+        path=self.folder/'Czech_Spanish_voc.csv'
+        for column in words().columns:
+            frame=words().rename(columns={column:column+' typo'})
+            frame.to_csv(path,sep=';',index=False);before=path.read_bytes()
+            for quick in (True,False):
+                with self.subTest(column=column,quick=quick):
+                    report=audit(self.folder,quick=quick)
+                    self.assertTrue(any(f.file==path.name and f.code=='Integrity structure' for f in report.findings))
+                    self.assertEqual(path.read_bytes(),before)
+            with self.assertRaises(UserMessageError):save_csv(frame,path,sep=';',index=False)
+            self.assertEqual(path.read_bytes(),before)
+
+    def test_blank_headers_are_invalid_but_custom_columns_are_preserved(self):
+        path=self.folder/'Czech_Spanish_voc.csv'
+        for column in ('','   '):
+            frame=words();frame[column]='custom'
+            frame.to_csv(path,sep=';',index=False)
+            for quick in (True,False):
+                self.assertTrue(any(f.severity=='Critical' for f in audit(self.folder,quick=quick).findings))
+        frame=words();frame['Custom note']='custom'
+        frame.to_csv(path,sep=';',index=False)
+        self.assertFalse([f for f in audit(self.folder).findings if f.severity=='Critical'])
+
     def setUp(self):
         self.directory=TemporaryDirectory()
         self.folder=Path(self.directory.name)
@@ -272,6 +304,17 @@ class IntegrityTests(TestCase):
 
 
 class IntegrityUITests(TestCase):
+    def test_clean_vocabulary_is_selectable_and_last_audit_date_is_not_displayed(self):
+        from app.preferences.integrity import IntegrityPanel
+        self.root.app_context.last_integrity_audit='PRIVATE-OLD-DATE'
+        report=Report(completed=True,finished='PRIVATE-NEW-DATE',modules=['Vocabulary','Settings'])
+        panel=IntegrityPanel(self.root,self.folder,lambda key:key,report=report)
+        self.assertIn('Vocabulary',panel.area.cget('values'))
+        panel.area.set('Vocabulary');panel.show_page(0)
+        self.assertIn('Integrity no findings',panel.results.get('1.0','end'))
+        self.assertNotIn('PRIVATE-',panel.status.cget('text'))
+        panel.destroy()
+
     def setUp(self):
         import customtkinter as cst
         from app.core.context import AppContext

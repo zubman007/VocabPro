@@ -30,8 +30,9 @@ class Provider:
 PASSWORD_HELP = 'Use the mailbox password, or an app password if two-factor authentication requires it.'
 APP_HELP = 'Use an app password generated in your email account security settings.'
 PROVIDERS = (
-    Provider('Seznam',('seznam.cz','email.cz','post.cz'),SMTPConfig('smtp.seznam.cz'),PASSWORD_HELP,
-             'https://o-seznam.cz/napoveda/email/mohlo-by-se-hodit/postovni-programy-a-aplikace/'),
+    Provider('Seznam',('seznam.cz','email.cz','post.cz'),SMTPConfig('smtp.seznam.cz'),
+             'Seznam: use your usual mailbox password. With two-factor authentication, create a separate password for IMAP/POP3 and SMTP in your Seznam account security settings. Provider help explains the steps.',
+             'https://o-seznam.cz/napoveda/ucet/dvoufazove-overeni/postovni-programy/'),
     Provider('Gmail',('gmail.com','googlemail.com'),SMTPConfig('smtp.gmail.com'),APP_HELP,
              'https://support.google.com/mail/answer/185833'),
     Provider('Outlook',('outlook.com','outlook.cz','outlook.sk','hotmail.com','hotmail.co.uk','hotmail.fr','hotmail.de',

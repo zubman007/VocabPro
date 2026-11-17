@@ -2,6 +2,19 @@
 from app.paths import ROOT_DIR
 import logging
 import os
+import sys
+from app.version import __version__
+
+if __name__ == '__main__' and '--version' in sys.argv:
+    print(__version__)
+    raise SystemExit(0)
+
+if __name__ == '__main__' and '--release-smoke' not in sys.argv:
+    import atexit
+    from app.release_runtime import distribution_lock
+    _run_lock = distribution_lock()
+    _run_lock.__enter__()
+    atexit.register(_run_lock.__exit__, None, None, None)
 
 os.environ.setdefault("SDL_AUDIODRIVER", "directsound")
 
@@ -47,4 +60,7 @@ def run():
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
+    if '--release-smoke' in sys.argv:
+        from app.release_check import check
+        raise SystemExit(check(sys.argv[sys.argv.index('--release-smoke')+1]))
     run()

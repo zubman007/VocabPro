@@ -1,5 +1,5 @@
 """Read API settings only when the settings file changes."""
-from app.paths import ROOT_DIR
+from app.paths import FILES_DIR
 from pathlib import Path
 from threading import RLock
 from contextvars import ContextVar
@@ -18,7 +18,7 @@ def audio_output(folder):
         _audio_output.reset(token)
 
 
-SETTINGS_PATH = ROOT_DIR / "files" / "settings.csv"
+SETTINGS_PATH = FILES_DIR / "settings.csv"
 _signature = None
 _values = {}
 _lock = RLock()

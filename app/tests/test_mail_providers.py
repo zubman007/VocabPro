@@ -155,6 +155,28 @@ class ProviderTests(TestCase):
 
 
 class ProviderUiTests(TestCase):
+    def test_password_guidance_and_saved_state_follow_the_selected_sender(self):
+        from app.preferences.backup_account import BackupAccountDialog
+        with patch('app.preferences.backup_account.load_credentials',return_value=('x@seznam.cz','synthetic-password')):
+            dialog=BackupAccountDialog(self.root)
+        tr=dialog.translate
+        self.assertEqual(dialog.password.get(),'')
+        self.assertIn(tr('Password saved'),dialog.message.cget('text'))
+        self.assertEqual(dialog.password.cget('show'),'•')
+        self.assertEqual(dialog.password_label.cget('text'),tr('Mailbox password'))
+        self.assertEqual(dialog._account().password,'synthetic-password')
+        self.assertEqual(dialog.provider_help.cget('text'),tr(detect_provider('x@seznam.cz').help_key))
+        self.set_sender(dialog,'other@gmail.com')
+        self.assertEqual(dialog.password_label.cget('text'),tr('App password'))
+        self.assertEqual(dialog.password.cget('show'),'•')
+        self.assertEqual(dialog.message.cget('text'),tr('No password saved for this sender. Enter it and choose Save.'))
+        with self.assertRaises(ValueError):dialog._account()
+        self.set_sender(dialog,'x@seznam.cz')
+        self.assertEqual(dialog._account().password,'synthetic-password')
+        dialog.password.insert(0,'replacement')
+        self.assertEqual(dialog._account().password,'replacement')
+        dialog.destroy()
+
     def setUp(self):
         from app.core.context import AppContext
         self.root=cst.CTk();self.root.geometry('1100x850');AppContext().bind(self.root)

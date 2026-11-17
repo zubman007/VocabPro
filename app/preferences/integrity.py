@@ -61,8 +61,6 @@ class IntegrityPanel(cst.CTkFrame):
             anchor='w', wraplength=850, justify='left')
         self.status.grid(row=6, sticky='ew', padx=20, pady=(0, 16))
         self.bind('<Configure>', self.resize_text, add='+')
-        last = getattr(self.winfo_toplevel().app_context, 'last_integrity_audit', '')
-        if last:self.status.configure(text=translate('Integrity last {date}').format(date=last))
         if report is not None:self.finished(report)
 
     def resize_text(self,event):
@@ -112,9 +110,7 @@ class IntegrityPanel(cst.CTkFrame):
         self.export.configure(state='normal')
         if report.completed:
             self.progress.set(1)
-            # Session metadata only: auditing never rewrites settings.
-            if report.mode=='full':self.winfo_toplevel().app_context.last_integrity_audit = report.finished
-        self.modules = {self.tr(area):area for area in sorted({f.module for f in report.findings})}
+        self.modules = {self.tr(area):area for area in sorted(set(report.modules)|{f.module for f in report.findings})}
         self._visible_area=object()
         self.area.configure(values=[self.tr('Integrity all'), *self.modules])
         self.area.set(self.tr('Integrity all'))
@@ -122,9 +118,8 @@ class IntegrityPanel(cst.CTkFrame):
         summary = self.tr('Integrity summary {files} {records} {critical} {warning} {info}').format(
             files=report.files, records=report.records, critical=counts['Critical'],
             warning=counts['Warning'], info=counts['Info'])
-        status = self.tr('Integrity last {date}').format(date=report.finished) if report.completed else self.tr('Integrity incomplete')
         mode=self.tr('Integrity quick') if report.mode=='quick' else self.tr('Integrity full')
-        self.status.configure(text=mode+'\n'+summary+'\n'+status)
+        self.status.configure(text=mode+'\n'+summary+('' if report.completed else '\n'+self.tr('Integrity incomplete')))
         self.show_page(0)
 
     def show_page(self, page):

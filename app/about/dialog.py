@@ -7,6 +7,7 @@ from app.ui.sections import SectionTabs
 from app.ui.components.module_header import ModuleHeader
 from app.ui.components.app_dialog import AppDialog
 from app.ui.surfaces import surface
+from app.version import __version__
 
 AboutTabs = SectionTabs
 
@@ -30,7 +31,7 @@ class AboutDialog(AppDialog):
         self.grid_columnconfigure(0,weight=1)
         self.grid_rowconfigure(1,weight=1)
         self.header=hero=ModuleHeader(self,translate('About the application'),
-            app_name+'  ·  '+translate('Your vocabulary. Your pace.'),translate=translate,
+            app_name+' '+__version__+'  ·  '+translate('Your vocabulary. Your pace.'),translate=translate,
             actions=[('close',self.destroy)])
         hero.grid_standard()
         hero.attach_background(backdrop)

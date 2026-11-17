@@ -5,6 +5,19 @@ import shutil
 from tools.quality.common import atomic,write_json,redact,regressions
 
 
+def display(value):
+    if value is None:return 'Nedostupné'
+    if isinstance(value,float):return f'{value:.3f}' if abs(value)<1 else f'{value:.2f}'
+    return str(value)
+
+
+def html_cell(value):
+    text=escape(redact(display(value)))
+    if value in ('passed','failed','warning','unavailable','skipped','expected_failure'):
+        return '<span class="status '+str(value)+'">'+text+'</span>'
+    return text
+
+
 def dependency_rows(report,history):
     """Count one advisory per installed package/version/ID, retaining raw evidence."""
     check=report['checks'].get('Dependency vulnerabilities',{})
@@ -32,7 +45,7 @@ def dependency_rows(report,history):
 
 def table(headings,rows):
     return '<div class="scroll"><table><thead><tr>'+''.join('<th>'+escape(str(h))+'</th>' for h in headings)+'</tr></thead><tbody>'+''.join(
-        '<tr>'+''.join('<td>'+escape(redact(value) if value is not None else 'Nedostupné')+'</td>' for value in row)+'</tr>' for row in rows)+'</tbody></table></div>'
+        '<tr>'+''.join('<td>'+html_cell(value)+'</td>' for value in row)+'</tr>' for row in rows)+'</tbody></table></div>'
 
 
 def trend(history,key,title,performance=False):
@@ -51,6 +64,16 @@ def render(report,history,quality,run):
     summary=report['summary'];checks=report['checks'];analysis=report.get('analysis',{})
     jobs=checks.get('Tests',{}).get('modules',[]);tests=[r for j in jobs for r in j.get('records',[])]
     coverage=checks.get('Coverage',{});cards=[]
+    unavailable=[j for j in jobs if j.get('status')=='unavailable']
+    if summary['failed']:
+        overall=f'Neúspěšné testy: {summary["failed"]}. Podrobnosti jsou v diagnostice.'
+    elif unavailable:
+        overall=f'Audit není úplný: {len(unavailable)} testovací moduly nebylo možné dokončit.'
+    elif any(c['status']=='unavailable' for c in checks.values()):
+        overall='Některé kontroly nejsou dostupné. Jejich výsledky nejsou považovány za úspěšné.'
+    elif any(c['status']=='warning' for c in checks.values()):
+        overall='Testy prošly. Audit obsahuje nálezy k posouzení.'
+    else:overall='Všechny provedené kontroly prošly.'
     for label,value in [('Testy',summary['tests']),('Úspěšné',summary['passed']),('Neúspěšné',summary['failed']),
         ('GUI testy',summary['gui_tests']),('Coverage řádků', 'Nedostupné' if summary['coverage_percent'] is None else f'{summary["coverage_percent"]:.1f}%'),
         ('Statické nálezy',summary['lint_findings'])]:
@@ -69,8 +92,8 @@ def render(report,history,quality,run):
     comparable.append({'date':report['date'],'summary':summary})
     content=f'''<header><p>VocabPro / QUALITY AUDIT</p><h1>Stav projektu · {escape(report['mode'])}</h1><p>{escape(report['date'])} · ID {escape(report['id'])}</p></header>
     <nav><a href="#overview">Dashboard</a><a href="#gui">GUI Testing</a><a href="#tests">Testy</a><a href="#coverage">Coverage</a><a href="#code">Kód</a><a href="#security">Bezpečnost</a><a href="#history">Historie</a></nav>
-    <main><section id="overview"><h2>Dashboard</h2><div class="cards">{''.join(cards)}</div>
-    <p>Coverage větví: {coverage.get('branch_percent','Nedostupné')} %. GUI testy jsou podmnožinou celkového počtu. Varování runtime GUI: {summary['runtime_warnings']}.</p>
+    <main><section id="overview"><h2>Dashboard</h2><p class="banner">{escape(overall)}</p><div class="cards">{''.join(cards)}</div>
+    <p>Coverage větví: {display(coverage.get('branch_percent'))} %. GUI testy jsou podmnožinou celkového počtu. Varování runtime GUI: {summary['runtime_warnings']}.</p>
     <p>Kontroly nic neopravují. Statické kandidáty nelze považovat za důkaz nepoužívaného nebo zastaralého kódu.</p>
     {table(('Kontrola','Stav','Poznámka','Doba'),status_rows)}</section>
     <section id="gui"><h2>GUI Testing</h2><p>Úspěšné: {summary['gui_passed']} · Neúspěšné: {summary['gui_failed']} · Přeskočené: {summary['gui_skipped']}.</p>
@@ -112,6 +135,7 @@ def render(report,history,quality,run):
     <p><a href="diagnostics/{escape(report['id'])}/result.json">Úplná strojově čitelná data</a> · <a href="latest.pdf">Tisknutelný PDF report</a></p></section></main>'''
     html='''<!doctype html><html lang="cs"><head><meta charset="utf-8"><base href="./"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VocabPro · Quality audit</title><style>
     :root{font-family:Segoe UI,Arial,sans-serif;color:#244743;background:#eee9df}body{margin:0}header,main,nav{max-width:1400px;margin:auto;padding:24px}header{padding-top:44px}h1{font-size:38px}h2{font-size:25px}nav{position:sticky;top:0;background:#40695b;display:flex;gap:22px;flex-wrap:wrap;border-radius:18px;z-index:2}nav a{color:#fffcf5}a{color:#397d77}section{background:#fffcf5;padding:28px;margin:22px 0;border-radius:22px;box-shadow:0 4px 18px #2447430b}.cards,.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}.card{background:#e1d6bf;padding:20px;border-radius:16px}.card strong{display:block;font-size:34px;margin-top:8px}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid #ded4c1;vertical-align:top;white-space:pre-wrap;overflow-wrap:anywhere}th{background:#e1d6bf;position:sticky;top:0}tr:nth-child(even){background:#f4f1e9}.scroll{overflow:auto;max-height:620px;margin:16px 0}input{padding:12px;width:90%;border:1px solid #b5c3a4;border-radius:10px;font:inherit}details{margin:18px 0}summary{cursor:pointer;font-weight:bold}figure{margin:8px;padding:15px;background:#eee9df;border-radius:14px}svg{width:100%}text{font-size:13px;fill:#657671}@media print{nav,input{display:none}.scroll{max-height:none;overflow:visible}section{break-inside:avoid;box-shadow:none}body{background:white}}
+    .banner{padding:14px 18px;background:#f0e5ce;border-left:5px solid #a77732;border-radius:10px}.status{font-weight:600;padding:3px 7px;border-radius:6px}.status.passed{background:#d9eadc}.status.failed{background:#f3ddd5;color:#963f32}.status.warning,.status.unavailable{background:#f0e5ce;color:#895d2f}.status.skipped,.status.expected_failure{background:#eee9df;color:#657671}
     </style></head><body>'''+content+'''<script>document.getElementById('search').addEventListener('input',e=>{const q=e.target.value.toLocaleLowerCase();document.querySelectorAll('#test-table tbody tr').forEach(r=>r.hidden=!r.textContent.toLocaleLowerCase().includes(q));});</script></body></html>'''
     archive=quality/'archive';archive.mkdir(exist_ok=True)
     pdf_error=None
@@ -152,10 +176,10 @@ def create_pdf(report,analysis,tests,coverage,biggest,complexity,security,vulner
     for style in styles.byName.values():style.fontName='Quality'
     styles['BodyText'].fontSize=8;styles['BodyText'].leading=11
     story=[]
-    def p(text,style='BodyText'):story.append(Paragraph(escape(redact(text)),styles[style]))
+    def p(text,style='BodyText'):story.append(Paragraph(escape(redact(display(text))),styles[style]))
     def grid(headings,rows,widths=None):
-        cells=[[Paragraph(escape(redact(value) if value is not None else 'Nedostupné'),styles['BodyText']) for value in headings]]
-        cells.extend([Paragraph(escape(redact(value) if value is not None else 'Nedostupné'),styles['BodyText']) for value in row] for row in rows)
+        cells=[[Paragraph(escape(redact(display(value))),styles['BodyText']) for value in headings]]
+        cells.extend([Paragraph(escape(redact(display(value))),styles['BodyText']) for value in row] for row in rows)
         if len(cells)==1:p('Žádné položky / metrika nedostupná podle uvedeného stavu.');return
         value=LongTable(cells,colWidths=widths or [180*mm/len(headings)]*len(headings),repeatRows=1,hAlign='LEFT')
         value.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),colors.HexColor('#e1d6bf')),('VALIGN',(0,0),(-1,-1),'TOP'),('LINEBELOW',(0,0),(-1,-1),.3,colors.HexColor('#ded4c1')),('LEFTPADDING',(0,0),(-1,-1),5)]))
