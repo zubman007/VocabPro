@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "language": "sk",
+  "persons": [
+    {
+      "id": "s1",
+      "label": "ja",
+      "enabled": true
+    },
+    {
+      "id": "s2",
+      "label": "ty",
+      "enabled": true
+    },
+    {
+      "id": "s3",
+      "label": "on / ona / ono",
+      "enabled": true
+    },
+    {
+      "id": "m1",
+      "label": "my",
+      "enabled": true
+    },
+    {
+      "id": "m2",
+      "label": "vy",
+      "enabled": true
+    },
+    {
+      "id": "m3",
+      "label": "oni / ony",
+      "enabled": true
+    }
+  ],
+  "practice_person_ids": [
+    "s1",
+    "s2",
+    "s3",
+    "m1",
+    "m2",
+    "m3"
+  ]
+}

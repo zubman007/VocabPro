@@ -30,9 +30,8 @@ class SynonymCounts:
 
 def add_columns(frame, course, cache=None):
     result=frame.copy()
-    from app.vocabulary.tags_data import normalize_tags
-    result['Tag count']=result.get('Tags',pd.Series('',index=result.index)).map(
-        lambda value:len(normalize_tags(value).split(', ')) if normalize_tags(value) else 0)
+    from app.vocabulary.tags_data import tag_count
+    result['Tag count']=result.get('Tags',pd.Series('',index=result.index)).map(tag_count)
     if cache is not None:
         counts = cache.get(course, frame)
     else:

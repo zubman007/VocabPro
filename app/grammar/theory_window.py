@@ -55,14 +55,4 @@ class TheoryWindow(AppDialog):
             self.winfo_width()/header._get_widget_scaling()-95)) if event.widget is self else None, add='+')
         close,=self.add_actions(self,[('Close',self.destroy)],s.T,row=2,pady=(12,20))
         surface(close, backdrop)
-        self._present_job = self.after(250, self._present)
-
-    def _present(self):
-        self._present_job = None
-        super().present(modal=True)
-
-    def destroy(self):
-        if self._present_job is not None:
-            self.after_cancel(self._present_job)
-            self._present_job = None
-        super().destroy()
+        self.after(250, lambda: self.present(modal=True))

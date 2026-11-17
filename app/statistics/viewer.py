@@ -7,7 +7,7 @@ from app.statistics.vocabulary_tags import VocabularyTagsPanel
 from app.statistics.parts_of_speech import PartsOfSpeechPanel
 from app.statistics.conjugation_panel import ConjugationProgressPanel
 from app.statistics.conjugation_persons_panel import ConjugationPersonsPanel
-from app.statistics.components import summary_cards, style_summary_cards, SuccessRing, arrange_success_ring, summary_metrics
+from app.statistics.components import summary_cards, style_summary_cards, arrange_success_ring, summary_metrics
 from app.statistics.charts import Generate_chart, _release_chart
 from app.statistics.background import StatisticsBackdrop
 from app.statistics.window import StatisticsWindow

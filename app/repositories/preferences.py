@@ -42,12 +42,12 @@ def _save_preferences(frame, values, path):
             frame = latest
     updated = validate_preferences(with_defaults(frame), values)
     maximum=int(dict(zip(updated.Name,updated.Value)).get('Maximum tags per word','10'))
-    from app.vocabulary.tags_data import normalize_tags
+    from app.vocabulary.tags_data import tag_count
     from app.preferences.data import PreferenceError
     if 'Maximum tags per word' in values:
         for course in path.parent.glob('*_voc.csv'):
             words=pd.read_csv(course,sep=';',dtype=str,keep_default_na=False)
-            if any(len(normalize_tags(value).split(', '))>maximum for value in words.get('Tags',[]) if normalize_tags(value)):
+            if any(tag_count(value)>maximum for value in words.get('Tags',[])):
                 raise PreferenceError('Maximum tags per word','Existing words exceed this tag limit.')
     from app.preferences.courses import COURSE_FIELD, decode_courses, encode_courses, legacy_courses
     if COURSE_FIELD in values:

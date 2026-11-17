@@ -109,6 +109,21 @@ class ComponentTests(unittest.TestCase):
         dialog.destroy();self.root.update();callback.assert_not_called()
         self.assertFalse(dialog._dialog_jobs)
 
+    def test_grammar_dialogs_closed_before_presentation_release_all_owned_callbacks(self):
+        from app.grammar.category_filter import CategoryFilterDialog
+        from app.grammar.theory_window import TheoryWindow
+        for create in (lambda: CategoryFilterDialog(self.root, [], set(), Mock()),
+                       lambda: TheoryWindow(self.root, {'title': 'Theory', 'rules': 'Example'})):
+            with self.subTest(dialog=create):
+                dialog = create()
+                jobs = set(dialog._dialog_jobs)
+                self.assertTrue(jobs)
+                dialog.destroy()
+                pending = set(self.root.tk.call('after', 'info'))
+                self.assertFalse(jobs & pending)
+                self.assertFalse(dialog._dialog_jobs)
+                self.root.update()
+
     def test_recording_dialog_opens_and_closes_without_recording(self):
         from tempfile import TemporaryDirectory
         from app.vocabulary.editor_audio import AudioRecorderPlayer

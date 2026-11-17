@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "language": "en",
+  "persons": [
+    {
+      "id": "s1",
+      "label": "I",
+      "enabled": true
+    },
+    {
+      "id": "s2",
+      "label": "you",
+      "enabled": true
+    },
+    {
+      "id": "s3",
+      "label": "he / she / it",
+      "enabled": true
+    },
+    {
+      "id": "m1",
+      "label": "we",
+      "enabled": true
+    },
+    {
+      "id": "m3",
+      "label": "they",
+      "enabled": true
+    }
+  ],
+  "practice_person_ids": [
+    "s1",
+    "s2",
+    "s3",
+    "m1",
+    "m3"
+  ]
+}

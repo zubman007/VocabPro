@@ -6,7 +6,6 @@ from app.ui.surfaces import surface
 from app.ui.brand import logo_image
 from app.ui.theme import TEXT, PAGE as QUIET, FONT as UI_FONT
 
-SECONDARY="#ad704a"
 NAVIGATION='#243f39'
 TITLE_FONT="Segoe UI Variable Display"
 

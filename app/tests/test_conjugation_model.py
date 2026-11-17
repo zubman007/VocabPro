@@ -208,7 +208,7 @@ class ConjugationModelTests(TestCase):
     def test_person_configuration_saves_are_revision_checked_and_atomic(self):
         revision=save_configuration(self.files,self.config,None);path=configuration_path(self.files,'es')
         original=path.read_bytes();changed=replace(self.config,practice_person_ids=('s1',))
-        with patch('app.shared.atomic_bytes.os.replace',side_effect=PermissionError):
+        with patch('app.shared.storage.os.replace',side_effect=PermissionError):
             with self.assertRaises(PermissionError):save_configuration(self.files,changed,revision)
         self.assertEqual(path.read_bytes(),original);self.assertEqual(list(self.files.glob('*.tmp')),[])
         save_configuration(self.files,changed,revision)

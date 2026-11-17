@@ -3,7 +3,7 @@ from dataclasses import dataclass, replace
 import json
 import re
 from uuid import uuid4
-from app.shared.languages import language_id, legacy_name
+from app.shared.languages import language_id
 from app.shared.messages import UserMessageError
 
 LEGACY_IDS = ('s1', 's2', 's3', 'm1', 'm2', 'm3')

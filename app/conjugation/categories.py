@@ -63,7 +63,8 @@ def category_ids(source,catalog):
         if set(ids)-set(catalog.ID)-{''}:raise UserMessageError('Invalid conjugation categories.')
         return ids.copy()
     names={**dict(zip(catalog.Name.map(category_key),catalog.ID)),**catalog.attrs.get('legacy_category_ids',{})}
-    return source.Description.map(lambda value:names.get(category_key(str(value).split(',',1)[0]),''))
+    descriptions=source.get('Description',pd.Series('',index=source.index,dtype=object))
+    return descriptions.map(lambda value:names.get(category_key(str(value).split(',',1)[0]),''))
 
 
 def category_names(source,catalog):

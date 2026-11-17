@@ -29,4 +29,6 @@ Show tags during practice;Bool;0
 Tag display language;Options[Student language,Learning language];Student language
 Maximum tags per word;Int;6
 Enable second learning language;Bool;1
-Study courses;JSON;"{""version"":2,""source"":""cs"",""courses"":[{""target"":""es"",""enabled"":true,""context"":0,""audio"":20,""grammar"":true},{""target"":""en"",""enabled"":true,""context"":15,""audio"":20,""grammar"":true},{""target"":""fr"",""enabled"":false,""context"":0,""audio"":0,""grammar"":true},{""target"":""de"",""enabled"":false,""context"":0,""audio"":0,""grammar"":true},{""target"":""sk"",""enabled"":false,""context"":0,""audio"":0,""grammar"":true}]}"
+Study courses;JSON;"{""version"":3,""source"":""cs"",""courses"":[{""target"":""es"",""enabled"":true,""context"":0,""audio"":20,""grammar"":true,""conjugation"":true},{""target"":""en"",""enabled"":true,""context"":15,""audio"":20,""grammar"":true,""conjugation"":true},{""target"":""sk"",""enabled"":false,""context"":0,""audio"":0,""grammar"":true,""conjugation"":true},{""target"":""fr"",""enabled"":false,""context"":0,""audio"":0,""grammar"":true,""conjugation"":false},{""target"":""de"",""enabled"":false,""context"":0,""audio"":0,""grammar"":true,""conjugation"":false}]}"
+Track personal records;Bool;1
+Show personal records;Bool;1

@@ -125,6 +125,9 @@ class StatisticsLifecycleTests(TestCase):
     def setUp(self):
         self.root=cst.CTk();self.root.geometry('1000x750');self.root.update()
         self.errors=[];self.root.report_callback_exception=lambda *args:self.errors.append(args)
+        def unexpected_message(*args,**kwargs):raise AssertionError(kwargs.get('message',args))
+        messages=patch('app.ui.messagebox.showerror',side_effect=unexpected_message)
+        messages.start();self.addCleanup(messages.stop)
 
     def tearDown(self):
         for job in self.root.tk.call('after','info'):self.root.tk.call('after','cancel',job)

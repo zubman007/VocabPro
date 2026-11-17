@@ -6,17 +6,17 @@ from app.core.context import get_context
 from app.core.screen_controller import ScreenController
 from app.repositories.conjugation import ConjugationDocument, conjugation_columns
 from app.repositories.conjugation_persons import load_configuration
+from app.conjugation.persons_dialog import open_persons
 from app.conjugation.categories import ConjugationTables, CATEGORY_COLUMN
 from app.shared.storage import save_csv
 from app.shared.messages import error_text
 from app.ui import messagebox
-from app.ui import learning_layout as ui
 from app.ui.training_layout import shell
 from app.ui.surfaces import surface
 from app.ui.sections import SectionTabs
 from app.ui.components.editor_toolbar import EditorToolbar
 from app.ui.components.search_filter_panel import SearchFilterPanel
-from app.vocabulary.editor_layout import sheet_options
+from app.ui.module_style import sheet_options
 
 
 class ConjugationEditor:
@@ -48,11 +48,8 @@ class ConjugationEditor:
         view.filters.grid(row=0,sticky='ew',pady=(0,8));view.query=view.filters.query
         surface(view.filters,view.layer)
         view.tabs=SectionTabs(view.body);view.tabs.grid(row=1,sticky='nsew')
-        labels={self.language:self.translate('Verb'),self.document.learned_by:self.translate('Translation'),
-                CATEGORY_COLUMN:self.translate('Category'),'Description':self.translate('Description'),
-                **{p.id:p.label for p in self.config.active}}
         view.sheets={}
-        for key,caption,headers in (('verbs','Verbs',['ID',*(labels[field] for field in self.tables.fields)]),
+        for key,caption,headers in (('verbs','Verbs',self._verb_headers()),
                                     ('categories','Categories',['ID',self.translate('Category'),self.translate('Description')])):
             panel=view.tabs.add(self.translate(caption))
             panel.grid_rowconfigure(0,weight=1);panel.grid_columnconfigure(0,weight=1)
@@ -74,20 +71,33 @@ class ConjugationEditor:
             sheet.bind('<Control-s>',self.save_shortcut);sheet.bind('<Control-S>',self.save_shortcut)
             view.sheets[key]=sheet
         view.sheet=view.sheets['verbs'];view.category_sheet=view.sheets['categories']
-        view.tools=EditorToolbar(view.body,'Conjugation editors',self.translate,action_columns=3)
+        view.tools=EditorToolbar(view.body,'Conjugation editors',self.translate,action_columns=4)
         view.tools.grid(row=2,sticky='ew',pady=(8,0));view.tools.attach_background(view.layer)
         view.tools.set_help(self.translate('Conjugation spreadsheet help'))
-        for key,caption,command in (('add','Add row',self.add),('delete','Delete selected rows',self.delete),('apply','Apply',self.apply)):
+        for key,caption,command in (('add','Add row',self.add),('delete','Delete selected rows',self.delete),
+                                    ('apply','Apply',self.apply),('persons','Grammatical persons',self.edit_persons)):
             view.tools.add_action(key,caption,command)
         tabs_surface=surface(view.tabs,view.layer)
         selector_surface=surface(view.tabs._segmented_button,tabs_surface)
         for button in view.tabs._segmented_button.winfo_children():
             if isinstance(button,cst.CTkButton):surface(button,selector_surface)
 
-    def refresh(self):
+    def _verb_headers(self):
+        labels={self.language:self.translate('Verb'),self.document.learned_by:self.translate('Translation'),
+                CATEGORY_COLUMN:self.translate('Category'),'Description':self.translate('Description'),
+                **{person.id:person.label for person in self.config.active}}
+        return ['ID',*(labels[field] for field in self.tables.fields)]
+
+    def refresh(self,*,reset_columns=False):
         rows=self.tables.verb_rows(self.applied_query)
         self.visible_ids={row[0] for row in rows}
-        self.view.sheet.set_sheet_data(rows,reset_col_positions=False,reset_row_positions=True)
+        if reset_columns:
+            self.view.sheet.display_columns('all')
+            self.view.sheet.headers(self._verb_headers())
+        self.view.sheet.set_sheet_data(rows,reset_col_positions=reset_columns,reset_row_positions=True)
+        if reset_columns:
+            self.view.sheet.set_all_column_widths(width=170)
+            self.view.sheet.column_width(3,240);self.view.sheet.column_width(4,240)
         self.view.category_sheet.set_sheet_data(self.tables.catalog[['ID','Name','Description']].values.tolist(),
                                                 reset_col_positions=False,reset_row_positions=True)
         self.view.sheet.readonly_columns(columns=[0]);self.view.category_sheet.readonly_columns(columns=[0])
@@ -118,6 +128,20 @@ class ConjugationEditor:
 
     def _active_sheet(self):
         return self.view.sheet if self.view.tabs.get()==self.translate('Verbs') else self.view.category_sheet
+
+    def edit_persons(self):
+        if self.lifecycle.closed or not self.apply():return False
+        if not open_persons(self.app,self.language,files=self.context.files_dir,
+                            source=self.document.learned_by,translate=self.translate):return False
+        try:config,_=load_configuration(self.context.files_dir,self.language,self.document.path)
+        except (OSError,ValueError) as error:self.error(error);return False
+        self.config=self.document.config=config
+        for person in config.persons:
+            if person.id not in self.document.frame:self.document.frame[person.id]=''
+        self.document.fields=(self.language,self.document.learned_by,'Description',*(p.id for p in config.active))
+        self.tables.fields=(self.language,self.document.learned_by,CATEGORY_COLUMN,'Description',*(p.id for p in config.active))
+        self.refresh(reset_columns=True)
+        return True
 
     def add(self):
         sheet=self._active_sheet()

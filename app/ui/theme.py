@@ -5,7 +5,6 @@ TEXT = '#244743'
 MUTED = '#657671'
 TEAL = '#397d77'
 HONEY = '#a77732'
-LAVENDER = '#8272aa'
 SUCCESS = '#d9eadc'
 ERROR = '#f3ddd5'
 FONT = 'Segoe UI Variable Text'
@@ -15,7 +14,6 @@ RADIUS = 24
 HEADER = "#397f86"
 SECTION_SURFACE = '#e1d6bf'
 SECTION_CONTROL = '#40695b'
-EDITOR_HEADER = "#aecbcf"
 
 
 def style_statistics(table_title):

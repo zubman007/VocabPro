@@ -5,7 +5,7 @@ from unittest import TestCase
 from unittest.mock import patch
 import pandas as pd
 from app.conjugation.categories import (ConjugationTables, CATEGORY_COLUMN, catalog_path, load_catalog,
-    category_names, filter_categories, ensure_catalog, validate_catalog)
+    category_names, category_ids, filter_categories, ensure_catalog)
 from app.conjugation.persons import default_configuration
 from app.repositories.conjugation import ConjugationDocument
 from app.shared.storage import FileChangedError
@@ -19,6 +19,7 @@ class ConjugationTablesTests(TestCase):
         frame=pd.concat([verbs().assign(Description='presente simple, grupo 1'),
             verbs().assign(ID='002',Description='presente simple, irregular'),
             verbs().assign(ID='003',Description='imperativo, regular AR')],ignore_index=True)
+        frame['category']='unrelated legacy metadata'
         frame.to_csv(self.path,sep=';',index=False);self.original=self.path.read_bytes()
         self.document=ConjugationDocument(self.path,'Spanish','Czech',default_configuration('es'))
         self.tables=ConjugationTables(self.document)
@@ -49,6 +50,7 @@ class ConjugationTablesTests(TestCase):
         catalog.to_csv(catalog_path(self.path),sep=';',index=False)
         recovered,_=load_catalog(self.path,source)
         self.assertEqual(len(recovered),2)
+        self.assertEqual(category_ids(source,recovered).tolist(),old_ids)
         self.assertEqual(category_names(source,recovered).tolist(),['Renamed present','Renamed present','Renamed imperative'])
         self.assertEqual(self.path.read_bytes(),self.original)
 
@@ -127,6 +129,11 @@ class ConjugationTablesTests(TestCase):
         self.assertEqual(filtered.ID.tolist(),['001','002']);self.assertEqual(len(frame),3)
         self.assertTrue(filter_categories(frame,self.tables.catalog,['missing']).empty)
         self.assertEqual(self.path.read_bytes(),self.original)
+        # Legacy statistics may contain only counters, without editable forms
+        # or descriptions. Keep their histories visible as uncategorised.
+        counters=frame[['ID','R','LR']]
+        catalog,_=load_catalog(self.path,counters)
+        self.assertEqual(category_names(counters,catalog).tolist(),['','',''])
 
     def test_statistics_weight_rounds_and_invalidate_on_catalog_rename(self):
         from app.statistics.data import training_statistics

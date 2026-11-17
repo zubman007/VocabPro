@@ -25,7 +25,6 @@ class CategoryFilterDialog(AppDialog):
     def __init__(self, owner, options, selected, apply):
         super().__init__(owner, fg_color='#eee9df')
         self.withdraw()
-        self._present_job = None
         self.title(s.T('Question categories'))
         self.geometry('620x670')
         self.minsize(480, 450)
@@ -71,11 +70,7 @@ class CategoryFilterDialog(AppDialog):
             for button in container.winfo_children():
                 if isinstance(button,cst.CTkButton):surface(button,container._surface)
         self._refresh()
-        self._present_job = self.after(250, self._present)
-
-    def _present(self):
-        self._present_job = None
-        super().present(modal=True)
+        self.after(250, lambda: self.present(modal=True))
 
     def _refresh(self):
         count = sum(count for key, _, count in self.options if self.variables[key].get())
@@ -108,9 +103,3 @@ class CategoryFilterDialog(AppDialog):
     def _apply(self):
         selected = {key for key, variable in self.variables.items() if variable.get()}
         if selected and self.apply_callback(selected):self.destroy()
-
-    def destroy(self):
-        if self._present_job is not None:
-            self.after_cancel(self._present_job)
-            self._present_job = None
-        super().destroy()

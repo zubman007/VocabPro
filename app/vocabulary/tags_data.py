@@ -23,6 +23,12 @@ def normalize_tags(value):
     return ', '.join(tags.values())
 
 
+def tag_count(value):
+    """Use the same normalized tag count in the editor and preference validation."""
+    normalized = normalize_tags(value)
+    return len(normalized.split(', ')) if normalized else 0
+
+
 def validate_word_tags(frame, catalog, learned_by):
     """Canonicalize catalog names; reject the whole batch if any tag is unknown."""
     result = frame.copy()

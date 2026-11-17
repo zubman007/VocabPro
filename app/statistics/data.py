@@ -112,7 +112,7 @@ def training_statistics(path, kind, language=None):
         if kind == 'conjugation' and language is not None:
             from app.conjugation.categories import load_catalog, category_names
             catalog,_=load_catalog(source,frame)
-            grouped=frame.copy();grouped['Category']=category_names(frame,catalog)
+            grouped=pd.DataFrame({'Category':category_names(frame,catalog),'R':frame['R']})
             result['categories']=grammar_categories(grouped)
             from app.conjugation.data import eligible_verbs
             result['category_available']=frozenset(category_names(eligible_verbs(frame,config.practice),catalog))

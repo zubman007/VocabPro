@@ -1,41 +1,13 @@
 """Vocabulary editor appearance and layout; no editing or persistence logic."""
-from app.ui.theme import FONT
-from app.ui.theme import PAGE, SURFACE, HEADER, TEXT
+from app.ui.theme import PAGE, TEXT
 from app.ui.theme import RADIUS
 from app.ui.learning_layout import background
 from app.ui.surfaces import surface
-from app.ui.module_style import HEADER as EDITOR_INK
+# Keep the original sheet_options import path available to existing callers.
+from app.ui.module_style import HEADER as EDITOR_INK, EDITOR_SURFACE, sheet_options
 from app.ui.components.editor_toolbar import EditorToolbar
 
-EDITOR_ACCENT = "#9b593d"
-EDITOR_SURFACE = '#ded4bf'
 READONLY_BACKGROUND = "#efe5d5"
-
-
-def sheet_options(original):
-    options = dict(original)
-    from app.shared import settings as s
-    for key,caption in {'edit_cell_label':'Edit cell','cut_label':'Cut','copy_label':'Copy',
-            'copy_plain_label':'Copy text','paste_label':'Paste','delete_label':'Delete',
-            'clear_contents_label':'Clear contents','select_all_label':'Select all','undo_label':'Undo',
-            'redo_label':'Redo'}.items():options[key]=s.T(caption)
-    options.update(table_bg="#e9e0cd", table_fg=TEXT, table_grid_fg="#cfc5ae",
-        frame_bg=EDITOR_SURFACE, header_bg=EDITOR_INK, header_fg="white",
-        top_left_bg=EDITOR_INK, top_left_fg=SURFACE,
-        header_border_fg=EDITOR_INK, header_grid_fg="#b68d68",
-        index_bg="#efe4d2", index_fg=TEXT, index_grid_fg="#ddcfb9",
-        table_selected_cells_bg="#cde8df", table_selected_cells_fg=TEXT,
-        table_selected_rows_bg="#cde8df", table_selected_rows_fg=TEXT,
-        table_selected_columns_bg="#cde8df", table_selected_columns_fg=TEXT,
-        table_selected_cells_border_fg=HEADER,
-        header_selected_cells_bg="#286b72", header_selected_columns_bg="#286b72",
-        index_selected_cells_bg="#cde8df", index_selected_cells_fg=TEXT,
-        index_selected_rows_bg="#cde8df", index_selected_rows_fg=TEXT,
-        popup_menu_bg=SURFACE, popup_menu_fg=TEXT,
-        popup_menu_highlight_bg=HEADER, popup_menu_highlight_fg="white",
-        font=(FONT, 15, "normal"), header_font=(FONT, 18, "bold"),
-        index_font=(FONT, 14, "normal"), outline_thickness=0)
-    return options
 
 
 def arrange_editor(editor, header, body, filters, table, widgets):

@@ -11,7 +11,8 @@ SYNONYM_COLUMNS=tuple(SYNONYM_COLUMNS)+('Tag count',)
 from app.repositories.vocabulary import load_editor_snapshot
 from app.vocabulary.editor_data import merge_table_edits, filter_vocabulary, sort_vocabulary
 from app.vocabulary.editor_filter import VocabularyFilter, filterable_headers
-from app.vocabulary.editor_layout import arrange_editor, sheet_options, READONLY_BACKGROUND, restore_after_save_error, fit_editor_columns, configure_editor_dropdowns, color_editor_columns
+from app.vocabulary.editor_layout import arrange_editor, READONLY_BACKGROUND, restore_after_save_error, fit_editor_columns, configure_editor_dropdowns, color_editor_columns
+from app.ui.module_style import sheet_options
 from app.shared import settings as s
 from app.core.context import get_context
 from app.shared.diagnostics import report_error

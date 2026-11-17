@@ -11,6 +11,13 @@ from app.tests.test_editor_save import course
 
 
 class VocabularyTagTests(TestCase):
+    def test_tag_count_uses_empty_case_and_unicode_normalization(self):
+        from app.vocabulary.tags_data import tag_count
+        for value, expected in ((None, 0), ('', 0), (' , , ', 0), (float('nan'), 0),
+                                (' Travel, travel, FAMILY, family ', 2), ('café, cafe\u0301', 1)):
+            with self.subTest(value=value):
+                self.assertEqual(tag_count(value), expected)
+
     def test_multiple_tags_keep_order_remove_duplicates_and_empty_entries(self):
         self.assertEqual(normalize_tags(' animal, insult,, ANIMAL , travel '),'animal, insult, travel')
         for value in (None, '', ' , , ', float('nan')):

@@ -35,6 +35,16 @@ class ConjugationSpreadsheetUiTests(TestCase):
         self.assertEqual(saved.ID.iloc[0],'001');self.assertEqual(saved.R.tolist(),['S?FSS','',''])
         self.assertEqual(saved.s1.tolist(),['enseño','voy','soy'])
         self.assertEqual(len(set(saved.ID)),3);self.assertTrue(catalog_path(self.path).exists())
+        # A fresh course must accept its first paste without Add row/selection,
+        # including languages with a different number of person columns.
+        editor.lifecycle.close();editor.view.root.destroy()
+        english=Edit_conjugation(self.root,'en',context=self.context);self.root.update()
+        self.assertTrue(english.document.frame.empty)
+        with patch.object(english.view.sheet.MT,'clipboard_get',return_value='go\tjít\tPresent\tdesc\tgo\tgo\tgoes\tgo\tgo'):
+            english.view.sheet.paste()
+        self.assertTrue(english.save(close=False))
+        self.assertEqual(english.document.frame.English.tolist(),['go'])
+        self.assertEqual(english.document.frame.R.tolist(),[''])
 
     def test_category_sheet_rename_and_protected_used_category_deletion(self):
         editor=Edit_conjugation(self.root,'es',context=self.context);self.root.update()
@@ -82,6 +92,54 @@ class ConjugationSpreadsheetUiTests(TestCase):
         with patch.object(editor,'save',return_value=False) as save:
             editor.view.sheet.MT.event_generate('<Control-s>');self.root.update()
             save.assert_called_once()
+
+    def test_persons_button_refreshes_added_reordered_and_disabled_columns_without_losing_drafts(self):
+        from app.conjugation.persons_dialog import PersonsDialog
+        editor=Edit_conjugation(self.root,'es',context=self.context);self.root.update()
+        before=self.path.read_bytes();added=[]
+        editor.view.sheet.set_cell_data(0,4,'draft description')
+        def add_person(owner,language,**kwargs):
+            dialog=PersonsDialog(owner,language,**kwargs)
+            dialog.rows[0]['label'].set('yo / primera persona');dialog.move(0,1)
+            dialog.add();dialog.rows[-1]['label'].set('vos');added.append(dialog.rows[-1]['person'].id)
+            return dialog.save()
+        with patch('app.conjugation.editor.open_persons',side_effect=add_person):
+            editor.view.tools.buttons['persons'].invoke()
+        self.assertEqual(editor.tables.fields[4:6],('s2','s1'))
+        self.assertIn('yo / primera persona',editor.view.sheet.headers())
+        self.assertEqual(editor.view.sheet.get_sheet_data()[0][5:7],['enseñas','enseño'])
+        self.assertEqual(editor.document.frame.at[0,'Description'],'draft description')
+        self.assertEqual(len(editor.view.sheet.headers()),len(editor.tables.fields)+1)
+        editor.view.sheet.set_cell_data(0,editor.tables.fields.index(added[0])+1,'enseñás')
+        def deactivate(owner,language,**kwargs):
+            dialog=PersonsDialog(owner,language,**kwargs)
+            next(row for row in dialog.rows if row['person'].id=='s2')['enabled'].set(False)
+            return dialog.save()
+        with patch('app.conjugation.editor.open_persons',side_effect=deactivate):
+            self.assertTrue(editor.edit_persons())
+        self.assertNotIn('s2',editor.tables.fields)
+        self.assertEqual(editor.document.frame.at[0,'s2'],'enseñas')
+        self.assertEqual(editor.document.frame.at[0,added[0]],'enseñás')
+        self.assertEqual(self.path.read_bytes(),before)
+        self.assertTrue(editor.save(close=False))
+        saved=pd.read_csv(self.path,sep=';',dtype=str,keep_default_na=False)
+        self.assertEqual(saved.at[0,'R'],'S?FSS');self.assertEqual(saved.at[0,'s2'],'enseñas')
+        self.assertEqual(saved.at[0,added[0]],'enseñás')
+
+    def test_cancelled_persons_dialog_keeps_drafts_and_invalid_rows_do_not_open_it(self):
+        editor=Edit_conjugation(self.root,'es',context=self.context);self.root.update()
+        before=self.path.read_bytes();headers=list(editor.view.sheet.headers())
+        editor.view.sheet.set_cell_data(0,4,'pending')
+        with patch('app.conjugation.editor.open_persons',return_value=False) as dialog:
+            self.assertFalse(editor.edit_persons());dialog.assert_called_once()
+        self.assertEqual(editor.document.frame.at[0,'Description'],'pending')
+        self.assertEqual(list(editor.view.sheet.headers()),headers)
+        editor.add()
+        with patch('app.conjugation.editor.open_persons') as dialog,patch('app.ui.messagebox.showerror'):
+            editor.view.sheet.set_cell_data(1,2,'incomplete row')
+            self.assertFalse(editor.edit_persons());dialog.assert_not_called()
+        self.assertEqual(editor.view.sheet.get_sheet_data()[1][2],'incomplete row')
+        self.assertEqual(self.path.read_bytes(),before)
 
     def test_record_card_highlights_either_record_and_reflows_without_overlap(self):
         from app.conjugation.practise import Conjugation

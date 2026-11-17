@@ -1,7 +1,8 @@
-"""Crash-safe CSV persistence shared by application screens."""
+"""Crash-safe file persistence shared by application repositories."""
 import os
 import tempfile
 import hashlib
+from contextlib import contextmanager
 from threading import RLock
 from weakref import WeakValueDictionary
 from pathlib import Path
@@ -35,35 +36,41 @@ def destination_lock(path: str | os.PathLike):
         return lock
 
 
-def save_csv(frame, destination, *, expected_revision=None, expect_missing=False, **options):
-    with destination_lock(destination):
-        _save_csv(frame, destination, expected_revision=expected_revision,
-                  expect_missing=expect_missing, **options)
-
-
-def _save_csv(frame, destination, *, expected_revision, expect_missing, **options):
-    """Replace the destination only after writing and flushing the whole CSV."""
+@contextmanager
+def atomic_output(destination, *, before_commit=None, expect_missing=False, **stream_options):
+    """Stage, flush and close output before validating and publishing it atomically."""
     destination = Path(destination)
     temporary = None
-    try:
-        with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", newline="", delete=False,
-            dir=destination.parent, prefix=destination.name + ".", suffix=".tmp",
-        ) as stream:
-            temporary = Path(stream.name)
-            frame.to_csv(stream, **options)
-            stream.flush()
-            os.fsync(stream.fileno())
+    with destination_lock(destination):
+        try:
+            with tempfile.NamedTemporaryFile(
+                delete=False, dir=destination.parent,
+                prefix=destination.name + ".", suffix=".tmp", **stream_options,
+            ) as stream:
+                temporary = Path(stream.name)
+                yield stream
+                stream.flush()
+                os.fsync(stream.fileno())
+            if before_commit is not None:
+                before_commit()
+            if expect_missing:
+                try:
+                    # Atomic create-if-absent: never overwrite a concurrently created file.
+                    os.link(temporary, destination)
+                except FileExistsError:
+                    raise FileChangedError('The course file changed. Reopen the editor before saving.') from None
+            else:
+                os.replace(temporary, destination)
+        finally:
+            if temporary is not None:
+                temporary.unlink(missing_ok=True)
+
+
+def save_csv(frame, destination, *, expected_revision=None, expect_missing=False, **options):
+    destination = Path(destination)
+    def check_revision():
         if expected_revision is not None and file_revision(destination) != expected_revision:
             raise FileChangedError('The course file changed. Reopen the editor before saving.')
-        if expect_missing:
-            try:
-                # Atomic create-if-absent: never overwrite a concurrently created file.
-                os.link(temporary, destination)
-            except FileExistsError:
-                raise FileChangedError('The course file changed. Reopen the editor before saving.') from None
-        else:
-            os.replace(temporary, destination)
-    finally:
-        if temporary is not None:
-            temporary.unlink(missing_ok=True)
+    with atomic_output(destination, mode="w", encoding="utf-8", newline="",
+                       before_commit=check_revision, expect_missing=expect_missing) as stream:
+        frame.to_csv(stream, **options)

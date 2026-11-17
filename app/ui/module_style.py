@@ -1,6 +1,7 @@
 """Shared editor/training chrome and image-backed auxiliary dialogs."""
 from app.ui import learning_layout as ui
 from app.ui.surfaces import surface
+from app.ui.theme import HEADER as TABLE_ACCENT
 import customtkinter as cst
 
 HEADER = '#355e59'
@@ -8,6 +9,7 @@ SESSION = '#d7dfca'
 HEADER_FONT = (ui.FONT,32,'bold')
 QUESTION = '#e8dfcb'
 QUESTION_BORDER = '#c8b794'
+EDITOR_SURFACE = '#ded4bf'
 SESSION_PAD = 24
 SESSION_HEADING = '#8b603c'
 SESSION_TITLE_FONT = (ui.FONT,20,'bold')
@@ -15,6 +17,33 @@ SESSION_COUNT_FONT = (ui.FONT,24,'bold')
 SESSION_TEXT_FONT = (ui.FONT,16)
 SESSION_SECTION_FONT = (ui.FONT,16,'bold')
 SESSION_WORD_FONT = (ui.FONT,22,'bold')
+
+
+def sheet_options(original):
+    """Shared, localized spreadsheet appearance for vocabulary and conjugation."""
+    from app.shared import settings as s
+    options = dict(original)
+    for key,caption in {'edit_cell_label':'Edit cell','cut_label':'Cut','copy_label':'Copy',
+            'copy_plain_label':'Copy text','paste_label':'Paste','delete_label':'Delete',
+            'clear_contents_label':'Clear contents','select_all_label':'Select all','undo_label':'Undo',
+            'redo_label':'Redo'}.items():options[key]=s.T(caption)
+    options.update(table_bg="#e9e0cd", table_fg=ui.TEXT, table_grid_fg="#cfc5ae",
+        frame_bg=EDITOR_SURFACE, header_bg=HEADER, header_fg="white",
+        top_left_bg=HEADER, top_left_fg=ui.SURFACE,
+        header_border_fg=HEADER, header_grid_fg="#b68d68",
+        index_bg="#efe4d2", index_fg=ui.TEXT, index_grid_fg="#ddcfb9",
+        table_selected_cells_bg="#cde8df", table_selected_cells_fg=ui.TEXT,
+        table_selected_rows_bg="#cde8df", table_selected_rows_fg=ui.TEXT,
+        table_selected_columns_bg="#cde8df", table_selected_columns_fg=ui.TEXT,
+        table_selected_cells_border_fg=TABLE_ACCENT,
+        header_selected_cells_bg="#286b72", header_selected_columns_bg="#286b72",
+        index_selected_cells_bg="#cde8df", index_selected_cells_fg=ui.TEXT,
+        index_selected_rows_bg="#cde8df", index_selected_rows_fg=ui.TEXT,
+        popup_menu_bg=ui.SURFACE, popup_menu_fg=ui.TEXT,
+        popup_menu_highlight_bg=TABLE_ACCENT, popup_menu_highlight_fg="white",
+        font=(ui.FONT, 15, "normal"), header_font=(ui.FONT, 18, "bold"),
+        index_font=(ui.FONT, 14, "normal"), outline_thickness=0)
+    return options
 
 
 def header_button(button):
