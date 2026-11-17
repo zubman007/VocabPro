@@ -13,7 +13,7 @@ from app.shared.messages import error_text
 from app.ui import messagebox
 from app.ui.training_layout import shell
 from app.ui.surfaces import surface
-from app.ui.sections import SectionTabs
+from app.ui.sections import EditorTabs
 from app.ui.components.editor_toolbar import EditorToolbar
 from app.ui.components.search_filter_panel import SearchFilterPanel
 from app.ui.module_style import sheet_options
@@ -30,7 +30,7 @@ class ConjugationEditor:
                      path,sep=';',index=False,expect_missing=True)
         self.document=ConjugationDocument(path,language,self.context.preferences.learned_by,self.config)
         self.tables=ConjugationTables(self.document)
-        self.applied_query='';self.visible_ids=set()
+        self.applied_query='';self.applied_category=None;self.visible_ids=set()
         self._build(app)
         self.lifecycle=ScreenController(app,self.view.root,{'<Control-s>':self.save_shortcut,'<Control-S>':self.save_shortcut,
             '<Escape>':self.back},context=self.context,on_window_close=self.exit_app)
@@ -43,15 +43,23 @@ class ConjugationEditor:
                    [('save',self.save),('close',self.back),('exit',self.exit_app)])
         self.view=view
         view.header.title_label.configure(text=self.translate('Edit conjugation')+' · '+self.translate(self.language))
-        view.body.grid_rowconfigure(1,weight=1)
-        view.filters=SearchFilterPanel(view.body,self.translate,placeholder='Search',on_apply=self.filter)
-        view.filters.grid(row=0,sticky='ew',pady=(0,8));view.query=view.filters.query
-        surface(view.filters,view.layer)
-        view.tabs=SectionTabs(view.body);view.tabs.grid(row=1,sticky='nsew')
+        view.body.grid_rowconfigure(0,weight=1)
+        view.tabs=EditorTabs(view.header,[self.translate('Verbs'),self.translate('Categories')])
+        view.tabs.set(self.translate('Verbs'))
+        view.header.place_extension(view.tabs,sticky='w')
+        view.tabs.attach_background(view.header._surface)
+        view.filters=SearchFilterPanel(view.header,self.translate,placeholder='Search',on_apply=self.filter,stacked=True)
+        view.header.place_extension(view.filters);view.query=view.filters.query
+        view.category_filter=view.filters.add_choice('category',[self.translate('All categories')],kind='combo',
+            command=lambda _:self.filter())
+        surface(view.filters,view.header._surface)
         view.sheets={}
         for key,caption,headers in (('verbs','Verbs',self._verb_headers()),
                                     ('categories','Categories',['ID',self.translate('Category'),self.translate('Description')])):
-            panel=view.tabs.add(self.translate(caption))
+            panel=cst.CTkFrame(view.body,fg_color='#ded4bf',corner_radius=24)
+            panel.grid(row=0,sticky='nsew')
+            surface(panel,view.layer)
+            view.tabs.add_page(self.translate(caption),panel)
             panel.grid_rowconfigure(0,weight=1);panel.grid_columnconfigure(0,weight=1)
             sheet=tksheet.Sheet(panel,headers=headers,expand_sheet_if_paste_too_big=True,
                                default_row_index_width=44,**sheet_options(s.tbl_set))
@@ -71,16 +79,12 @@ class ConjugationEditor:
             sheet.bind('<Control-s>',self.save_shortcut);sheet.bind('<Control-S>',self.save_shortcut)
             view.sheets[key]=sheet
         view.sheet=view.sheets['verbs'];view.category_sheet=view.sheets['categories']
-        view.tools=EditorToolbar(view.body,'Conjugation editors',self.translate,action_columns=4)
-        view.tools.grid(row=2,sticky='ew',pady=(8,0));view.tools.attach_background(view.layer)
+        view.tools=EditorToolbar(view.body,'Conjugation editors',self.translate,action_columns=3)
+        view.tools.grid(row=1,sticky='ew',pady=(8,0));view.tools.attach_background(view.layer)
         view.tools.set_help(self.translate('Conjugation spreadsheet help'))
         for key,caption,command in (('add','Add row',self.add),('delete','Delete selected rows',self.delete),
-                                    ('apply','Apply',self.apply),('persons','Grammatical persons',self.edit_persons)):
+                                    ('persons','Grammatical persons',self.edit_persons)):
             view.tools.add_action(key,caption,command)
-        tabs_surface=surface(view.tabs,view.layer)
-        selector_surface=surface(view.tabs._segmented_button,tabs_surface)
-        for button in view.tabs._segmented_button.winfo_children():
-            if isinstance(button,cst.CTkButton):surface(button,selector_surface)
 
     def _verb_headers(self):
         labels={self.language:self.translate('Verb'),self.document.learned_by:self.translate('Translation'),
@@ -90,6 +94,11 @@ class ConjugationEditor:
 
     def refresh(self,*,reset_columns=False):
         rows=self.tables.verb_rows(self.applied_query)
+        if self.applied_category is not None:
+            column=self.tables.fields.index(CATEGORY_COLUMN)+1
+            rows=[row for row in rows if row[column]==self.applied_category]
+        self.view.category_filter.configure(values=[self.translate('All categories'),*self.tables.catalog.Name.tolist()])
+        self.view.category_filter.set(self.applied_category or self.translate('All categories'))
         self.visible_ids={row[0] for row in rows}
         if reset_columns:
             self.view.sheet.display_columns('all')
@@ -122,9 +131,13 @@ class ConjugationEditor:
 
     def filter(self):
         if self.apply():
-            self.applied_query=self.view.query.get().strip();self.refresh()
+            self.applied_query=self.view.query.get().strip()
+            selected=self.view.category_filter.get()
+            self.applied_category=None if selected==self.translate('All categories') else selected
+            self.refresh()
         else:
             self.view.query.delete(0,'end');self.view.query.insert(0,self.applied_query)
+            self.view.category_filter.set(self.applied_category or self.translate('All categories'))
 
     def _active_sheet(self):
         return self.view.sheet if self.view.tabs.get()==self.translate('Verbs') else self.view.category_sheet
