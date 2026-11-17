@@ -73,6 +73,19 @@ class LearningSettingsTests(TestCase):
 
 
 class LearningAlignmentUiTests(TestCase):
+    def test_destroyed_spreadsheet_releases_redraw_and_tooltip_timers(self):
+        from app.ui.components.spreadsheet import Spreadsheet
+        sheet=Spreadsheet(self.root)
+        callback=Mock()
+        jobs=[]
+        for owner,attribute in ((sheet,'after_redraw_id'),(sheet.MT,'tooltip_after_id'),
+                                (sheet.CH,'tooltip_after_id'),(sheet.RI,'tooltip_after_id')):
+            job=owner.after(1000,callback)
+            setattr(owner,attribute,job);jobs.append(job)
+        sheet.destroy();self.root.update()
+        self.assertFalse(set(jobs)&set(self.root.tk.call('after','info')))
+        callback.assert_not_called()
+
     def setUp(self):
         fixtures.ConjugationPersonsUiTests.setUp(self)
         errors = patch('app.ui.messagebox.showerror', side_effect=lambda *a, **k: self.fail(str(k)))

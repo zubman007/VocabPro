@@ -242,7 +242,8 @@ class LearningUiTests(unittest.TestCase):
              patch.object(conjugation, 'play_effect', return_value=False):
             controller = conjugation.Conjugation(self.root, 'Spanish')
             self.root.update()
-            self.assertNotEqual(controller.view.description.grid_info()['row'], controller.view.count.grid_info()['row'])
+            self.assertIsNot(controller.view.description.master,controller.view.count.master)
+            self.assertIs(controller.view.count.master,controller.view.session_panel)
             controller.confirm()
             selected_id = controller.session.current.id
             selection = controller.session.selection

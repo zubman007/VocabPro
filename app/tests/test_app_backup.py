@@ -20,10 +20,11 @@ class BackupTests(unittest.TestCase):
             original=b'ID;word\n1;original content\n'
             path=Path(directory)/'Czech_Spanish_voc.csv';path.write_bytes(original)
             with patch('app.services.backup.smtplib.SMTP_SSL') as smtp:
+                smtp.return_value.__enter__.return_value.send_message.return_value={}
                 send_backup(directory,'to@example.com',
-                            'from@example.com','fake-secret',lambda value:value,'VocabPro')
+                            'from@seznam.cz','fake-secret',lambda value:value,'VocabPro')
             client=smtp.return_value.__enter__.return_value
-            client.login.assert_called_once_with('from@example.com','fake-secret')
+            client.login.assert_called_once_with('from@seznam.cz','fake-secret')
             message=client.send_message.call_args.args[0]
             self.assertEqual(message['To'],'to@example.com')
             attachments=list(message.iter_attachments())

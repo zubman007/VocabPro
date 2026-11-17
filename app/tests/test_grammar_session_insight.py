@@ -95,7 +95,7 @@ class SessionInsightUiTests(unittest.TestCase):
     def test_recent_caption_and_full_sidebar_fit_in_every_language(self):
         for language in LANGUAGES:
             with self.subTest(language=language):
-                self.context.preferences=replace(self.context.preferences,app_language=language)
+                self.context.preferences=replace(self.context.preferences,app_language=language,grammar_batch=12)
                 controller=self.lesson()
                 for _ in range(12):
                     controller.choose(controller.session.options.index('yes'))

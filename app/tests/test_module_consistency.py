@@ -115,7 +115,7 @@ class ModuleConsistencyTests(TestCase):
                 view=build(self.root,[('s1','Yo')],Mock(),Mock(),Mock(),Mock(),Mock())
                 self.root.update()
                 self.assertEqual(view.header.cget('fg_color'),HEADER)
-                footer=view.shortcuts.master
+                footer=view.footer
                 buttons=[w for w in footer.winfo_children() if isinstance(w,cst.CTkButton)]
                 self.assertEqual(len(buttons),2)
                 self.assertEqual(footer.grid_columnconfigure(0)['uniform'],'actions')

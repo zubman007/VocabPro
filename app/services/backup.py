@@ -4,6 +4,7 @@ from email.message import EmailMessage
 import smtplib
 import ssl
 from app.repositories.courses import backup_files
+from app.services.mail_transport import credentials,saved_account,send_message
 
 
 def backup_due(recipient, period, next_backup, now=None):
@@ -13,15 +14,10 @@ def backup_due(recipient, period, next_backup, now=None):
 
 
 def send_backup(files_dir, recipient, username, password, translate, app_name):
-    if not username or not password:
-        from app.services.mail_credentials import load_credentials
-        saved=load_credentials()
-        if saved and (not username or username==saved[0]):username,password=saved
-    if not username or not password:
-        raise RuntimeError('Configure the sending account in Settings → Backups → Sending account.')
+    username,password=credentials(username,password)
     message = EmailMessage()
     message['Subject'] = app_name + ' - ' + translate('Backups')
-    message['From'], message['To'] = username, recipient
+    message['To'] = recipient
     message.set_content(translate('Hello user,') + '\n' +
         translate('here is the back up vocabulary from the day ') + str(datetime.now()) + ',\n' +
         translate('your ') + app_name)
@@ -31,7 +27,5 @@ def send_backup(files_dir, recipient, username, password, translate, app_name):
         attachments += 1
     if not attachments:
         return False
-    with smtplib.SMTP_SSL('smtp.seznam.cz', 465, timeout=20,context=ssl.create_default_context()) as smtp:
-        smtp.login(username, password)
-        smtp.send_message(message)
+    send_message(saved_account(username,password),message)
     return True

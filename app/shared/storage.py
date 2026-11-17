@@ -67,8 +67,12 @@ def atomic_output(destination, *, before_commit=None, expect_missing=False, **st
 
 
 def save_csv(frame, destination, *, expected_revision=None, expect_missing=False, **options):
+    from app.shared.integrity import validate_write
+    validate_write(frame,destination)
     destination = Path(destination)
     def check_revision():
+        from app.shared.integrity import check_writable
+        check_writable(destination)
         if expected_revision is not None and file_revision(destination) != expected_revision:
             raise FileChangedError('The course file changed. Reopen the editor before saving.')
     with atomic_output(destination, mode="w", encoding="utf-8", newline="",

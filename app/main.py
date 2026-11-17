@@ -22,14 +22,58 @@ def main_proc(app,context=None):
     context=get_context(app,context)
     context.bind(app)
     context.on_home=lambda:main_proc(app,context)
-    Load_setting(context)
+    if hasattr(app,'tk') and not getattr(app,'_integrity_started',False):
+        from app.shared.integrity import audit
+        app._integrity_started=True
+        context.startup_integrity=audit(context.files_dir,quick=True)
+    try:
+        from app.shared.integrity import check_writable
+        check_writable(context.files_dir/'settings.csv')
+        Load_setting(context)
+    except (OSError,ValueError):
+        if not hasattr(app,'tk'):raise
+        _integrity_recovery(app,context)
+        return
     _try_bkp(app,context)
     config=context.preferences
     languages=config.learning_languages
-    stats={language:_load_vocab_stats(language,context) for language in languages}
+    stats={}
+    for language in languages:
+        try:stats[language]=_load_vocab_stats(language,context)
+        except (OSError,ValueError,KeyError):
+            if not hasattr(app,'tk'):raise
+            _integrity_recovery(app,context)
+            return
     s.Clear_frames(app)
     _build_menu(app,context)
     _build_main_window(app,stats,context)
+    report=getattr(context,'startup_integrity',None)
+    if report is not None and any(f.severity!='Info' for f in report.findings) and not getattr(app,'_integrity_notified',False):
+        from app.preferences.integrity import open_integrity
+        app._integrity_notified=True
+        open_integrity(app,context.files_dir,context.translate,report)
+
+
+def _integrity_recovery(app,context):
+    """Keep an audit/retry route available even when settings cannot be loaded."""
+    import customtkinter as cst
+    from app.preferences.integrity import open_integrity
+    from app.ui.theme import SECTION_SURFACE,TEXT,FONT,SECTION_CONTROL
+    app._integrity_notified=True
+    if app.winfo_children():
+        # A failed refresh leaves the current screen and its unsaved work intact.
+        open_integrity(app,context.files_dir,context.translate)
+        return
+    s.Clear_frames(app)
+    panel=cst.CTkFrame(app,fg_color=SECTION_SURFACE,corner_radius=24)
+    panel.pack(fill='both',expand=True,padx=30,pady=30)
+    cst.CTkLabel(panel,text=context.translate('Integrity recovery'),text_color=TEXT,
+        font=(FONT,20),wraplength=760,justify='left').pack(padx=24,pady=30)
+    cst.CTkButton(panel,text=context.translate('Data integrity'),fg_color=SECTION_CONTROL,
+        command=lambda:open_integrity(app,context.files_dir,context.translate,
+            getattr(context,'startup_integrity',None))).pack(pady=12)
+    cst.CTkButton(panel,text=context.translate('Refresh'),fg_color=SECTION_CONTROL,
+        command=context.go_home).pack(pady=12)
 
 
 def Exit(app):

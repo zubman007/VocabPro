@@ -1,7 +1,7 @@
 """Conjugation spreadsheets: bulk verb forms and a course category catalog."""
 import customtkinter as cst
 import pandas as pd
-import tksheet
+from app.ui.components.spreadsheet import Spreadsheet
 from app.core.context import get_context
 from app.core.screen_controller import ScreenController
 from app.repositories.conjugation import ConjugationDocument, conjugation_columns
@@ -61,7 +61,7 @@ class ConjugationEditor:
             surface(panel,view.layer)
             view.tabs.add_page(self.translate(caption),panel)
             panel.grid_rowconfigure(0,weight=1);panel.grid_columnconfigure(0,weight=1)
-            sheet=tksheet.Sheet(panel,headers=headers,expand_sheet_if_paste_too_big=True,
+            sheet=Spreadsheet(panel,headers=headers,expand_sheet_if_paste_too_big=True,
                                default_row_index_width=44,**sheet_options(s.tbl_set))
             sheet.grid(sticky='nsew',padx=12,pady=12)
             sheet.enable_bindings(('single_select','drag_select','select_all','column_select','row_select',

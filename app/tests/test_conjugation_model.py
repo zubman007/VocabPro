@@ -128,6 +128,20 @@ class ConjugationModelTests(TestCase):
             save_results(source,state.selection,self.path);write.assert_not_called()
         self.assertEqual(self.path.read_bytes(),before)
 
+    def test_wrong_person_is_saved_reloaded_and_counted_separately_without_scoring_revealed_answers(self):
+        source,state=self.lesson();state.advance()
+        self.assertFalse(state.confirm({'s1':'enseño','s2':'wrong'}))
+        updated=save_results(source,state.selection,self.path)
+        reloaded=load_source(self.path,'Spanish','Czech',self.config)
+        self.assertEqual(decode_history(reloaded.iloc[0][HISTORY_COLUMN]),{'s1':'S','s2':'F'})
+        statistics=person_statistics(reloaded,self.config)
+        self.assertEqual((statistics[0].successes,statistics[0].failures),(1,0))
+        self.assertEqual((statistics[1].successes,statistics[1].failures),(0,1))
+        before=self.path.read_bytes()
+        self.assertTrue(state.confirm({'s1':'enseño','s2':'enseñas'}))
+        save_results(updated,state.selection,self.path)
+        self.assertEqual(self.path.read_bytes(),before)
+
     def test_uppercase_spanish_n_and_czech_keyboard_variant_use_same_normalization(self):
         for answer in ('ENSEÑO','ENSEŇO',' ENSENO '):
             _,state=self.lesson();state.advance()

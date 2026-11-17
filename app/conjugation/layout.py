@@ -60,7 +60,7 @@ def build(app, persons, confirm, next_verb, save, exit_app, back, category_filte
         entry.grid(row=row, column=1, sticky='ew', padx=(8, 12), pady=6)
         view.variables[key], view.entries[key], view.person_labels[key] = variable, entry, label
     surface(card, view.layer)
-    footer = cst.CTkFrame(body, fg_color='transparent', corner_radius=0)
+    footer = view.footer = cst.CTkFrame(body, fg_color='transparent', corner_radius=0)
     footer.grid(row=1, column=0, sticky='ew')
     footer.grid_columnconfigure((0, 1), weight=1, uniform='actions')
     layer = surface(footer, view.layer)

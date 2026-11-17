@@ -56,6 +56,7 @@ class VaultTests(TestCase):
             (Path(folder)/'English_gra.csv').write_text('ID;R\n1;S\n',encoding='utf-8')
             with patch('app.services.mail_credentials.load_credentials',return_value=('sender@example.com','synthetic')) as load,\
                  patch('app.services.backup.smtplib.SMTP_SSL') as smtp:
+                smtp.return_value.__enter__.return_value.send_message.return_value={}
                 self.assertTrue(send_backup(folder,'to@example.com','','',str,'VocabPro'))
                 smtp.return_value.__enter__.return_value.login.assert_called_once_with('sender@example.com','synthetic')
                 self.assertEqual(smtp.call_args.kwargs['context'].verify_mode,ssl.CERT_REQUIRED)
@@ -87,18 +88,22 @@ class BackupAccountUiTests(TestCase):
         with patch('app.preferences.backup_account.load_credentials',return_value=('from@example.com','secret-test')),\
              patch('app.preferences.backup_account.save_credentials') as save:
             callback=Mock();dialog=BackupAccountDialog(self.root,callback)
-            self.assertEqual(dialog.password.get(),'secret-test')
-            dialog.save();save.assert_called_once_with('from@example.com','secret-test');callback.assert_called_once()
+            self.assertEqual(dialog.password.get(),'')
+            dialog.save();save.assert_called_once();callback.assert_called_once()
+            from app.services.mail_transport import decode_secret
+            self.assertEqual(save.call_args.args[0],'from@example.com')
+            password,config=decode_secret(save.call_args.args[1])
+            self.assertEqual((password,config.host),('secret-test','smtp.seznam.cz'))
             reopened=BackupAccountDialog(self.root)
             self.assertEqual(reopened.username.get(),'from@example.com')
-            self.assertEqual(reopened.password.get(),'secret-test')
+            self.assertEqual(reopened.password.get(),'')
             reopened.destroy()
         with patch('app.preferences.backup_account.load_credentials',return_value=('from@example.com','secret-test')),\
              patch('app.preferences.backup_account.save_credentials',side_effect=ValueError('Enter the SMTP password.')) as save:
             dialog=BackupAccountDialog(self.root)
             dialog.password.delete(0,'end')
             dialog.username.delete(0,'end');dialog.username.insert(0,'other@example.com');dialog.save()
-            self.assertEqual(save.call_args.args,('other@example.com',''))
+            save.assert_not_called()
             self.assertTrue(dialog.winfo_exists());dialog.destroy()
 
     def test_layout_translations_and_cancel_never_write_credentials(self):

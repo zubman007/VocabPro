@@ -70,6 +70,12 @@ class PreferencesDialog(AppDialog):
             body.grid_columnconfigure(0, weight=1)
             body.grid_columnconfigure(1, weight=1)
             sections[key] = body
+        from app.preferences.integrity import IntegrityPanel
+        integrity_tab = self.tabs.add(translate('Data integrity'))
+        integrity_surface = surface(integrity_tab, tabs_surface)
+        self.integrity_panel = IntegrityPanel(integrity_tab, self.path.parent, translate)
+        self.integrity_panel.pack(fill='both', expand=True, padx=16, pady=12)
+        surface(self.integrity_panel, integrity_surface)
         for button in self.tabs._segmented_button.winfo_children():
             if isinstance(button, cst.CTkButton):
                 surface(button, selector_surface)

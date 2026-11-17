@@ -64,7 +64,8 @@ class ExtendedScenarioTests(unittest.TestCase):
             expected=dict(initial,**{'Letter hints':'On request','Enable tags':'1',
                 'Show tags during practice':'1','Tag display language':'Learning language',
                 'Maximum tags per word':'10','Enable second learning language':'1',
-                'Track personal records':'1','Show personal records':'1'})
+                'Track personal records':'1','Show personal records':'1','Remember conjugation categories':'1',
+                'Random repeat batch - Grammar':'10','Random repeat batch - Conjugation':'10'})
             for number in (1,20,1000,2,9999,10):
                 frame=load_preferences(path)
                 save_preferences(frame,{'Learn batch':str(number)},path)
