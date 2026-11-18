@@ -25,16 +25,20 @@ Ty fily na conjugation person dej všechny do jednoho filu.. Všechny jazyky.
 
 U data integrity u chyby vypiš konkrétní řádek... Trošku jiným písmem aby to bylo oddělitelné.
 Ten cancel tlačítko z data integrity zruš..
+
  
- 
+Jak funguje ten release? Který script musím spustit, aby se stpustila aplikace? Když spustím ten release, zapne se pouze start. A co je to vocabpro_data? Udělej to tak, že fily budou v tom novém exe.. Ale při vytvoření exe bude exe prázdné.. Když to tedy spustím, fily budou chybět.. Dále to udělej tak, že když aplikaci spustím a nějaký file chybí, prostě ho vytvořím nový, prázdný. Dej tam tedy nějaké defaultní nastavení při prvním spuštění exe.. Jinak je to fajn.. Prostě to chci tak, že spustím script a vygeneruje se mi funkční nová verze exe.. Dále do exe verze nepůjdou věci jako je dokumentace a tools.. Ty tam jsou samozřejmě zbytečné.. Ani testy.. Pouze věci, které jsou nezbytné k běhu aplikace.
 
 
-sjednotit design track record conjugation a grammar v session
-sjednotit setting remember category pořadí.. Je to u learning.. U modulů je to opčaně.
+Jaký script musím spustit na ten quiality check?
+
+Udělej to intuitivněji.. Nějaký jeden script, co spustí vše, další pomocné scripty budou ve spšl složce.. To samé u exe release.. Tyto dvě věci budou v tools.. quelity test a release budou mít spešl složky..
 
 
 
 
+
+Udělej pořádek.. Staré nefunčkní testy smaž.. 
 
 
 
@@ -116,11 +120,11 @@ Nezůstávej u návrhu – proveď analýzu, aktualizaci dokumentace, vytvořen�
 15.9. Luz
 26.9. KOLÓN
 4.10. Taťka
-
 10.10. Dáša
-
 1.11. Simonka
 2.11. Adam
+
+
 23.12. Kuba
 
 

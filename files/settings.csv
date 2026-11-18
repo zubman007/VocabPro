@@ -33,4 +33,4 @@ Study courses;JSON;"{""version"":3,""source"":""cs"",""courses"":[{""target"":""
 Track personal records;Bool;1
 Show personal records;Bool;1
 Remember conjugation categories;Bool;1
-Random repeat batch - Grammar;Int;10
+Random repeat batch - Grammar;Int;60
